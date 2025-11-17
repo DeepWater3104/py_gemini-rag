@@ -1,0 +1,22 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/analysis/programmatic.html
+
+Programmatic Analysis Tools
+
+Impedance
+Impedance
+Impedance.loc()
+Impedance.compute()
+Impedance.transfer()
+Impedance.input()
+Impedance.ratio()
+Impedance.transfer_phase()
+Impedance.input_phase()
+Impedance.deltafac()
+Optimization
+fit_praxis()
+attr_praxis()
+pval_praxis()
+stop_praxis()
+Miscellaneous
+ghk()
+nernst()

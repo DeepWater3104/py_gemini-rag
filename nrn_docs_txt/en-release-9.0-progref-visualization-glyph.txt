@@ -1,0 +1,477 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/visualization/glyph.html
+
+Glyph
+circle
+·
+close
+·
+cpt
+·
+curve
+·
+erase
+·
+fill
+·
+gif
+·
+glyph
+·
+l
+·
+label
+·
+m
+·
+path
+·
+s
+Glyph
+
+class
+Glyph
+
+Python
+Syntax:
+g
+=
+n.Glyph()
+Description:
+Specification of a drawing. The drawing can be rendered on a Graph
+as many times as desired using
+graph
+.
+glyph
+(
+g
+,
+x
+,
+y
+,
+scalex
+,
+scaley
+,
+angle
+)
+The drawing style uses commands reminiscent of postscript.
+Example:
+Rotated ellipse
+from
+neuron
+import
+n
+,
+gui
+gr
+=
+n
+.
+Graph
+()
+gl
+=
+n
+.
+Glyph
+()
+gl
+.
+circle
+(
+0
+,
+0
+,
+1
+)
+gl
+.
+fill
+(
+3
+)
+gl
+.
+s
+(
+2
+,
+3
+)
+gr
+.
+glyph
+(
+gl
+,
+150
+,
+100
+,
+30
+,
+60
+,
+n
+.
+PI
+/
+4
+*
+n
+.
+DEG
+)
+See also
+Graph
+,
+Graph.glyph()
+HOC
+Syntax:
+g
+=
+new
+Glyph()
+Description:
+Specification of a drawing. The drawing can be rendered on a Graph
+as many times as desired using
+graph.glyph(g, x, y, scalex, scaley, angle)
+The drawing style uses commands reminiscent of postscript.
+See also
+Graph
+,
+Graph.glyph()
+Glyph.
+path
+(
+)
+
+Python
+Syntax:
+g
+=
+g.path()
+Description:
+Begin a new path.
+HOC
+Syntax:
+g
+=
+g.path()
+Description:
+Begin a new path.
+Glyph.
+m
+(
+)
+
+Python
+Syntax:
+g
+=
+g.m(x,
+y)
+Description:
+Set the current point to the coordinates.
+HOC
+Syntax:
+g
+=
+g.m(x,
+y)
+Description:
+Set the current point to the coordinates.
+Glyph.
+l
+(
+)
+
+Python
+Syntax:
+g
+=
+g.l(x,
+y)
+Description:
+A line from the current point to the coordinates.
+HOC
+Syntax:
+g
+=
+g.l(x,
+y)
+Description:
+A line from the current point to the coordinates.
+Glyph.
+curve
+(
+)
+
+Python
+Syntax:
+g
+=
+g.curve(x,y,
+x1,y1,
+x2,y2)
+Description:
+Draw a curve from the current point to x,y
+HOC
+Syntax:
+g
+=
+g.curve(x,y,
+x1,y1,
+x2,y2)
+Description:
+Draw a curve from the current point to x,y
+Glyph.
+close
+(
+)
+
+Python
+Syntax:
+g
+=
+g.close()
+Description:
+A line from the current point to the first point of the path.
+HOC
+Syntax:
+g
+=
+g.close()
+Description:
+A line from the current point to the first point of the path.
+Glyph.
+circle
+(
+)
+
+Python
+Syntax:
+g
+=
+g.circle(x,
+y,
+r)
+Description:
+A circle at location x, y and radius r. This is implemented using
+the glyph methods new_path, move_to, curve_to, and close_path.
+Can stroke and/or fill.
+HOC
+Syntax:
+g
+=
+g.circle(x,
+y,
+r)
+Description:
+A circle at location x, y and radius r. This is implemented using
+the glyph methods new_path, move_to, curve_to, and close_path.
+Can stroke and/or fill.
+Example:
+Rotated ellipse
+objref gr, gl
+gr = new Graph()
+
+
+gl = new Glyph()
+gl.circle(0,0,1)
+gl.fill(3)
+gl.s(2, 3)
+
+
+gr.glyph(gl, 150, 100, 30, 60, PI/4*DEG)
+Glyph.
+s
+(
+)
+
+Python
+Syntax:
+g
+=
+g.s()
+g
+=
+g.s(colorindex)
+g
+=
+g.s(colorindex,
+brushindex)
+Description:
+Render the current path as a line.
+HOC
+Syntax:
+g
+=
+g.s()
+g
+=
+g.s(colorindex)
+g
+=
+g.s(colorindex,
+brushindex)
+Description:
+Render the current path as a line.
+Glyph.
+fill
+(
+)
+
+Python
+Syntax:
+g
+=
+g.fill()
+g
+=
+g.fill(colorindex)
+Description:
+For a closed path, fill the interior with the indicated color.
+HOC
+Syntax:
+g
+=
+g.fill()
+g
+=
+g.fill(colorindex)
+Description:
+For a closed path, fill the interior with the indicated color.
+Glyph.
+cpt
+(
+)
+
+Python
+Syntax:
+g
+=
+g.cpt(x,y)
+Description:
+Draw a small open rectangle at the coordinates. Intended to indicate
+special locations on the glyph which can be selected. Not very useful
+at this time.
+HOC
+Syntax:
+g
+=
+g.cpt(x,y)
+Description:
+Draw a small open rectangle at the coordinates. Intended to indicate
+special locations on the glyph which can be selected. Not very useful
+at this time.
+Glyph.
+erase
+(
+)
+
+Python
+Syntax:
+g
+=
+g.erase()
+Description:
+The drawing is erased.
+HOC
+Syntax:
+g
+=
+g.erase()
+Description:
+The drawing is empty
+Glyph.
+label
+(
+)
+
+Python
+Syntax:
+g
+=
+g.label("string",
+x,
+y,
+fixtype,
+colorindex)
+Description:
+Not implemented
+HOC
+Syntax:
+g
+=
+g.label("string",
+x,
+y,
+fixtype,
+colorindex)
+Description:
+Not implemented
+Glyph.
+glyph
+(
+)
+
+Python
+Syntax:
+g
+=
+g.glyph(glyphobject,
+x,
+y,
+scale,
+angle)
+Description:
+Not implemented
+HOC
+Syntax:
+g
+=
+g.glyph(glyphobject,
+x,
+y,
+scale,
+angle)
+Description:
+Not implemented
+Glyph.
+gif
+(
+)
+
+Python
+Syntax:
+g
+=
+g.gif("filename")
+Description:
+Reads the gif image in the file. All
+Glyph
+arguments still work
+when the glyph contains a gif image. The gif image is drawn first so
+other drawing specs will appear on top of it.
+See also
+Graph.gif()
+,
+Graph.glyph()
+HOC
+Syntax:
+g
+=
+g.gif("filename")
+Description:
+Reads the gif image in the file. All
+Glyph
+arguments still work
+when the glyph contains a gif image. The gif image is drawn first so
+other drawing specs will appear on top of it.
+See also
+Graph.gif()
+,
+Graph.glyph()

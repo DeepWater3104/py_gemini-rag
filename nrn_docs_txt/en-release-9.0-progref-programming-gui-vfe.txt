@@ -1,0 +1,57 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/programming/gui/vfe.html
+
+ValueFieldEditor
+default
+ValueFieldEditor
+
+class
+ValueFieldEditor
+
+Python
+Syntax:
+vfe
+=
+n.ValueFieldEditor(...)
+Description:
+Takes exactly the same args as
+xvalue()
+or
+xpvalue()
+but is an object
+which can change some features (default) under program control.
+Note that when this object is created, there must be an open
+xpanel()
+.
+HOC
+Syntax:
+vfe
+=
+new
+ValueFieldEditor(...)
+Description:
+Takes exactly the same args as
+xvalue()
+or
+xpvalue()
+but is an object
+which can change some features (default) under program control.
+Note that when this object is created, there must be an open
+xpanel()
+.
+ValueFieldEditor.
+default
+(
+)
+
+Python
+Syntax:
+vfe.default()
+Description:
+If the field editor is a default field editor then the current value
+becomes the default value. ie. the red checkmark is turned off.
+HOC
+Syntax:
+vfe.default
+Description:
+If the field editor is a default field editor then the current value
+becomes the default value. ie. the red checkmark is turned off.

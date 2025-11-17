@@ -1,0 +1,51 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/visualization/notify.html
+
+doEvents
+·
+doNotify
+Notification
+
+doEvents
+(
+)
+
+Python
+Syntax:
+n.doEvents()
+Description:
+Deal with any pending events in the middle of a computation.
+This also causes any previous flushes to make their effect felt on
+the screen.
+Faster than
+doNotify()
+since field editors are not updated.
+HOC
+Syntax:
+doEvents()
+Description:
+Deal with any pending events in the middle of a computation.
+This also causes any previous flushes to make their effect felt on
+the screen.
+Faster than
+doNotify()
+since field editors are not updated.
+doNotify
+(
+)
+
+Python
+Syntax:
+n.doNotify()
+Description:
+All panels are updated so field editors show current values.
+This is slower than
+doEvents()
+which does not check the field editors.
+HOC
+Syntax:
+doNotify()
+Description:
+All panels are updated so field editors show current values.
+This is slower than
+doEvents()
+which does not check the field editors.

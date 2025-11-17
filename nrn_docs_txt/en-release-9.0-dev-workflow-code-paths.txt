@@ -1,0 +1,210 @@
+Source Path: nrn_docs_html/en/release-9.0/dev/workflow-code-paths.html
+
+Workflow Code Paths
+
+The intention of the following section is to give an overview of important functions and code paths executed to perform certain actions.
+NEURON simulations
+
+A summary of the workflow of a typical
+NEURON
+simulation can be given with the following graph:
+The parts of the simulation can be described as:
+Register Mechanisms
+
+Mechanisms in
+NEURON
+are defined in
+.mod
+files. Apart from some built in mechanisms if the user wants to use any additional mechanisms those need to be compiled using the
+nrnivmodl
+executable.
+The
+nrnivmodl
+executable translates the
+MOD
+files from the
+NMODL
+language to
+C++
+. Those
+C++
+files apart from the computation kernels also include a function named
+<mechanism_name>_reg_(void)
+that is essential for registering the mechanism functions in
+NEURON
+so that later the user can
+insert
+the mechanism in the needed compartments.
+Mechanism registration
+Mechanism...
+Every mechanism defines:  `<mech_name>_reg_(void)`.
+`<mech_name>_reg_(void)` calls `
+register_mech(mechanism, <mech_name>_alloc, <mech_name>_cur, <mech_name>_jacob, nullptr, nullptr, -1, 1);
+`  and
+`
+neuron::mechanism::register_data_fields(mechtype,
+field<double>{"<var_name"},
+field<double>{"<array_var_name", <Array_size>}, fields...);
+`
+`register_mech` registrates the allocator, nrn_cur function, jacob function, etc
+Every mechanism defines:  `<mech_name>_reg_(void)`....
+`register_data_fields`: takes care creating the storage underneath by calling
+`register_data_fields`: takes care creating the storage underneath by calling
+neuron::mechanism::detail::register_data_fields(int type,
+std::vector<std::pair<const char*, int>> const& param_info,
+std::vector<std::pair<const char*, const char*>> const& dparam_info
+)
+neuron::mechanism::detail::register_data_fields(int type, std::vector<std::pair<const char*, int>> const& param_info, std::vector<std::pair<const char*, const char*>> const& d...
+neuron::container::Mechanism::storage(short mech_type, std::string name, std::vector<Variable> floating_point_fields)
+floating_point_fields is a vector of structs that hold the informating for the various RANGE variables of the mechanism
+We pass a `std::vector<Variable>` to a wrapper `neuron::container::Mechanism::field::FloatingPoint`. Due to the fact that the wrapper has a `num_instances` non static member function we need to allocate vectors for each one of the RANGE variables in the `m_var_info` member of `FloatingPoint`
+neuron::container::Mechanism::storage sets `using base_type = soa<storage, field::FloatingPoint>;`
+neuron::container::Mechanism::storage(short mech_type, std::string name, std::vector<Variable> floating_point_fields)...
+neuron::Model::add_mechanism()
+neuron::Model::add_mechanism()
+field_data
+of each variable
+field_data of each variable
+Creation of `soa` storage struct which holds a tuple of detaill:field_data structs which is the
+underyling storage
+Creation of `soa` storage struct which holds a tuple of detaill:field_data structs which is the underyling storage
+Text is not SVG - cannot display
+Circuit creation
+
+During this part of the simulation the segments, sections and their connections are created. All these are created based on the circuit which is defined by the users in Python or HOC scripts with the respective API.
+See:
+Topology
+and
+hoc_topology
+.
+During this part all the
+Node
+s are created as well as the
+Section
+s.
+See C++ documentation:
+Node
+,
+Section
+and
+SectionPool
+.
+The call graph of this part can be found below:
+add_section()
+add_section()
+Circuit creation
+Circuit cr...
+new_sections()
+new_sections()
+new_section()
+This functions sets "tree_changed = 1;" which is used for shiffling sections later
+It also calls "sec_alloc()" which allocates a `SectionPool`
+It also allocates the `Node`s by calling cable_prop_assign()->nrn_change_nseg()->
+node_alloc()
+:
+there is one Node per segment
+new_section()...
+Segments can also be connected/disconnected with various functions that set "tree_changed = 1;"
+nrn_disconnect()
+: called by functions that disconnect the section
+connectsec_impl()
+: connection between two sections -> "tree_changed = 1"
+nrn_change_nseg()
+: change the number of segments in section. It also sets `tree_changed = 1;`, `diam_changed = 1;` and `sec->recalc_area_ = 1;`
+Segments can also be connected/disconnected with various functions that set "tree_changed = 1;"...
+Text is not SVG - cannot display
+Insert Mechanisms
+
+After registering the mechanisms the user can insert them in the needed compartments. To do so they need to call the
+insert
+function on the proper section.
+Insert mechanism
+Insert mec...
+mech_insert1()
+: insert mechanism to the Section (meaning all the nodes of the sction by calling prop_alloc())
+mech_insert1(): insert mechanism to the Section (meaning all the nodes of the sction by calling prop_alloc())
+From python:
+NPySecObj_insert
+From python: NPySecObj_insert
+From hoc:
+MechanismType::insert
+From hoc: MechanismType::insert
+prop_alloc()
+prop_alloc(): sets `v_structure_change = 1;`
+It allocates a new `Prop` struct for the mechanism and calls the `<mech_name>_alloc` function defined in the mechanism file.
+prop_alloc()...
+`Prop` constructor
+calls constructor of `Mechanism::owning_handle`, which inserts a new element into each of the underlying data vectors (`field_data<Tag, FieldImplementation::RuntimeVariable>::m_storage[i]` for all `i`)
+`Prop` constructor calls constructor of `Mechanism::owning_handle`, which inserts a new element into each of the underlying data vectors (`field_data<Tag, FieldImplementation:...
+Look at "Memory allocation of field_data"
+Look at "Memory allocation of field_data"
+Text is not SVG - cannot display
+Memory allocation of field data
+
+During the mechanism insertion the needed data structures to hold their data are also allocated. This is done by appending to the SoA data structures of the data a new element for the newly inserted mechanism.
+Memory allocation of field_data (SoAoS)
+Memory all...
+Node has
+neuron::container::Node::owning_handle
+member
+Node has neuron::container::Node::owning_handle member
+Constructor of owning_handle
+calls
+acquire_owning_identifier
+for both
+Constructor of owning_handle  calls acquire_owning_identifier for both
+Prop has
+neuron::container::Mehcanism::owning_handle
+member
+Prop has neuron::container::Mehcanism::owning_handle member
+By calling for_all_vectors<detail::may_cause_reallocation::Yes>() we append to the m_storage of field_data an element. We also set the m_ptr (std::unique_ptr<std::size_t, deleter>) of the owning_identifier to the old_size. This identifier will be used as offset to access the corresponding element from other parts of the code. Due to the fact that we use the detail::may_cause_reallocation::Yes template, when we call for_all_vectors() the m_data_ptrs member of the field_data for mechanisms will be updated to use the up to date pointers to the m_storage vectors
+By calling for_all_vectors<detail::may_cause_reallocation::Yes>() we append to the m_stor...
+Text is not SVG - cannot display
+Initialization
+
+After all the simulation
+Section
+have been created, along with the data structures assigned to them and their mechanisms, all the underlying data structures are ordered and initialized. At this stage, the
+INITIAL
+blocks of the inserted
+MOD
+files are also executed.
+Initialization
+Initializa...
+Call to
+finitialize()
+Call to finitialize()
+nrn_finitialize(int, double)
+finitialize passes initial voltage value to finitialize
+nrn_finitialize(int, double)...
+nrn_fihexec(3);
+Call to finitialize handler kernels with type == 3
+nrn_fihexec(3);...
+verify_structure()
+Takes care of recalculating circuit related geometry like topology, v vectors and diameters. Also calls nrn_solver_prepare
+verify_structure()...
+if(tree_changed) ->
+setup_topology()
+: Sets up pointer to the parents of the sections
+if(tree_changed) -> setup_topology(): Sets up pointer to the parents of the sections
+if (v_structure_change) ->
+v_setup_vectors()
+:
+Frees and sets up: NrnThreads and memb_list, Calls function that setup auxiliary structs as well to keep track of pointers of C++ objects, Vectors of NrnThread, etc, Setup longitudinal diffusion with call to
+long_difus_solve()
+, Setup CVode with call to
+nrn_nonvint_block_setup()
+if (v_structure_change) -> v_setup_vectors():...
+if (diam changed) ->
+recalc_diam()
+: Reruns v_setup_vectors(), allocates and sets hines matrix data structures in nrn_matrix_node_alloc() and connection_coef(), stim_prepare(), synapse_prepare() and clamp_prepare() set up record/stimulus/synapses
+if (diam changed) -> recalc_diam(): Reruns v_setup_vectors(), allocates and sets hines matrix data structures in nrn_matrix_node_alloc() and co...
+nrn_solver_prepare()
+: prepare CVode for execution
+Sets up fornetcon objects, calls
+NetCvode::init_global
+that does a final check that topology, vectors and recalc_diam are set.
+nrn_solver_prepare(): prepare CVode for execution...
+nrn_ensure_model_data_are_sorted()
+nrn_ensure_model_data_are_sorted()
+Text is not SVG - cannot display

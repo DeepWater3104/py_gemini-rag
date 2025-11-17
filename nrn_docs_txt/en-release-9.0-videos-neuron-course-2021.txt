@@ -1,0 +1,107 @@
+Source Path: nrn_docs_html/en/release-9.0/videos/neuron-course-2021.html
+
+NEURON 2021 Online Course
+
+A free online webinar series was offered in twice-weekly meetings from 2021-06-03 to 2021-08-03.
+The first half of the course was presented primarily through the use of the NEURON GUI; the second
+half was more centered around using NEURON through Python. These two approaches are complementary
+and both are used in most lectures.
+Many lectures end with associated exercises that are then discussed in the following Q&A sessions.
+For those who prefer, this video series may also be accessed as a
+YouTube playlist
+.
+Basic Concepts and GUI
+
+Lecture 2021-06-03
+
+Q & A 2021-06-08
+
+Branched cells
+
+Lecture 2021-06-10
+
+Q & A part 1 2021-06-15
+
+Due to technical difficulties, the Q&A was split into two videos.
+Q & A part 2 2021-06-15
+
+Adding ion channels
+
+Lecture 2021-06-17
+
+Q & A 2021-06-22
+
+Python scripting
+
+2021-06-24
+
+Starts out with a GUI demo due to a fire alarm; the main Python lecture
+begins around 17:25.
+Topics:
+Programmer’s reference.
+How to run Python scripts (text editors, terminals, Jupyter notebooks)
+Python overview (displaying results, variables, loops, lists and dictionaries, functions, libraries, string formatting, and getting help)
+loading NEURON as a Python library and loading NEURON libraries
+defining sections and their properties (including connections)
+caution: defaults are generally for squid
+using classes for cell types
+visualizing data (morphology, concentrations, voltage, etc)
+inserting ion channels and other mechanisms and setting their parameters
+recording results
+simulating a model
+synapses and networks
+saving and loading data with pandas
+2021-06-29
+
+2021-07-01
+
+Topics:
+neuron.rxd (intra- and extracellular ion/protein/etc dynamics)
+pandas (file storage and databases… e.g. CSV, excel, sqlite3)
+eFEL (electrophys feature extraction library from the BlueBrain project)
+Scripting and Morphologies 2021-07-06
+
+Today we solve the exercises from last class, roughly: (1) examine the role of temperature with the Hodgkin-Huxley kinetics and use a database as part of the parameter sweeps; (2) test morphologies to determine suitability for use in simulation; and (3) simulate a morphologically detailed cell.
+(Note: unlike the other videos in this series, this one was prerecorded due to the CNS conference so there is no student interaction.)
+Networks and numerical methods
+
+2021-07-08
+
+Topics:
+synapses, spike-triggered transmission,
+NetCon
+artificial spiking cells (
+IntFire1
+,
+IntFire2
+,
+IntFire4
+)
+Forward Euler vs Backward Euler vs Crank-Nicolson; fixed step vs variable step
+Parallel NEURON simulations 2021-07-13
+
+Using NEURON’s
+ParallelContext
+object. Run parallel simulations using e.g.
+mpiexec
+-
+n
+4
+python
+mymodel
+.
+py
+Starting about halfway through the next video, we apply these techniques to solving the homework exercises, building a network.
+Network exercise solutions and discussion 2021-07-15
+
+Parallel simulation conclusion, reproducible randomness, more numerical methods 2021-07-20
+
+ModelDB exercises 2021-07-27
+
+Scaling, spines, and reading HOC 2021-07-29
+
+We start with a discussion of the implementation of Mainen & Sejnowski 1996
+https://modeldb.science/2488
+and implications for reuse. There was a brief discussion about Python based ion channels and working with density mechanisms. About an hour into the video, we turn to how to read HOC, how to use existing HOC libraries from Python (and vice-versa) , and how to gain insight from HOC code to design your own Python libraries.
+Building GUI interfaces, Initialization, and Circuits 2021-08-03
+

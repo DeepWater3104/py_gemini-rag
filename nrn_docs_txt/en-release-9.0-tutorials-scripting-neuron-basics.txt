@@ -1,0 +1,1138 @@
+Source Path: nrn_docs_html/en/release-9.0/tutorials/scripting-neuron-basics.html
+
+Scripting NEURON basics
+
+The objectives of this part of the tutorial are to get familiar with basic operations of NEURON using Python. In this worksheet we will:
+Create a passive cell membrane in NEURON.
+Create a synaptic stimulus onto the neuron.
+Modify parameters of the membrane and stimulus.
+Visualize results with bokeh.
+What is NEURON?
+
+The NEURON simulation environment is a powerful engine for performing simulations of neurons and biophysical neural networks. It permits the construction of biologically realistic membranes with active and passive ion channels, combined with virtual connectivity and electrophysiology tools to drive and measure neuron and network behaviors.
+Step 1: Import the neuron module into Python
+
+Any code that is not part of Python’s Built-in Functions must be imported. The Python interface to NEURON goes through the neuron module, especially the neuron.h submodule. The neuron module has additional submodules, including neuron.rxd for reaction-diffusion dynamics, neuron.gui2 for Jupyter-compatible PlotShape graphs, and neuron.gui for Interviews-based GUI tools. The neuron.h submodule also allows loading files, executing code, and calling functions written in HOC, an older scripting
+language supported by NEURON. This allows the continued use of HOC libraries in Python code.
+To import neuron, we could use:
+[1]:
+import
+neuron
+If the above succeeded, it produces no output (in recent versions of NEURON), so how can we know what version of NEURON we have? Simple: ask for the
+__version__
+:
+[2]:
+print
+(
+neuron
+.
+__version__
+)
+9.0.0-18-gb12a541
+There are only a limited number of functions avaiable directly from the neuron module. In practice, we usually want to directly import the submodules we need; i.e. do something like the below instead:
+[3]:
+from
+neuron
+import
+n
+When using NEURON, you will always want the n submodule. (With older code, you may have seen people use the h submodule. They are almost exactly equivalent, and h continues to work.) You may or may not need to import the additional submodules mentioned above. If you do, they can be imported separately or loaded in one line with a comma separated list, as in:
+[4]:
+from
+neuron
+import
+n
+,
+rxd
+NB: When importing n, etc like this, there is usually no need for importing neuron separately.
+NEURON assumes certain default units (concentration in mM, time in ms, voltage in mV), but units can be specified explicitly by importing unit definitions from neuron.units. Even if you are using the default units, being explicit makes your code more readable by others. For example:
+[5]:
+from
+neuron.units
+import
+ms
+,
+mV
+If the above gives you an error, then you are using a version of NEURON older than 7.7. Update before proceeding.
+Step 2: Create a cell
+
+A Section is the basic morphological building-block in NEURON. We typically think of a Section as an unbranched cable, but it can also be used to represent a soma. Thus a simple model neuron with only a soma can be created as in:
+[6]:
+soma
+=
+n
+.
+Section
+(
+"soma"
+)
+There is no output, so how can we tell that we successfully created a Section?
+Aside 1: NEURON’s
+n.topology
+function
+
+NEURON’s
+n.topology()
+function displays the topological structure of the entire model, indicating which sections are connected to which sections, where they are connected, and how many
+segments
+each section is divided into.
+If you’re following along with our example, there’s not much to see yet since there is only one section, but it does demonstrate that the soma has been created and has one segment (one dash is shown):
+[7]:
+n
+.
+topology
+()
+|-|       soma(0-1)
+[7]:
+1.0
+The
+n.topology()
+function displays its data to screen and returns
+1.0
+indicating success (this function always succeeds). Note: This function is only for displaying data; other methods must be used to store the data in a variable for programmatic analysis.
+Aside 2: The
+psection
+method
+
+Every NEURON section has a psection method (think: properties of the section) that returns a Python dictionary providing a structured data representation of the properties of the section.
+For example, we can query the soma via:
+[8]:
+soma
+.
+psection
+()
+[8]:
+{'point_processes': {},
+ 'density_mechs': {},
+ 'ions': {},
+ 'morphology': {'L': 100.0,
+  'diam': [500.0],
+  'pts3d': [],
+  'parent': None,
+  'trueparent': None},
+ 'nseg': 1,
+ 'Ra': 35.4,
+ 'cm': [1.0],
+ 'regions': set(),
+ 'species': set(),
+ 'name': 'soma',
+ 'hoc_internal_name': '__nrnsec_0x60e265158e60',
+ 'cell': None}
+The results tell us the soma is a cylinder with length 100 microns, diameter 500 microns, axial resistivity 35.4 ohm*cm, and specific membrance capacitance 1 μF/cm2.
+Note: calling this method does not itself print anything to the screen. Instead it returns a dictionary. We see the contents of the dictionary only because we are running interactively; from a script, nothing would be printed unless we explicitly printed it with print, or, better pretty-printed it with pprint.pprint.
+Since this is a dictionary, we can extract any properties we want using square brackets. For example, the length of the section is:
+[9]:
+soma
+.
+psection
+()[
+"morphology"
+][
+"L"
+]
+[9]:
+100.0
+All of these values can be individually accessed in more efficient ways, but psection provides an overview of the full properties of the section.
+For example, the length of the soma is more efficiently available (and settable) via:
+[10]:
+soma
+.
+L
+[10]:
+100.0
+soma.psection()[‘morphology’][‘diam’] is a list (of length 1 here), with each entry corresponding to the value for each segment. Similarly for soma.psection()[‘cm’], etc.
+Important:
+You may have noticed that the default diameter is 500 μm, which is excessively large for mammalian neurons. It’s the default because it’s appropriate for the squid giant axons studied by Hodgkin and Huxley. NEURON also uses squid-relevant values for axial resistivity (
+soma.Ra
+) and temperature (
+n.celsius
+). These should all be adjusted for mammalian models.
+Step 3: Set the cell’s morphological properties
+
+Since we’re simulating a soma, the default length of 100 μm and diameter of 500 μm are inappropriate. Let’s set the length (L) and diameter (diam) to 20 μm instead:
+[11]:
+soma
+.
+L
+=
+20
+soma
+.
+diam
+=
+20
+In many models, you will have cells consisting of many connected sections. In brief, this can be done using the Section’s connect method. That will be described in a subsequent part of the tutorial. For now though, we consider only the soma.
+Aside 3: Python’s
+dir
+function
+
+We can also probe objects with Python’s built-in dir() function. Let’s see what it says about soma.
+[12]:
+dir
+(
+soma
+)
+[12]:
+['L',
+ 'Ra',
+ '__call__',
+ '__class__',
+ '__contains__',
+ '__delattr__',
+ '__dir__',
+ '__doc__',
+ '__eq__',
+ '__format__',
+ '__ge__',
+ '__getattribute__',
+ '__getstate__',
+ '__gt__',
+ '__hash__',
+ '__init__',
+ '__init_subclass__',
+ '__iter__',
+ '__le__',
+ '__lt__',
+ '__module__',
+ '__ne__',
+ '__new__',
+ '__reduce__',
+ '__reduce_ex__',
+ '__repr__',
+ '__setattr__',
+ '__sizeof__',
+ '__str__',
+ '__subclasshook__',
+ 'allseg',
+ 'arc3d',
+ 'cell',
+ 'children',
+ 'connect',
+ 'diam3d',
+ 'disconnect',
+ 'has_membrane',
+ 'hname',
+ 'hoc_internal_name',
+ 'insert',
+ 'is_pysec',
+ 'n3d',
+ 'name',
+ 'nseg',
+ 'orientation',
+ 'parentseg',
+ 'psection',
+ 'pt3dadd',
+ 'pt3dchange',
+ 'pt3dclear',
+ 'pt3dinsert',
+ 'pt3dremove',
+ 'pt3dstyle',
+ 'push',
+ 'rallbranch',
+ 'same',
+ 'spine3d',
+ 'subtree',
+ 'trueparentseg',
+ 'uninsert',
+ 'wholetree',
+ 'x3d',
+ 'y3d',
+ 'z3d']
+This tells us all of the Python methods and variables associated with the object. Any methods with two leading and trailing underscores are reserved by Python. The other items in the list are additional members of soma that we can call. To see all of the functions, variables, etc available through NEURON’s
+n
+submodule, try:
+[13]:
+import
+textwrap
+print
+(
+textwrap
+.
+fill
+(
+", "
+.
+join
+(
+dir
+(
+n
+))))
+APCount, AlphaSynapse, Avogadro_constant, BBSaveState, CVode, DEG,
+Deck, E, Exp2Syn, ExpSyn, FARADAY, FInitializeHandler, File, GAMMA,
+GUIMath, Glyph, Graph, HBox, IClamp, Impedance, IntFire1, IntFire2,
+IntFire4, KSChan, KSGate, KSState, KSTrans, L, LinearMechanism, List,
+Matrix, MechanismStandard, MechanismType, NMODLRandom, NetCon,
+NetStim, OClamp, PHI, PI, PPShape, PWManager, ParallelContext,
+PatternStim, PlotShape, PointProcessMark, Pointer, PtrVector,
+PythonObject, R, Ra, Random, RangeVarPlot, SEClamp, SaveState,
+Section, SectionBrowser, SectionList, SectionRef, Shape,
+StateTransitionEvent, StringFunctions, SymChooser, Timer, VBox,
+VClamp, ValueFieldEditor, Vector, __abs__, __add__, __bool__,
+__call__, __class__, __delattr__, __delitem__, __dir__, __doc__,
+__eq__, __format__, __ge__, __getattribute__, __getitem__,
+__getstate__, __gt__, __hash__, __init__, __init_subclass__, __iter__,
+__le__, __len__, __lt__, __module__, __mul__, __ne__, __neg__,
+__new__, __next__, __pos__, __radd__, __reduce__, __reduce_ex__,
+__repr__, __rmul__, __rsub__, __rtruediv__, __setattr__, __setitem__,
+__setstate__, __sizeof__, __str__, __sub__, __subclasshook__,
+__truediv__, _pysec, abs, access, allobjects, allobjectvars, allsec,
+arc3d, area, argtype, atan, atan2, attr_praxis, axis, baseattr,
+batch_run, batch_save, begintemplate, boolean_dialog, break,
+capacitance, cas, celsius, chdir, clamp_resist, cm, connect, continue,
+continue_dialog, coredump_on_error, coreneuron_handle, cos, create,
+debug, default_dll_loaded_, define_shape, delete, delete_section,
+depvar, diam, diam3d, diam_changed, dik_dv_, dina_dv_, disconnect,
+distance, doEvents, doNotify, double, dt, e_extracellular, e_fastpas,
+e_pas, ek, el_hh, else, ena, endtemplate, eps_IntFire4, eqinit, eqn,
+erf, erfc, execerror, execute, execute1, exp, external, extracellular,
+fadvance, fastpas, fclamp, fclampi, fclampv, fcurrent, finitialize,
+fit_praxis, float_epsilon, fmatrix, for, forall, forsec, fprint,
+frecord_init, fscan, fstim, fstimi, fsyn, fsyng, fsyni, func,
+g_fastpas, g_pas, getSpineArea, getcwd, getstr, ghk, gk_hh, gkbar_hh,
+gl_hh, gna_hh, gnabar_hh, graph, graphmode, h_hh, help, hh, hinf_hh,
+hname, hoc_ac_, hoc_cross_x_, hoc_cross_y_, hoc_obj_, hoc_pointer_,
+hoc_stdout, hocobjptr, htau_hh, i_cap, i_membrane, i_membrane_, i_pas,
+ib_IntFire4, if, ifsec, ik, il_hh, ina, initnrn, insert,
+install_vector_fitness, int, ion_charge, ion_register, ion_style,
+ismembrane, issection, iterator, iterator_statement, ivoc_style,
+k_ion, keep_nseg_parm, ki, ki0_k_ion, ko, ko0_k_ion, libpython_path,
+load_file, load_func, load_proc, load_template, local, localobj, log,
+log10, lw, m_hh, machine_name, make_mechanism, make_pointprocess,
+mcell_ran4, mcell_ran4_init, minf_hh, morphology, mtau_hh, n3d, n_hh,
+na_ion, nai, nai0_na_ion, name_declared, nao, nao0_na_ion, nernst,
+neuronhome, new, ninf_hh, nlayer_extracellular, nrn_feenableexcept,
+nrn_get_config_key, nrn_get_config_val, nrn_load_dll, nrn_mallinfo,
+nrn_netrec_state_adjust, nrn_num_config_keys, nrn_shape_changed_,
+nrn_sparse_partrans, nrnallpointmenu, nrnallsectionmenu,
+nrnglobalmechmenu, nrniv_bind_thread, nrnmechmenu, nrnmpi_init,
+nrnpointmenu, nrnpython, nrnsecmenu, nrnunit_use_legacy, nrnversion,
+nseg, ntau_hh, numarg, obfunc, object_id, object_pop, object_push,
+object_pushed, objectvar, objref, parent_connection, parent_section,
+pas, plot, plotx, ploty, plt, pop_section, print,
+print_local_memory_usage, print_session, printf, prmat, proc, prstim,
+psection, pt3dadd, pt3dchange, pt3dclear, pt3dconst, pt3dinsert,
+pt3dremove, pt3dstyle, public, push_section, pval_praxis, pwman_place,
+quit, rallbranch, rates_hh, read, ref, regraph, retrieveaudit, return,
+ri, ropen, same, sav_g, sav_rhs, save_session, saveaudit, secname,
+secondorder, section_exists, section_orientation, section_owner,
+sectionname, setSpineArea, setcolor, setdata_feature, setdata_hh,
+setdata_pas, setpointer, show_errmess_always, show_winio, sin, solve,
+spine3d, sprint, sqrt, sred, sscanf, startsw, stop, stop_praxis,
+stoprun, stopsw, strcmp, strdef, string_dialog, symbols, system, t,
+tanh, taueps_IntFire4, this_node, this_section, topology, uninsert,
+units, unix_mac_pc, use_exp_pow_precision, use_mcell_ran4,
+usetable_hh, v, variable_domain, vext, vtrap_hh, while, wopen, x3d,
+xbutton, xc, xcheckbox, xfixedvalue, xg, xlabel, xmenu, xopen,
+xopen_broadcast_, xpanel, xpvalue, xradiobutton, xraxial, xred,
+xslider, xstatebutton, xvalue, xvarlabel, y3d, z3d
+(The ‘, ‘.join(…) tells Python to build a string out of the list returned by dir where the items are separated from each other with a comma and a space. The textwrap.fill(…) tells Python to split long lines into multiple lines, by default a maximum of 70 characters long.)
+Aside 4: Getting more help
+
+In addition to probing objects with dir(), help from docstrings is available using help().
+For example, from dir(soma) above, we know that there is a connect method available. Let’s inquire about that:
+[14]:
+help
+(
+soma
+.
+connect
+)
+Help on built-in function connect:
+
+connect(...) method of nrn.Section instance
+    childSection.connect(parentSection, [parentX], [childEnd]) or
+    childSection.connect(parentSegment, [childEnd])
+When running interactively in Jupyter, the same information is available in a window that can be popped out by prefacing the method/function/etc with a question mark; e.g.
+[15]:
+?
+soma.connect
+Biophysical mechanisms
+
+NEURON comes with a few built in biophysical mechanisms that can be added to a model:
+pas
+Passive (“leak”) channel.
+extracellular
+For simulating effects of nonzero extracellular potential, as may happen with leaky patch clamps, or detailed propertes of the myelin sheath.
+hh
+Hodgkin-Huxley sodium, potassium, and leakage channels.
+Thousands of additional mechanisms (for A-currents, etc) are available as MOD files as part of published model codes on ModelDB.
+Step 4: Insert ion channels
+
+A section’s
+insert
+method is used to insert density mechanisms (i.e. anything where we don’t want to specify every single instance separately). Let’s insert Hodgkin-Huxley channels into the
+soma
+’s membrane. We do this by passing
+n.hh
+as the mechanism type:
+[16]:
+soma
+.
+insert
+(
+n
+.
+hh
+)
+[16]:
+soma
+The section is returned so that multiple insertions can be chained together if desired.
+We note that Hodgkin-Huxley channel kinetics are based on the squid giant axon. If that’s not your model organism, then for your actual modeling projects, you’ll want to use other kinetics, either by downloading them from online resources like ModelDB or by writing them yourself in NMODL or NeuroML.
+Aside 5: Sections and segments
+
+A NEURON Section is considered a piece of cable. Depending on the resolution desired, it may be necessary to divide the cable into a number of segments where voltage varies linearly between centers of adjacent segments. The number of segments within a section is given by the variable,
+nseg
+. The total ionic current across the segment membrane is approximately the area of the segment multiplied by the ionic current density at the center of the segment. To access a part of the section, specify
+a value between 0 and 1, where 0 is typically the end closest to the soma and 1 is the distal end. Because nseg divides the cable into equal-length parts, it should be an odd number so that to address the middle of the cable, (0.5), gives the middle segment.
+To summarize, we access sections by their name and segments by some location on the section.
+Section:
+section
+Segment:
+section(loc)
+Using the Python
+type
+function can tell us what a variable is:
+[17]:
+print
+(
+f
+"type(soma) =
+{
+type
+(
+soma
+)
+}
+"
+)
+print
+(
+f
+"type(soma(0.5)) =
+{
+type
+(
+soma
+(
+0.5
+))
+}
+"
+)
+type(soma) = <class 'nrn.Section'>
+type(soma(0.5)) = <class 'nrn.Segment'>
+Aside 6: Accessing segment variables
+
+Segment variables follow the idiom:
+section(loc).var
+And for mechanisms on the segment:
+section(loc).mech.var
+or
+section(loc).var_mech
+The first form is preferred.
+[18]:
+mech
+=
+soma
+(
+0.5
+)
+.
+hh
+print
+(
+dir
+(
+mech
+))
+['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__iter__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'el', 'gk', 'gkbar', 'gl', 'gna', 'gnabar', 'h', 'il', 'is_ion', 'm', 'n', 'name', 'rates', 'segment', 'vtrap']
+[19]:
+print
+(
+mech
+.
+gkbar
+)
+print
+(
+soma
+(
+0.5
+)
+.
+hh
+.
+gkbar
+)
+0.036
+0.036
+Step 5: Insert a stimulus
+
+Let’s insert a current clamp (an IClamp object) into the center of the soma to induce some membrane dynamics.
+[20]:
+iclamp
+=
+n
+.
+IClamp
+(
+soma
+(
+0.5
+))
+An IClamp is a Point Process. Point processes are point sources of current. When making a new PointProcess, you pass the segment to which it will bind.
+Again, with the dir function, we can validate that iclamp is an object and contains some useful parameters. Let’s look at some of those parameters. We use a list comprehension to ignore those elements of the dir that start with double underscores (and are thus Python magic methods and not functions/variables intended to be used directly).
+[21]:
+print
+([
+item
+for
+item
+in
+dir
+(
+iclamp
+)
+if
+not
+item
+.
+startswith
+(
+"__"
+)])
+['amp', 'baseattr', 'delay', 'dur', 'get_loc', 'get_segment', 'has_loc', 'hname', 'hocobjptr', 'i', 'loc', 'same']
+In particular, we notice three key properties of a current clamp: amp – the amplitude (in nA), delay – the time the current clamp switches on (in ms), and dur – how long (in ms) the current clamp stays on. Let’s set these values:
+[22]:
+iclamp
+.
+delay
+=
+2
+iclamp
+.
+dur
+=
+0.1
+iclamp
+.
+amp
+=
+0.9
+Let’s use psection to get a representation of the soma model:
+[23]:
+soma
+.
+psection
+()
+[23]:
+{'point_processes': {'IClamp': {IClamp[0]}},
+ 'density_mechs': {'hh': {'gnabar': [0.12],
+   'gkbar': [0.036],
+   'gl': [0.0003],
+   'el': [-54.3],
+   'gna': [0.0],
+   'gk': [0.0],
+   'il': [0.0],
+   'm': [0.0],
+   'h': [0.0],
+   'n': [0.0]}},
+ 'ions': {'na': {'ena': [50.0],
+   'nai': [10.0],
+   'nao': [140.0],
+   'ina': [0.0],
+   'dina_dv_': [0.0]},
+  'k': {'ek': [-77.0],
+   'ki': [54.4],
+   'ko': [2.5],
+   'ik': [0.0],
+   'dik_dv_': [0.0]}},
+ 'morphology': {'L': 20.0,
+  'diam': [20.0],
+  'pts3d': [],
+  'parent': None,
+  'trueparent': None},
+ 'nseg': 1,
+ 'Ra': 35.4,
+ 'cm': [1.0],
+ 'regions': set(),
+ 'species': set(),
+ 'name': 'soma',
+ 'hoc_internal_name': '__nrnsec_0x60e265158e60',
+ 'cell': None}
+Step 6: Set up recording variables
+
+The cell should be configured to run a simulation. However, we need to indicate which variables we wish to record; these will be stored in a NEURON Vector (n.Vector object). For now, we will record the membrane potential, which is soma(0.5).v and the corresponding time points (n.t). References to variables are available by preceding the last part of the variable name with a
+_ref_
+[24]:
+v
+=
+n
+.
+Vector
+()
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_v
+)
+# Membrane potential vector
+t
+=
+n
+.
+Vector
+()
+.
+record
+(
+n
+.
+_ref_t
+)
+# Time stamp vector
+Step 7: Run the simulation
+
+By default, the NEURON h module provides the low level fadvance function for advancing one time step. For higher-level simulation control specification, we load NEURON’s stdrun library:
+[25]:
+n
+.
+load_file
+(
+"stdrun.hoc"
+)
+[25]:
+1.0
+We can then initialize our simulation such that our cell has a resting membrane potential of -65 mV:
+[26]:
+n
+.
+finitialize
+(
+-
+65
+*
+mV
+)
+[26]:
+1.0
+And now continue the simulation from the current time (0) until 40 ms:
+[27]:
+n
+.
+continuerun
+(
+40
+*
+ms
+)
+[27]:
+0.0
+(For those who are interested: we initialized to a resting membrane potential of -65 mV because that’s the default reversal potential for the hh channels, the only channel (set) inserted in this model.)
+(Strictly speaking, we didn’t need to specify the units here – recall they were defined above in the from neuron.units import ms, mV – as they are the defaults assumed by NEURON, but it is good practice to be explicitly clear.)
+Step 8: Plot the results
+
+Using bokeh
+
+When working in Jupyter with an active internet connection, it is often convenient to use the bokeh module for plotting, as it provides interactive graphs that can be panned, zoomed, and saved from the Jupyter notebook.
+Let’s load bokeh and tell it to output to the Jupyter notebook:
+[28]:
+from
+bokeh.io
+import
+output_notebook
+import
+bokeh.plotting
+as
+plt
+output_notebook
+()
+Loading BokehJS ...
+Now we plot membrane potential vs time.
+[29]:
+f
+=
+plt
+.
+figure
+(
+x_axis_label
+=
+"t (ms)"
+,
+y_axis_label
+=
+"v (mV)"
+)
+f
+.
+line
+(
+t
+,
+v
+,
+line_width
+=
+2
+)
+plt
+.
+show
+(
+f
+)
+Using matplotlib
+
+matplotlib is a mature non-Javascript based graphics library. While it does offer an interactive Jupyter mode, this interactivity blocks subsequent Python execution until interactive-mode is cancelled.
+In Jupyter, to ensure matplotlib graphs appear inline, use:
+[30]:
+%
+matplotlib
+inline
+(When not using Jupyter, skip the above step – it would be a syntax error in pure Python. Your graphs will appear in separate windows instead.)
+As with bokeh, we must import the matplotlib module before using it. In particular, we will load the pyplot submodule and give it the shorter name plt:
+[31]:
+import
+matplotlib.pyplot
+as
+plt
+The matplotlib equivalent to the above bokeh example is then:
+[32]:
+plt
+.
+figure
+()
+plt
+.
+plot
+(
+t
+,
+v
+)
+plt
+.
+xlabel
+(
+"t (ms)"
+)
+plt
+.
+ylabel
+(
+"v (mV)"
+)
+plt
+.
+show
+()
+Step 9: Saving and loading results
+
+CSV
+
+The csv (comma separated variables) file format is widely used for data interchange, and can be used to transfer data to MATLAB, Excel, etc without writing any special conversion code.
+(Many Python distributions provide the pandas module which can do the same using a slightly simpler interface, but the code below works in all versions of Python… an example of reading CSV using pandas is shown below.)
+Python provides the csv module to simplify reading and writing csv files. We load it via:
+[33]:
+import
+csv
+Writing
+[34]:
+with
+open
+(
+"data.csv"
+,
+"w"
+)
+as
+f
+:
+csv
+.
+writer
+(
+f
+)
+.
+writerows
+(
+zip
+(
+t
+,
+v
+))
+You should now have a data.csv file. Try loading it in your favorite spreadsheet.
+To write additional variables (as columns) to the CSV file, just add them inside the zip; e.g. zip(t, v1, v2, ca1).
+Reading
+[35]:
+with
+open
+(
+"data.csv"
+)
+as
+f
+:
+reader
+=
+csv
+.
+reader
+(
+f
+)
+tnew
+,
+vnew
+=
+zip
+(
+*
+[[
+float
+(
+val
+)
+for
+val
+in
+row
+]
+for
+row
+in
+reader
+if
+row
+])
+The argument to the zip is a nested list comprehension; the zip and the asterisk together effectively transpose the data turning it from a list of (t, v) pairs into a list of t values and a list of v values. For loading more variables, the right hand side of the last line is unchanged; all that changes is that the variables need to be listed on the left; e.g. tnew, vnew, canew = zip(…)
+We can plot our newly loaded data (here with matplotlib) to see that it is the same as before:
+[36]:
+plt
+.
+figure
+()
+plt
+.
+plot
+(
+tnew
+,
+vnew
+)
+plt
+.
+xlabel
+(
+"t (ms)"
+)
+plt
+.
+ylabel
+(
+"v (mV)"
+)
+plt
+.
+show
+()
+Reading and plotting using plotnine and pandas:
+The modules plotnine and pandas are key components of the Python data science ecosystem. We can use them to work with our NEURON data, but they may have to be installed separately.
+First, we’ll load the modules. It is common to use shortened names for the modules, but this is not necessary:
+[37]:
+import
+plotnine
+as
+p9
+import
+pandas
+as
+pd
+We can load the data:
+[38]:
+data
+=
+pd
+.
+read_csv
+(
+"data.csv"
+,
+header
+=
+None
+,
+names
+=
+[
+"t"
+,
+"v"
+])
+(If the CSV file had a header row identifying the columns, then pd.read_csv would have handled the names automatically and we would not have had to specify the last two arguments above.)
+And now plot with plotnine’s version of ggplot. This function provides an implementation of Wilkinson’s Grammar of Graphics; as such, the interface is essentially identical to the R function of the same name.
+[39]:
+g
+=
+(
+p9
+.
+ggplot
+(
+data
+,
+p9
+.
+aes
+(
+x
+=
+"t"
+,
+y
+=
+"v"
+))
++
+p9
+.
+geom_path
+())
+.
+draw
+()
+JSON
+
+JSON is used for structured data interchange. It is a newer but widely used format and libraries for reading and writing JSON exist for most programming languages.
+Python provides the json module to simplify reading and writing JSON files. We load it via:
+[40]:
+import
+json
+Writing
+[41]:
+with
+open
+(
+"data.json"
+,
+"w"
+)
+as
+f
+:
+json
+.
+dump
+({
+"t"
+:
+list
+(
+t
+),
+"v"
+:
+list
+(
+v
+)},
+f
+,
+indent
+=
+4
+)
+Here we built a dictionary with keys t and v, and stored their values as a list. Since JSON is a language-independent format, it does not have a concept of NEURON Vectors, which is why we had to create a list copy of them before saving. The indent=4 argument is optional, but indents the output to make it more human-readable (at the cost of a larger file size).
+Reading
+[42]:
+with
+open
+(
+"data.json"
+)
+as
+f
+:
+data
+=
+json
+.
+load
+(
+f
+)
+tnew
+=
+data
+[
+"t"
+]
+vnew
+=
+data
+[
+"v"
+]
+As for csv, we plot the newly loaded data to show that it is the same as the original:
+[43]:
+plt
+.
+figure
+()
+plt
+.
+plot
+(
+tnew
+,
+vnew
+)
+plt
+.
+xlabel
+(
+"t (ms)"
+)
+plt
+.
+ylabel
+(
+"v (mV)"
+)
+plt
+.
+show
+()
+Pickles
+
+Pickles are a Python-specific data exchange format.
+Python provides the pickle module to read and write pickled files. We load it via:
+[44]:
+import
+pickle
+Writing
+[45]:
+with
+open
+(
+"data.p"
+,
+"wb"
+)
+as
+f
+:
+pickle
+.
+dump
+({
+"t"
+:
+t
+,
+"v"
+:
+v
+},
+f
+)
+This is slightly cleaner than the JSON solution above because it is Python specific and therefore able to explicitly encode NEURON Vector objects.
+Reading
+[46]:
+with
+open
+(
+"data.p"
+,
+"rb"
+)
+as
+f
+:
+data
+=
+pickle
+.
+load
+(
+f
+)
+tnewp
+=
+data
+[
+"t"
+]
+vnewp
+=
+data
+[
+"v"
+]
+Pickles in Python 3 are by default binary files, so we have to specify write and read flags of wb and rb respectively. We use a different variable name here than before simply to indicate that what is loaded in has type
+[47]:
+type
+(
+tnewp
+)
+[47]:
+hoc.Vector
+and in particular is a NEURON Vector:
+[48]:
+tnewp
+.
+hname
+()
+[48]:
+'Vector[2]'
+Unlike the other solutions provided, which construct regular Python lists:
+[49]:
+type
+(
+tnew
+)
+[49]:
+list
+This is a minor distinction though, as we’ve already seen list(vec) copies a Vector vec into a new list. Using
+n.Vector(old_list)
+makes a NEURON Vector that is a copy of
+old_list
+.
+As before, plotting suggests that we have successfully loaded in the data:
+[50]:
+plt
+.
+figure
+()
+plt
+.
+plot
+(
+tnewp
+,
+vnewp
+)
+plt
+.
+xlabel
+(
+"t (ms)"
+)
+plt
+.
+ylabel
+(
+"v (mV)"
+)
+plt
+.
+show
+()

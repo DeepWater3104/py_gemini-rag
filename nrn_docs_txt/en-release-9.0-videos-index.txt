@@ -1,0 +1,45 @@
+Source Path: nrn_docs_html/en/release-9.0/videos/index.html
+
+Training videos
+
+We have a
+YouTube channel
+with NEURON videos.
+NEURON 2021 Online Course
+Basic Concepts and GUI
+Branched cells
+Adding ion channels
+Python scripting
+Networks and numerical methods
+ModelDB exercises 2021-07-27
+Scaling, spines, and reading HOC 2021-07-29
+Building GUI interfaces, Initialization, and Circuits 2021-08-03
+NetPyNE 2021 Online Course
+Course introduction
+Single neuron theory I
+General tech basics
+NEURON basics
+Single neuron theory II
+NEURON RxD
+Network and synapse theory
+NetPyNE GUI
+NetPyNE analysis and plotting
+NetPyNE cell imports
+Building data driven multiscale models
+Parameter exploration and optimization
+NetPyNE and RxD
+NetPyNE hands on batches
+NetPyNE virtual environments on mac and linux
+CNS 2021 Online Tutorial
+INCF/CNS 2022 Online Tutorial
+Course Welcome
+NEURON concepts
+Using NEURON’s GUI to build and simulate cells
+Using NMODL to add new biophysical mechanisms
+Using resources from ModelDB and NeuroMorpho.Org
+Networks: spike-triggered synaptic transmission, events, and artificial cells
+Numerical Methods: accuracy, stability, speed
+Scripting NEURON
+Numerical methods: adaptive integration
+Reaction-diffusion simulations
+Other resources and wrap-up

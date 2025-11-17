@@ -1,0 +1,210 @@
+Source Path: nrn_docs_html/en/release-9.0/courses/the_cellbuilder.html
+
+Using the CellBuilder
+
+Physical System
+
+Conceptual Model
+
+Ball-and-stick approximation to cell
+
+Simulation
+
+Computational implementation of the conceptual model
+
+This will be constructed with the CellBuilder, a graphical tool for building and managing models of individual cells. With this and other GUI tools, you will
+set up a “virtual experimental preparation” (the model cell itself).
+set up a “virtual lab rig”.
+simulation control: RunControl
+Instrumentation:
+Stimulator – PointProcessManager configured as IClamp
+Graphs – v vs. t, v vs. distance (“space plot”)
+You will also learn a simple but effective strategy for modular oranization of your programs.
+separate the specification of the representation of the biological system (anatomy, biophysics, connections between cells in a network … ) from other items, such as the specification of instrumentation (voltage or current clamps, graphs etc.) and controls (e.g. RunControl panel).
+Use a sort program that pulls all of the pieces together.
+Modular organization makes it easier to
+develop and debug models
+reuse the same model cell in many different kinds of simulation experiments
+perform the same kind of experiment on many different model cells.
+Getting started
+
+make and cd to a new folder for this exercise
+Start Pyhon, and at the >>> prompt enter the command
+from
+neuron
+import
+n
+,
+gui
+Making the representation of the biological properties
+
+Use the CellBuilder to make a simple ball and stick model that has these properties:
+Section
+Anatomy
+Compartmentalization
+Biophysics
+soma
+length 20 microns
+diameter 20 microns
+nseg = 1
+Ra
+=
+160
+ohm cm,
+Cm
+=
+1
+µf / cm
+2
+Hodgkin-Huxley channels
+dend
+length 1000 µm
+diameter 5 µm
+nseg = 1
+Ra
+=
+160
+ohm cm,
+Cm
+=
+1
+µf / cm
+2
+passive with Rm = 10,000 ohm cm
+2
+Hints:
+To start a CellBuilder, click on
+NEURONMainMenu ‣ Build ‣ CellBuilder
+CellBuilder overview and hints.
+Helpful items in the
+on-line Programmer’s Reference
+:
+diam
+•
+L
+•
+Section.nseg
+•
+hh
+•
+pas
+Using the representation of the biological properties
+
+At this point you should have:
+entered the specification of the ball and stick model in the CellBuilder
+saved the CellBuilder, with its Continuous Create button checked, to a session file called ballstk.ses and verified what you saved
+exited NEURON
+In the
+course ‣ cellbuilder directory
+, make an init.py file with the contents
+from
+neuron
+import
+n
+,
+gui
+#load your model specification
+n
+.
+load_file
+(
+'ballstick.ses'
+)
+#your user interface
+n
+.
+load_file
+(
+"rig.ses"
+)
+Also make a rig.ses file that contains the single command
+print
+"ready!"
+Actually you could put any innocuous statements you like into the rig.ses file, because you’ll eventually overwrite this file with a custom user interface that you construct.
+Start Python with the init.py argument
+python
+init
+.
+py
+Oops! Runs and almost immediately exits!
+Try again, but this time execute the command
+python
+-
+i
+init
+.
+py
+The -i switch makes Python enter interactive mode instead of existing immediately after execution of init.py is complete.
+Exercises
+
+Establish that the representation in the computer correspeonds to the conceptual model.
+Connectivity? (
+n.topology()
+)
+Are the properties what you expect? Try
+from
+pprint
+import
+pprint
+#prettier printing (optional; could use print)
+pprint
+(
+n
+.
+soma
+.
+psection
+())
+pprint
+(
+n
+.
+dend
+.
+psection
+())
+Comments:
+The CellBuilder works by executing HOC code, so the section names that you specify in a CellBuilder become the HOC names of those sections. But just like with HOC functions, simply stick the h. prefix onto the front of the name of a section created by HOC, and you have its Python name.
+Use the NEURONMainMenu toolbar to construct an interface that allows you to inject a stimulus current at the soma and observe a plot of somatic Vm vs. time.
+When a current stimulus is injected into the soma, does it flow into the dendrite properly? Hint: examine a space plot of membrane potential.
+Saving and Retrieving the Experimental Rig
+
+You now have a complete setup for doing simulation experiments. The CellBuilder, which specifies your “experimental preparation,” is safe because you saved it to the session file ballstk.ses. However, the GUI that constitutes your nicely-configured “lab rig” (the RunControl, PointProcessManager, graph of v vs. t, and space plot windows) will be lost if you exit NEURON prematurely or if the computer crashes.
+To make it easy to reconstitute the virtual lab rig, use the Print & File Window Manager (PFWM) to save these windows to a session file.
+Here’s how
+to bring up the PFWM and use it to select the windows for everything but the CellBuilder, then save these windows to a session file called rig.ses. This will allow you to immediately begin with the current GUI.
+Test rig.ses by using
+NEURONMainMenu ‣ File ‣ load session
+to retrieve it. Copies of the “lab rig” windows should overlay the originals. If so, exit NEURON and then restart it with the init.hoc argument. It should start up with the windows that you saved.
+More Exercises
+
+How does the number of segments in the dendrite affect your simulation?
+Turn on Keep Lines in the graph of Vm vs. t so you will be able to compare runs with different nseg.
+Then at the >>> prompt execute the command
+n
+.
+dend
+.
+nseg
+*=
+3
+and run a new simulation. Repeat until you no longer see a significant difference between consecutive runs.
+Finally, use the command
+print
+(
+n
+.
+dend
+.
+nseg
+)
+to see how many dendritic segments were required.
+Is the time step (
+n.dt
+in Python) short enough?
+Here’s something you should try on your own, perhaps after class tonight:
+using the CellBuilder to manage models “on the fly.”
+Footnotes and Asides
+
+The CellBuilder can be used to make your own “digital stem cells.” If you have a model cell that you would like to return to later, save the CellBuilder to a session file. To bring the model back, just retrieve the session file. This is a good way to create an “evolutionary sequence” of models that differ only in certain key points.
+The CellBuilder can also be used to manage models based on detailed morphometric reconstructions. This is covered in a later exercise.

@@ -1,0 +1,36 @@
+Source Path: nrn_docs_html/en/release-9.0/rxd-tutorials/index.html
+
+Python RXD tutorials
+
+Reaction-diffusion
+Reaction-diffusion introduction
+Overview
+Math
+Reading the data
+Examples
+Initialization Strategies
+Option 1: NEURON and NMODL defaults
+Option 2: Uniform initial concentration
+Option 3: Initializing to a function of position
+Option 4: to steady state
+Varying initial concentrations and parameters
+Radial diffusion
+Reaction-diffusion thresholds
+Extracellular reaction-diffusion tutorial
+Download files
+Getting started
+Restricting reactions to a part of a region
+Overview
+Setup NEURON library and imports
+Setup the model
+Morphology and discretization
+The rxd.Region
+The rxd.Species
+The rxd.Reaction and its localization
+Run and visualize the simulation
+Examples
+Example: Degradable buffer
+Example: Circadian rhythm
+Example: Calcium waves
+Example: combining MOD file ion channels with rxd
+IP3 demo

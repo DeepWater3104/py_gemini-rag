@@ -1,0 +1,92 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/index.html
+
+Guides
+
+What is NEURON
+A flexible and powerful simulator of neurons and networks
+Advantages over general-purpose simulators
+Separates biology from purely computational concerns
+Convenient user interface
+User-extendable library of biophysical mechanisms
+Enhancements for modeling networks
+Customizable initialization and simulation flow control
+Large user base
+Development, support, and documentation
+Availability and system requirements
+References
+How to get started with NEURON
+Installation
+Forum
+Basic NEURON Usage
+Using NMODL to add new mechanisms to NEURON
+Biology Modeling FAQ
+How do I work with neuron morphologies?
+How do I simulate a current clamp pulse experiment?
+How do I simulate a current clamp with non-pulse behavior?
+How do I make cytosolic concentrations change in response to ion channel activity?
+How do I make cytosolic concentrations diffuse and respond to ion channel activity?
+Units used in NEURON
+Scripting, the GUI, and the interpreter
+Units within NMODL files
+Using Session Files for Saving and Retrieving Windows
+What is a session?
+How (and when) to save all windows to a ses file, and how to retrieve them
+How (and why) to save selected windows
+The Window Group Manager
+What’s in a ses file
+What can go wrong, and how to fix it
+Using the Cell Builder GUI
+Creating a stylized (“stick-figure”) model cell
+Managing a model cell with complex anatomy
+Specifying parameterized variation of biophysical properties
+Using the Import3D GUI
+Overview of the Import3D tool
+Reading a morphometric data file and converting it to a NEURON model
+Exploring morphometric data and fixing problems
+Network Builder tutorials
+Using the Network Builder
+Using NEURON’s Optimization Tools
+Why is it called “Multiple Run Fitter,” and what does it really do?
+Other optimization tools that work with NEURON
+ModelView: Compact display of parameters for NEURON models
+Randomness in NEURON models
+How to generate independent random spike streams
+Adapting MOD files for C++ with NEURON >= 9.0
+Legacy patterns that are invalid C++
+Legacy patterns that are considered deprecated
+Legacy random number generators and API
+Frequently asked questions (FAQ)
+Now that I’ve installed NEURON, how do I run it?
+What’s the best way to learn how to use NEURON?
+How do I create a NEURON model?
+Help! I’m having a hard time implementing models!
+Why can’t NEURON read the text file (or
+hoc
+file) that I created?
+How do I print a hard copy of a NEURON window?
+How do I plot something other than membrane potential?
+How do I save and edit figures?
+I’ve used the NEURON Main Menu to construct and manage models. How can I save what I have done?
+What is a ses (session) file? Can I edit it?
+How do I use NEURON’s tools for electrotonic analysis?
+Why should I use an odd value for nseg?
+What’s a good stretegy for specifying nseg?
+How do I change the background color used in NEURON’s shape plots and other graphs?
+How do I change the color scale used in shape plots?
+I see an error message that says … procedure too big in ./foo.hoc …
+Where can I find examples of mod files?
+How do I compile mod files?
+I can’t get mod files to compile.
+I installed a new version of NEURON, and now I see error messages like this: ‘mecanisms fooba needs to be re-translated. its version 5.2 “c” code is incompatible with this neuron version’.
+Is there a list of functions that are built into NMODL?
+Is there a list of functions that are built into hoc?
+What units does NEURON use for current, concentration, etc.?
+When I type a new value into a numeric field, it doesn’t seem to have any effect.
+What is the difference between SEClamp and VClamp, and which should I use?
+SEClamp and IClamp just deliver rectangular step waveforms. How can I make them produce an arbitrary waveform, e.g. something that I calculated or recorded from a real cell?
+I just want a current clamp that will deliver a sequence of current pulses at regular intervals. Vector play seems like overkill for this.
+I want a current clamp that will generate a pulse when I send it an event, or that I can use to produce pulses at precalculated times.
+I have a set of recorded or calculated spike times. How can I use these to drive a postsynaptic mechanism?
+How can I read data from a binary PClamp file?
+How do I exit NEURON? I’m not using the GUI, and when I enter ^D at the oc> prompt it doesn’t do anything?
+Is there a list of functions that are built into NEURON?

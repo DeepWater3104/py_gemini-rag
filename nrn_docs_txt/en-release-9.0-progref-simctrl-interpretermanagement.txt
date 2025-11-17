@@ -1,0 +1,57 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/simctrl/interpretermanagement.html
+
+quit
+·
+retrieveaudit
+·
+saveaudit
+Interpreter Management
+
+saveaudit
+(
+)
+
+Python
+Not completely implemented at this time. Saves all commands executed
+by the interpreter.
+HOC
+Not completely implemented at this time. Saves all commands executed
+by the interpreter.
+MATLAB
+Not supported. Instead: use MATLAB’s
+diary
+function to save the command history,
+or use MATLAB’s
+history
+function to view it.
+retrieveaudit
+(
+)
+
+Python
+Not completely implemented at this time. See
+saveaudit()
+.
+HOC
+Not completely implemented at this time. See
+saveaudit()
+.
+MATLAB
+Not completely implemented at this time. See
+saveaudit()
+.
+quit
+(
+)
+
+Python
+Exits the program. Can be used as the action of a button. If edit buffers
+are open you will be asked if you wish to save them before the final exit.
+HOC
+Exits the program. Can be used as the action of a button. If edit buffers
+are open you will be asked if you wish to save them before the final exit.
+MATLAB
+Syntax:
+n.quit()
+Description:
+Exits the program and MATLAB.

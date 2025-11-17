@@ -1,0 +1,782 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/modelspec/programmatic/rxdmath.html
+
+rxdmath.acos
+·
+rxdmath.acosh
+·
+rxdmath.asin
+·
+rxdmath.asinh
+·
+rxdmath.atan
+·
+rxdmath.atan2
+·
+rxdmath.ceil
+·
+rxdmath.copysign
+·
+rxdmath.cos
+·
+rxdmath.cosh
+·
+rxdmath.degrees
+·
+rxdmath.erf
+·
+rxdmath.erfc
+·
+rxdmath.exp
+·
+rxdmath.expm1
+·
+rxdmath.fabs
+·
+rxdmath.factorial
+·
+rxdmath.floor
+·
+rxdmath.fmod
+·
+rxdmath.gamma
+·
+rxdmath.lgamma
+·
+rxdmath.log
+·
+rxdmath.log10
+·
+rxdmath.log1p
+·
+rxdmath.pow
+·
+rxdmath.radians
+·
+rxdmath.sin
+·
+rxdmath.sinh
+·
+rxdmath.sqrt
+·
+rxdmath.tan
+·
+rxdmath.tanh
+·
+rxdmath.trunc
+·
+rxdmath.vtrap
+Mathematical functions for rate expressions
+
+NEURON’s
+neuron.rxd.rxdmath
+module provides a number of mathematical functions that
+can be used to define reaction rates. These generally mirror the functions available
+through Python’s
+math
+module but support
+rxd.Species
+objects.
+To use any of these, first do:
+Python
+from
+neuron.rxd
+import
+rxdmath
+HOC
+objref pyobj, rxdmath
+{
+    nrnpython("from neuron.rxd import rxdmath")
+    pyobj = new PythonObject()
+    rxdmath = pyobj.rxdmath
+}
+Example:
+degradation_switch
+=
+(
+1
++
+rxdmath
+.
+tanh
+((
+ip3
+-
+threshold
+)
+*
+2
+*
+m
+))
+/
+2
+degradation
+=
+rxd
+.
+Rate
+(
+ip3
+,
+-
+k
+*
+ip3
+*
+degradation_switch
+)
+For a full runnable example, see
+this tutorial
+which as here uses the hyperbolic tangent as an approximate on/off switch for the reaction.
+In each of the following,
+x
+and
+y
+(where present) are arithmetic expressions
+comprised of
+rxd.Species
+,
+rxd.State
+,
+rxd.Parameter
+, regular numbers,
+and the functions defined below.
+rxdmath.
+acos
+(
+)
+
+Inverse cosine.
+Syntax:
+result
+=
+rxdmath
+.
+acos
+(
+x
+)
+rxdmath.
+acosh
+(
+)
+
+Inverse hyperbolic cosine.
+Syntax:
+result
+=
+rxdmath
+.
+acosh
+(
+x
+)
+rxdmath.
+asin
+(
+)
+
+Inverse sine.
+Syntax:
+result
+=
+rxdmath
+.
+asin
+(
+x
+)
+rxdmath.
+asinh
+(
+)
+
+Inverse hyperbolic sine.
+Syntax:
+result
+=
+rxdmath
+.
+asinh
+(
+x
+)
+rxdmath.
+atan
+(
+)
+
+Inverse tangent.
+Syntax:
+result
+=
+rxdmath
+.
+atan
+(
+x
+)
+rxdmath.
+atan2
+(
+)
+
+Inverse tangent, returning the correct quadrant given both a
+y
+and an
+x
+.
+(Note:
+y
+is passed in before
+x
+.)
+See
+Wikipedia’s page on atan2
+for more
+information.
+Syntax:
+result
+=
+rxdmath
+.
+atan2
+(
+y
+,
+x
+)
+rxdmath.
+ceil
+(
+)
+
+Ceiling function.
+Syntax:
+result
+=
+rxdmath
+.
+ceil
+(
+x
+)
+rxdmath.
+copysign
+(
+)
+
+Apply the sign (positive or negative) of
+expr_with_sign
+to the value of
+expr_to_get_sign
+.
+Syntax:
+result
+=
+rxdmath
+.
+copysign
+(
+expr_to_get_sign
+,
+expr_with_sign
+)
+The behavior mirrors that of the Python standard library’s
+math.copysign
+which behaves as follows:
+>>>
+math
+.
+copysign
+(
+-
+5
+,
+1.3
+)
+5.0
+>>>
+math
+.
+copysign
+(
+-
+5
+,
+-
+1.3
+)
+-5.0
+>>>
+math
+.
+copysign
+(
+2
+,
+-
+1.3
+)
+-2.0
+>>>
+math
+.
+copysign
+(
+2
+,
+1.3
+)
+2.0
+rxdmath.
+cos
+(
+)
+
+Cosine.
+Syntax:
+result
+=
+rxdmath
+.
+cos
+(
+x
+)
+rxdmath.
+cosh
+(
+)
+
+Hyperbolic cosine.
+Syntax:
+result
+=
+rxdmath
+.
+cosh
+(
+x
+)
+rxdmath.
+degrees
+(
+)
+
+Converts
+x
+from radians to degrees. Equivalent to multiplying by 180 / π.
+Syntax:
+result
+=
+rxdmath
+.
+degrees
+(
+x
+)
+rxdmath.
+erf
+(
+)
+
+The Gauss error function; see
+Wikipedia
+for more.
+Syntax:
+result
+=
+rxdmath
+.
+erf
+(
+x
+)
+rxdmath.
+erfc
+(
+)
+
+The complementary error function.
+In exact math,
+erfc(x)
+=
+1
+-
+erf(x)
+, however using this function provides more
+accurate numerical results when
+erf(x)
+is near 1.
+See the
+Wikipedia entry on the error function
+for more.
+Syntax:
+result
+=
+rxdmath
+.
+erfc
+(
+x
+)
+rxdmath.
+exp
+(
+)
+
+e raised to the power x.
+Syntax:
+result
+=
+rxdmath
+.
+exp
+(
+x
+)
+rxdmath.
+expm1
+(
+)
+
+(e raised to the power x) - 1. More numerically accurate than
+rxdmath.exp(x)
+-
+1
+when
+x
+is near 0.
+Syntax:
+result
+=
+rxdmath
+.
+expm1
+(
+x
+)
+rxdmath.
+fabs
+(
+)
+
+Absolute value.
+Syntax:
+result
+=
+rxdmath
+.
+fabs
+(
+x
+)
+rxdmath.
+factorial
+(
+)
+
+Factorial. Probably not likely to be used in practice as it requires integer values.
+Consider using
+rxdmath.gamma()
+instead, as
+for integers
+x
+,
+rxdmath.factorial(x)
+=
+rxdmath.gamma(x
++
+1)
+.
+Syntax:
+result
+=
+rxdmath
+.
+factorial
+(
+x
+)
+rxdmath.
+floor
+(
+)
+
+Floor function.
+Syntax:
+result
+=
+rxdmath
+.
+floor
+(
+x
+)
+rxdmath.
+fmod
+(
+)
+
+Modulus operator (remainder after division
+x/y
+).
+Syntax:
+result
+=
+rxdmath
+.
+fmod
+(
+x
+,
+y
+)
+rxdmath.
+gamma
+(
+)
+
+Gamma function, an extension of the factorial.
+See
+Wikipedia
+for more.
+Syntax:
+result
+=
+rxdmath
+.
+gamma
+(
+x
+)
+rxdmath.
+lgamma
+(
+)
+
+Equivalent to
+rxdmath.log(rxdmath.fabs(rxdmath.gamma(x)))
+but more numerically accurate.
+Syntax:
+result
+=
+rxdmath
+.
+lgamma
+(
+x
+)
+rxdmath.
+log
+(
+)
+
+Natural logarithm.
+Syntax:
+result
+=
+rxdmath
+.
+log
+(
+x
+)
+rxdmath.
+log10
+(
+)
+
+Logarithm to the base 10.
+Syntax:
+result
+=
+rxdmath
+.
+log10
+(
+x
+)
+rxdmath.
+log1p
+(
+)
+
+Natural logarithm of 1 + x; equivalent to
+rxdmath.log(1
++
+x)
+but more numerically accurate
+when
+x
+is near 0.
+Syntax:
+result
+=
+rxdmath
+.
+log1p
+(
+x
+)
+rxdmath.
+pow
+(
+)
+
+Returns
+x
+raised to the
+y
+.
+Syntax:
+result
+=
+rxdmath
+.
+pow
+(
+x
+,
+y
+)
+rxdmath.
+radians
+(
+)
+
+Converts degrees to radians. Equivalent to multiplying by π / 180.
+Syntax:
+result
+=
+rxdmath
+.
+radians
+(
+x
+)
+rxdmath.
+sin
+(
+)
+
+Sine.
+Syntax:
+result
+=
+rxdmath
+.
+sin
+(
+x
+)
+rxdmath.
+sinh
+(
+)
+
+Hyperbolic sine.
+Syntax:
+result
+=
+rxdmath
+.
+sinh
+(
+x
+)
+rxdmath.
+sqrt
+(
+)
+
+Square root.
+Syntax:
+result
+=
+rxdmath
+.
+sqrt
+(
+x
+)
+rxdmath.
+tan
+(
+)
+
+Tangent.
+Syntax:
+result
+=
+rxdmath
+.
+tan
+(
+x
+)
+rxdmath.
+tanh
+(
+)
+
+Hyperbolic tangent.
+Syntax:
+result
+=
+rxdmath
+.
+tanh
+(
+x
+)
+rxdmath.
+trunc
+(
+)
+
+Rounds to the nearest integer no further from 0.
+i.e. 1.5 rounds down to 1 and -1.5 rounds up to -1.
+Syntax:
+result
+=
+rxdmath
+.
+trunc
+(
+x
+)
+rxdmath.
+vtrap
+(
+)
+
+Returns a continuous approximation of
+x
+/
+(exp(x/y)
+-
+1)
+with the discontinuity
+at
+x/y
+near 0 replaced by the limiting behavior
+via L’Hôpital’s rule. This is useful in avoiding issues
+with certain ion channel models, including Hodgkin-Huxley.
+For an example of this in use, see the
+Hodgkin-Huxley using rxd
+tutorial (as opposed to using
+n.hh
+) .
+Syntax:
+result
+=
+rxdmath
+.
+vtrap
+(
+x
+,
+y
+)

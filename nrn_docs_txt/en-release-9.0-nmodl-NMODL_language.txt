@@ -1,0 +1,880 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/NMODL_language.html
+
+Neuron MODelling Language
+
+Intro about NMODLanguage similar to
+https://nrn.readthedocs.io/en/latest/hoc/modelspec/programmatic/mechanisms/nmodl.html
+,
+https://nrn.readthedocs.io/en/latest/hoc/modelspec/programmatic/mechanisms/nmodl2.html
+Organization:
+Top level code blocks (NEURON, BREAKPOINT, etc)
+Code block specific keywords/operators/variable types
+Other functionality
+Compiling example mod files
+
+[1]:
+%%capture
+--no-display
+!
+nrnivmodl
+mod
+NMODL Code Blocks
+
+DEFINE
+
+INCLUDE
+
+NEURON
+
+SUFFIX
+
+POINT_PROCESS
+
+THREADSAFE
+
+ELECTRODE_CURRENT
+
+Example mod file
+
+Following example showcases the IClamp mechanism. It makes use of the
+ELECTRODE_CURRENT
+and
+IF-ELSE
+statement.
+[2]:
+!
+cat
+../../src/nrnoc/stim.mod
+COMMENT
+Since this is an electrode current, positive values of i depolarize the cell
+and in the presence of the extracellular mechanism there will be a change
+in vext since i is not a transmembrane current but a current injected
+directly to the inside of the cell.
+ENDCOMMENT
+
+NEURON {
+        POINT_PROCESS IClamp
+        RANGE del, dur, amp, i
+        ELECTRODE_CURRENT i
+}
+UNITS {
+        (nA) = (nanoamp)
+}
+
+PARAMETER {
+        del (ms)
+        dur (ms)        <0,1e9>
+        amp (nA)
+}
+ASSIGNED { i (nA) }
+
+INITIAL {
+        i = 0
+}
+
+BREAKPOINT {
+        at_time(del)
+        at_time(del+dur)
+
+        if (t < del + dur && t >= del) {
+                i = amp
+        }else{
+                i = 0
+        }
+}
+Functionality example
+
+[3]:
+!
+cat
+python_scripts/iclamp.py
+from neuron import n
+
+from utils.cell import Cell
+
+
+class hhCellIClamp(Cell):
+    def _create_cell(self):
+        h("""create soma""")
+        n.load_file("stdrun.hoc")
+        n.soma.L = 5.6419
+        n.soma.diam = 5.6419
+        n.soma.insert("hh")
+        ic = n.IClamp(n.soma(0.5))
+        ic.delay = 0.5
+        ic.dur = 0.1
+        ic.amp = 0.3
+
+    def record(self):
+        v = n.Vector()
+        v.record(n.soma(0.5)._ref_v, sec=n.soma)
+        tv = n.Vector()
+        tv.record(n._ref_t, sec=n.soma)
+        nc = n.NetCon(n.soma(0.5)._ref_v, None, sec=n.soma)
+        spikestime = n.Vector()
+        nc.record(spikestime)
+        self.record_vectors["spikes"] = spikestime.to_python()
+
+
+if __name__ == "__main__":
+    hh_IClamp_cell = hhCellIClamp()
+    hh_IClamp_cell.record()
+    hh_IClamp_cell.simulate(1, 0.1)
+    hh_IClamp_cell.output()
+    n.delete_section(sec=n.soma)
+    del hh_IClamp_cell
+NONSPECIFIC_CURRENT
+
+USEION
+
+READ
+
+WRITE
+
+VALENCE
+
+REPRESENTS
+
+Example snippet
+
+NEURON {
+    SUFFIX hh
+    REPRESENTS NCIT:C17145   : sodium channel
+    REPRESENTS NCIT:C17008   : potassium channel
+...
+}
+NMODL Variable Types
+
+Example mod file
+
+Following example showcases all the various NMODL variable types (
+GLOBAL
+,
+RANGE
+,
+POINTER
+,
+BBCOREPOINTER
+,
+EXTERNAL
+,
+PARAMETER
+,
+ASSIGNED
+)
+[4]:
+!
+cat
+mod/variabletypes.mod
+: a test of the various Variable Types
+: (RANGE, GLOBAL, POINTER, BBCOREPOINTER, EXTERNAL, PARAMETER, ASSIGNED)
+
+NEURON {
+        SUFFIX testvars
+        THREADSAFE
+        GLOBAL global_var
+        RANGE range_var, parameter_var
+        POINTER p1
+        BBCOREPOINTER my_data : changed from POINTER
+}
+
+PARAMETER {
+        parameter_var
+        global_var
+}
+
+ASSIGNED {
+        range_var
+        p1
+        my_data
+}
+
+INITIAL {
+        range_var = 42
+}
+
+FUNCTION f1() {
+        if (nrn_pointing(p1)) {
+                f1 = p1
+        }else{
+                f1 = 0
+                printf("p1 does not point anywhere\n")
+        }
+}
+
+: Do something interesting with my_data ...
+VERBATIM
+static void bbcore_write(double* x, int* d, int* x_offset, int* d_offset, _threadargsproto_) {
+  if (x) {
+    double* x_i = x + *x_offset;
+    x_i[0] = ((double*)_p_my_data)[0];
+    x_i[1] = ((double*)_p_my_data)[1];
+  }
+  *x_offset += 2; // reserve 2 doubles on serialization buffer x
+}
+
+static void bbcore_read(double* x, int* d, int* x_offset, int* d_offset, _threadargsproto_) {
+  assert(!_p_my_data);
+  double* x_i = x + *x_offset;
+  // my_data needs to be allocated somehow
+  _p_my_data = (double*)malloc(sizeof(double)*2);
+  ((double*)_p_my_data)[0] = x_i[0];
+  ((double*)_p_my_data)[1] = x_i[1];
+  *x_offset += 2;
+}
+ENDVERBATIM
+UNITS
+
+PARAMETER
+
+ASSIGNED
+
+CONSTANT
+
+NET_RECEIVE
+
+Example mod files
+
+Following example showcases the ExpSyn mechanism. It makes use of the
+NET_RECEIVE
+block and
+WATCH
+and
+DEFINE
+statements.
+[5]:
+!
+cat
+mod/hhwatch.mod
+NEURON {
+  POINT_PROCESS hhwatch
+  NONSPECIFIC_CURRENT i
+  GLOBAL ena, ek, erev, gna, gk, gpas
+  RANGE e, g
+}
+
+UNITS {
+  (mV) = (millivolt)
+  (nA) = (nanoamp)
+  (umho) = (micromho)
+}
+
+PARAMETER {
+  ena = 50 (mV)
+  ek = -80 (mV)
+  erev = -65 (mV)
+  gna = 0.1 (umho)
+  gk = 0.03 (umho)
+  gpas = 0.0001 (umho)
+}
+
+ASSIGNED {
+  v (mV)
+  i (nA)
+  e (mV)
+  g (umho)
+}
+
+DEFINE init 1
+DEFINE rise 2
+DEFINE fall 3
+DEFINE off 4
+
+INITIAL {
+  g = gpas
+  e = erev
+  net_send(0, init)
+}
+
+BREAKPOINT {
+  i = g*(v - e)
+}
+
+NET_RECEIVE(w) {
+  if (flag == init) {
+    WATCH (v > -55) rise
+  }else if (flag == rise) {
+    g = gna
+    e = ena
+    WATCH (v > 10) fall
+  }else if (flag == fall) {
+    g = gk
+    e = ek
+    WATCH (v < -70) off
+  }else if (flag == off) {
+    g = gpas
+    e = erev
+    WATCH (v > -55) rise
+  }
+}
+Functionality example
+
+A functionality example for the above mod file can be found
+here
+.
+Following example showcases the usage of
+NET_RECEIVE
+with
+FOR_NETCONS
+[6]:
+!
+cat
+mod/fornetcon.mod
+: Each NetCon maintains a count of external events.
+: And time of last external event
+: On each internal event all connecting NetCon get the internal event count.
+: And time of last external event
+
+NEURON {
+  POINT_PROCESS ForNetConTest
+  RANGE tbegin
+}
+
+UNITS {
+}
+
+PARAMETER {
+  tbegin = 0 (ms)
+}
+
+INITIAL {
+  net_send(tbegin, 1)
+}
+
+NET_RECEIVE(w, npre, tpre (ms), npost, tpost (ms)) {
+  INITIAL {
+    npre=0  tpre=-1  npost=0  tpost=-1
+  }
+
+  if (flag == 0) { : external (pre) event
+    npre = npre + 1
+    tpre = t
+  }
+
+  if (flag == 1) { : internal (post) event
+    FOR_NETCONS(w, fnpre, ftpre (ms), fnpost, ftpost (ms)) {
+      fnpost = fnpost + 1
+      ftpost = t
+    }
+    net_send(3, 1) : in 3 ms another 1 event
+    net_event(t)
+  }
+}
+Functionality Example
+
+A functionality example for the above mod file can be found
+here
+.
+CONSTRUCTOR
+
+DESTRUCTOR
+
+INITIAL
+
+STATE
+
+BREAKPOINT
+
+SOLVE
+
+METHOD
+
+DERIVATIVE
+
+KINETIC
+
+See description in
+NMODL documentation
+Example mod file
+
+Following example showcases calcium ion accumulation with longitudinal and radial diffusion. Speicifically showcases the use of
+KINETIC
+,
+COMPARTMENT
+and
+LONGITUDINAL_DIFFUSION
+keywords.
+[7]:
+!
+cat
+mod/cadif.mod
+TITLE Calcium ion accumulation with longitudinal and radial diffusion
+
+COMMENT
+PROCEDURE factors_cadifus() sets up the scale factors
+needed to model radial diffusion.
+These scale factors do not have to be recomputed
+when diam or DFree is changed.
+The amount of calcium in an annulus is ca[i]*diam^2*vol[i]
+with ca[0] being the 2nd order correct concentration at the exact edge
+and ca[NANN-1] being the concentration at the exact center.
+Buffer concentration and rates are based on Yamada et al. 1989
+model of bullfrog sympathetic ganglion cell.
+ENDCOMMENT
+
+NEURON {
+        SUFFIX cadifus
+        USEION ca READ cai, ica WRITE cai
+        GLOBAL vol, TotalBuffer
+        RANGE cai0
+        THREADSAFE
+}
+
+DEFINE NANN  4
+
+UNITS {
+        (molar) =       (1/liter)
+        (mM) =  (millimolar)
+        (um) =  (micron)
+        (mA) =  (milliamp)
+        FARADAY =       (faraday)       (10000 coulomb)
+        PI = (pi)       (1)
+}
+
+PARAMETER {
+        DCa = 0.6                       (um2/ms)
+        : to change rate of buffering without disturbing equilibrium
+        : multiply the following two by the same factor
+        k1buf   = 100                   (/mM-ms)
+        k2buf   = 0.1                   (/ms)
+        TotalBuffer = 0.003     (mM)
+        cai0 = 50e-6 (mM)       : Requires explicit use in INITIAL block
+}
+
+ASSIGNED {
+        diam            (um)
+        ica             (mA/cm2)
+        cai             (mM)
+        vol[NANN]       (1)     : gets extra um2 when multiplied by diam^2
+        Kd              (/mM)
+        B0              (mM)
+}
+
+STATE {
+        ca[NANN]                (mM) <1e-6>       : ca[0] is equivalent to cai
+        CaBuffer[NANN]  (mM)
+        Buffer[NANN]    (mM)
+}
+
+BREAKPOINT {
+        SOLVE state METHOD sparse
+}
+
+LOCAL factors_done
+
+INITIAL {
+        MUTEXLOCK
+        if (factors_done == 0) {
+                factors_done = 1
+                factors()
+        }
+        MUTEXUNLOCK
+
+        cai = cai0
+        Kd = k1buf/k2buf
+        B0 = TotalBuffer/(1 + Kd*cai)
+
+        FROM i=0 TO NANN-1 {
+                ca[i] = cai
+                Buffer[i] = B0
+                CaBuffer[i] = TotalBuffer - B0
+        }
+}
+
+COMMENT
+factors() sets up factors needed for radial diffusion
+modeled by NANN concentric compartments.
+The outermost shell is half as thick as the other shells
+so the concentration is spatially second order correct
+at the surface of the cell.
+The radius of the cylindrical core
+equals the thickness of the outermost shell.
+The intervening NANN-2 shells each have thickness = r/(NANN-1)
+(NANN must be >= 2).
+
+ca[0] is at the edge of the cell,
+ca[NANN-1] is at the center of the cell,
+and ca[i] for 0 < i < NANN-1 is
+midway through the thickness of each annulus.
+ENDCOMMENT
+
+LOCAL frat[NANN]
+
+PROCEDURE factors() {
+        LOCAL r, dr2
+        r = 1/2                 :starts at edge (half diam)
+        dr2 = r/(NANN-1)/2      :half thickness of annulus
+        vol[0] = 0
+        frat[0] = 2*r
+        FROM i=0 TO NANN-2 {
+                vol[i] = vol[i] + PI*(r-dr2/2)*2*dr2    :interior half
+                r = r - dr2
+                frat[i+1] = 2*PI*r/(2*dr2)      :exterior edge of annulus
+                                        : divided by distance between centers
+                r = r - dr2
+                vol[i+1] = PI*(r+dr2/2)*2*dr2   :outer half of annulus
+        }
+}
+
+LOCAL dsq, dsqvol       : can't define local variable in KINETIC block
+                        : or use in COMPARTMENT
+
+KINETIC state {
+        COMPARTMENT i, diam*diam*vol[i] {ca CaBuffer Buffer}
+        LONGITUDINAL_DIFFUSION i, DCa*diam*diam*vol[i] {ca}
+        ~ ca[0] << (-ica*PI*diam/(2*FARADAY))
+        FROM i=0 TO NANN-2 {
+                ~ ca[i] <-> ca[i+1] (DCa*frat[i+1], DCa*frat[i+1])
+        }
+        dsq = diam*diam
+        FROM i=0 TO NANN-1 {
+                dsqvol = dsq*vol[i]
+                ~ ca[i] + Buffer[i] <-> CaBuffer[i] (k1buf*dsqvol, k2buf*dsqvol)
+        }
+        cai = ca[0]
+}
+Functionality example
+
+[8]:
+!
+cat
+python_scripts/kinetic.py
+from neuron import n
+
+from utils.cell import Cell
+
+
+class cadifusCell(Cell):
+    def _create_cell(self):
+        self.section = n.Section()
+        self.section.insert("cadifus")
+        self.section(0.001).ca_cadifus[0] = 1e-2
+
+    def record(self):
+        tvec = n.Vector()
+        tvec.record(n._ref_t, sec=self.section)
+        cai_vec = n.Vector()
+        cai_vec.record(self.section(0.5).cadifus._ref_ca[0], sec=self.section)
+        self.record_vectors["ca_ion[0]"] = cai_vec
+
+
+if __name__ == "__main__":
+    cadifus_cell = cadifusCell()
+    cadifus_cell.record()
+    cadifus_cell.simulate(1, 0.1)
+    cadifus_cell.output()
+    del cadifus_cell
+[9]:
+%
+run
+python_scripts/kinetic.py
+Values of variable ca_ion[0]:
+0 5e-05
+1 5e-05
+2 5e-05
+3 5e-05
+4 5e-05
+5 5e-05
+6 5e-05
+7 5e-05
+8 5e-05
+9 5e-05
+10 5e-05
+CONSERVE
+
+TODO: add example
+FUNCTION
+
+PROCEDURE
+
+LINEAR
+
+NONLINEAR
+
+LOCAL
+
+Other NMODL constructs
+
+TABLE
+
+Short description for TABLE keyword
+FROM
+
+TO
+
+WITH
+
+DEPEND
+
+Example mod file
+
+[10]:
+!
+cat
+mod/table.mod
+: simple first-order model of calcium dynamics
+
+DEFINE FOO 1
+
+NEURON {
+        SUFFIX table
+        USEION ca READ cai,ica WRITE cai
+        RANGE ca
+        GLOBAL depth,cainf,taur
+        RANGE var
+        RANGE ainf
+        THREADSAFE
+}
+
+UNITS {
+        (molar) = (1/liter)
+        (mM) = (milli/liter)
+        (um)    = (micron)
+        (mA) = (milliamp)
+        (msM)   = (ms mM)
+        FARADAY    = (faraday) (coul)
+}
+
+PARAMETER {
+       depth    = .1    (um)
+        taur =  200 (ms)        : rate of calcium removal for stress conditions
+        cainf   = 50e-6(mM)     :changed oct2
+        cai             (mM)
+}
+
+ASSIGNED {
+        ica             (mA/cm2)
+        drive_channel   (mM/ms)
+    var     (mV)
+    ainf
+}
+
+STATE {
+        ca              (mM)
+}
+
+
+BREAKPOINT {
+        SOLVE state METHOD euler
+}
+
+DERIVATIVE state {
+        drive_channel =  - (10000) * ica / (2 * FARADAY * depth)
+        if (drive_channel <= 0.) { drive_channel = 0.  }   : cannot pump inward
+        ca' = drive_channel/18 + (cainf -ca)/taur*11
+        cai = ca
+    if (FOO == 0) { }
+}
+FUNCTION test_table_f(br) {
+    TABLE FROM 0 TO FOO WITH 1
+    test_table_f = 1
+}
+PROCEDURE test_table_p(br) {
+    TABLE ainf FROM 0 TO FOO WITH 1
+    ainf = 1
+}
+INITIAL {
+    ca = cainf
+}
+Functionality example
+
+[11]:
+!
+cat
+python_scripts/table.py
+from neuron import n
+
+from utils.cell import Cell
+
+
+class TableCell(Cell):
+    def _create_cell(self):
+        self.section = n.Section()
+        self.section.insert("table")
+
+    def record(self):
+        tvec = n.Vector()
+        tvec.record(n._ref_t, sec=self.section)
+        avec = n.Vector()
+        avec.record(self.section(0.5)._ref_ainf_table, sec=self.section)
+        self.record_vectors["ainf"] = avec
+
+
+if __name__ == "__main__":
+    table_cell = TableCell()
+    table_cell.record()
+    table_cell.simulate(1, 0.1)
+    table_cell.output()
+    del table_cell
+[12]:
+%
+run
+python_scripts/table.py
+Changed dt
+Values of variable ainf:
+0 1.0
+1 1.0
+2 1.0
+3 1.0
+4 1.0
+5 1.0
+6 1.0
+7 1.0
+8 1.0
+9 1.0
+10 1.0
+FUNCTION_TABLE
+
+See description in
+NMODL documentation
+Example mod file
+
+[13]:
+!
+cat
+mod/k3st.mod
+: Three state kinetic scheme for HH-like potassium channel
+: Steady-state v-dependent state transitions have been fit
+: Needs v-dependent time constants from tables created under hoc
+NEURON {
+    SUFFIX k3st
+    USEION k READ ek WRITE ik
+    RANGE g, gbar
+    RANGE tau1_rec, tau2_rec
+}
+UNITS { (mV) = (millivolt) }
+PARAMETER {
+    gbar = 33 (millimho/cm2)
+    d1 = -38 (mV)
+    k1 = 0.151 (/mV)
+    d2 = -25 (mV)
+    k2 = 0.044 (/mV)
+}
+
+ASSIGNED {
+    v     (mV)
+    ek    (mV)
+    g     (millimho/cm2)
+    ik    (milliamp/cm2)
+    kf1 (/ms)
+    kb1 (/ms)
+    kf2 (/ms)
+    kb2 (/ms)
+    tau1_rec
+    tau2_rec
+}
+
+STATE { c1 c2 o }
+
+BREAKPOINT {
+    SOLVE kin METHOD sparse
+    g = gbar*o
+    ik = g*(v - ek)*(1e-3)
+}
+
+INITIAL { SOLVE kin STEADYSTATE sparse }
+
+KINETIC kin {
+    rates(v)
+    ~ c1 <-> c2 (kf1, kb1)
+    ~ c2 <-> o (kf2, kb2)
+    CONSERVE c1 + c2 + o = 1
+}
+
+FUNCTION_TABLE tau1(v(mV)) (ms)
+FUNCTION_TABLE tau2(v(mV)) (ms)
+
+PROCEDURE rates(v(millivolt)) {
+    LOCAL K1, K2
+    K1 = exp(k2*(d2 - v) - k1*(d1 - v))
+    kf1 = K1/(tau1(v)*(1+K1))
+    kb1 = 1/(tau1(v)*(1+K1))
+    K2 = exp(-k2*(d2 - v))
+    kf2 = K2/(tau2(v)*(1+K2))
+    kb2 = 1/(tau2(v)*(1+K2))
+    tau1_rec = tau1(v)
+    tau2_rec = tau2(v)
+}
+Functionality example
+
+[14]:
+!
+cat
+python_scripts/function_table.py
+from neuron import n
+
+from utils.cell import Cell
+
+
+class k3stCell(Cell):
+    def _create_cell(self):
+        self.section = n.Section()
+        self.section.insert("k3st")
+        tau1_values = []
+        voltage_values = []
+        for i in range(10):
+            tau1_values.append(i * 0.25)
+            voltage_values.append(-70 + 10 * i)
+        tau1_vector = n.Vector(tau1_values)
+        voltage_vector = n.Vector(voltage_values)
+        n.table_tau1_k3st(tau1_vector, voltage_vector)
+        n.table_tau2_k3st(100)
+
+    def record(self):
+        tvec = n.Vector()
+        tvec.record(n._ref_t, sec=self.section)
+        tau1_vec = n.Vector()
+        tau2_vec = n.Vector()
+        tau1_vec.record(self.section(0.5).k3st._ref_tau1_rec, sec=self.section)
+        tau2_vec.record(self.section(0.5).k3st._ref_tau2_rec, sec=self.section)
+        self.record_vectors["tau1_rec"] = tau1_vec
+        self.record_vectors["tau2_rec"] = tau2_vec
+
+
+if __name__ == "__main__":
+    k3st_cell = k3stCell()
+    k3st_cell.record()
+    k3st_cell.simulate(1, 0.1)
+    k3st_cell.output()
+    del k3st_cell
+[15]:
+%
+run
+python_scripts/function_table.py
+Changed dt
+Values of variable tau1_rec:
+0 0.125
+1 0.11066884059267537
+2 0.09702284544211288
+3 0.0840298714363211
+4 0.07165924609736188
+5 0.059881657072173765
+6 0.04866907889206899
+7 0.037994719804658315
+8 0.027832978105936233
+9 0.018159402051359665
+10 0.008950650468550592
+Values of variable tau2_rec:
+0 100.0
+1 100.0
+2 100.0
+3 100.0
+4 100.0
+5 100.0
+6 100.0
+7 100.0
+8 100.0
+9 100.0
+10 100.0
+BEFORE
+
+AFTER
+
+FOR_NETCONS
+
+PROTECT
+
+MUTEXLOCK / MUTEXUNLOCK
+
+VERBATIM
+

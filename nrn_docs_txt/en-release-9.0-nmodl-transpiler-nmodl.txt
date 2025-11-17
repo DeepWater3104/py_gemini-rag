@@ -1,0 +1,558 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/transpiler/nmodl.html
+
+neuron.nmodl.ast.view
+·
+neuron.nmodl.dsl.load_example
+·
+neuron.nmodl.ode.discretize_derivative
+·
+neuron.nmodl.ode.finite_difference_step_variable
+·
+neuron.nmodl.ode.forwards_euler2c
+·
+neuron.nmodl.ode.integrate2c
+·
+neuron.nmodl.ode.make_symbol
+·
+neuron.nmodl.ode.needs_finite_differences
+·
+neuron.nmodl.ode.search_and_replace_protected_identifiers_from_sympy
+·
+neuron.nmodl.ode.search_and_replace_protected_identifiers_to_sympy
+·
+neuron.nmodl.ode.solve_lin_system
+·
+neuron.nmodl.ode.solve_non_lin_system
+·
+neuron.nmodl.ode.transform_expression
+·
+neuron.nmodl.ode.transform_matrix_elements
+·
+neuron.nmodl.to_json
+·
+neuron.nmodl.to_nmodl
+neuron.nmodl.NmodlDriver
+get_ast
+·
+parse_file
+·
+parse_stream
+·
+parse_string
+Module contents
+
+NMODL transpiler Python bindings
+class
+neuron.nmodl.
+NmodlDriver
+
+Bases:
+nmodl::parser::NmodlDriver
+This is the NmodlDriver class documentation
+get_ast
+(
+self:
+neuron.nmodl._nmodl.nmodl::parser::NmodlDriver
+)
+→
+nmodl::ast::Program
+
+Get ast
+Returns:
+Instance of
+Program
+parse_file
+(
+self
+:
+neuron.nmodl._nmodl.NmodlDriver
+,
+filename
+:
+str
+)
+→
+nmodl::ast::Program
+
+Parse NMODL provided as a file
+Args:
+filename (str): name of the C file
+Returns:
+AST: ast root node if success, throws an exception otherwise
+parse_stream
+(
+self:
+neuron.nmodl._nmodl.NmodlDriver
+,
+in:
+object
+)
+→
+nmodl::ast::Program
+
+Parse NMODL file provided as istream
+Args:
+in (file): ifstream object
+Returns:
+AST: ast root node if success, throws an exception otherwise
+parse_string
+(
+self
+:
+neuron.nmodl._nmodl.NmodlDriver
+,
+input
+:
+str
+)
+→
+nmodl::ast::Program
+
+Parse NMODL provided as a string
+Args:
+input (str): C code as string
+Returns:
+AST: ast root node if success, throws an exception otherwise
+>>>
+ast
+=
+driver
+.
+parse_string
+(
+"DEFINE NSTEP 6"
+)
+neuron.nmodl.
+to_json
+(
+node:
+nmodl::ast::Ast
+,
+compact:
+bool
+=
+False
+,
+expand:
+bool
+=
+False
+,
+add_nmodl:
+bool
+=
+False
+)
+→
+str
+
+Given AST node, return the JSON string representation
+Args:
+node (AST): AST node
+compact (bool): Compact node
+expand (bool): Expand node
+Returns:
+str: JSON string representation
+>>>
+ast
+=
+driver
+.
+parse_string
+(
+"NEURON
+{}
+"
+)
+>>>
+nmodl
+.
+to_json
+(
+ast
+,
+True
+)
+'{"Program":[{"NeuronBlock":[{"StatementBlock":[]}]}]}'
+neuron.nmodl.
+to_nmodl
+(
+node:
+nmodl::ast::Ast
+,
+exclude_types:
+set[nmodl::ast::AstNodeType]
+=
+set()
+)
+→
+str
+
+Given AST node, return the NMODL string representation
+Args:
+node (AST): AST node
+excludeTypes (set of AstNodeType): Excluded node types
+Returns:
+str: NMODL string representation
+>>>
+ast
+=
+driver
+.
+parse_string
+(
+"NEURON
+{}
+"
+)
+>>>
+nmodl
+.
+to_nmodl
+(
+ast
+)
+'NEURON {\n}\n'
+Submodules
+
+neuron.nmodl.ast module
+
+Module for vizualization of NMODL abstract syntax trees (ASTs).
+neuron.nmodl.ast.
+view
+(
+nmodl_ast
+)
+
+Visualize given NMODL AST in web browser
+In memory representation of AST can be converted to JSON
+form and it can be visualized using AST viewer implemented
+using d3.js.
+Args:
+nmodl_ast: AST object of nmodl file or string
+Returns:
+None
+neuron.nmodl.dsl module
+
+neuron.nmodl.dsl.
+list_examples
+(
+)
+
+Returns a list of examples available
+The NMODL Framework provides a few examples for testing
+Returns:
+List of available examples
+neuron.nmodl.dsl.
+load_example
+(
+example
+)
+
+Load an example from the NMODL examples
+The NMODL Framework provides a few examples for testing. The list of examples can be requested
+using
+list_examples()
+. This function then returns the NMODL code of the requested example
+file.
+Args:
+example: Filename of an example as provided by
+list_examples()
+Returns:
+An path to the example as a string
+neuron.nmodl.ode module
+
+neuron.nmodl.ode.
+differentiate2c
+(
+expression
+,
+dependent_var
+,
+vars
+,
+prev_expressions
+=
+None
+,
+stepsize
+=
+0.001
+)
+
+Analytically differentiate supplied expression, return solution as C code.
+Expression should be of the form “f(x)”, where “x” is
+the dependent variable, and the function returns df(x)/dx
+The set vars must contain all variables used in the expression.
+Furthermore, if any of these variables are themselves functions that should
+be substituted before differentiating, they can be supplied in the prev_expressions list.
+Before differentiating each of these expressions will be substituted into expressions,
+where possible, in reverse order - i.e. starting from the end of the list.
+If the result coincides with one of the vars, or the LHS of one of
+the prev_expressions, then it is simplified to this expression.
+Note that, in order to differentiate against indexed variables (such as
+x[0]
+), you must pass an instance of
+sympy.Indexed
+to
+dependent_var
+(_not_ an instance of
+sympy.IndexedBase
+), as well as
+an instance of
+sympy.IndexedBase
+to
+vars
+.
+Some simple examples of use:
+nmodl.ode.differentiate2c
+("a*x",
+"x",
+{"a"})
+==
+"a"
+differentiate2c
+("cos(y)
++
+b*y**2",
+"y",
+{"a","b"})
+==
+"Dy
+=
+2*b*y
+-
+sin(y)"
+differentiate2c("a
+*
+x[0]",
+sympy.IndexedBase("x",
+shape=[1])[0],
+{"a",
+sympy.IndexedBase("x",
+shape=[1])})
+==
+"a"
+Args:
+expression: expression to be differentiated e.g. “a*x + b”
+dependent_var: dependent variable, e.g. “x”
+vars: set of all other variables used in expression, e.g. {“a”, “b”, “c”}
+prev_expressions: time-ordered list of preceeding expressions
+to evaluate & substitute, e.g. [“b = x + c”, “a = 12*b”]
+stepsize: in case an analytic expression is not possible, finite differences are used;
+this argument sets the step size
+Returns:
+string containing analytic derivative of expression (including any substitutions
+of variables from supplied prev_expressions) w.r.t. dependent_var as C code.
+neuron.nmodl.ode.
+discretize_derivative
+(
+expr
+)
+
+neuron.nmodl.ode.
+finite_difference_step_variable
+(
+sym
+)
+
+neuron.nmodl.ode.
+forwards_euler2c
+(
+diff_string
+,
+dt_var
+,
+vars
+,
+function_calls
+)
+
+Return forwards euler solution of diff_string as C code.
+Derivative should be of the form “x’ = f(x)”,
+and vars should contain the set of all the variables
+referenced by f(x), for example:
+-forwards_euler2c(“x’ = a*x”, [“a”,”x”])
+-forwards_euler2c(“x’ = a + b*x - sin(3.2)”, {“x”,”a”,”b”})
+Args:
+diff_string: Derivative to be integrated e.g. “x’ = a*x”
+dt_var: name of timestep dt variable in NEURON
+vars: set of variables used in expression, e.g. {“x”, “a”}
+function_calls: set of function calls used in the ODE
+Returns:
+String containing forwards Euler timestep as C code
+neuron.nmodl.ode.
+integrate2c
+(
+diff_string
+,
+dt_var
+,
+vars
+,
+use_pade_approx
+=
+False
+)
+
+Analytically integrate supplied derivative, return solution as C code.
+Given a differential equation of the form x’ = f(x), the value of
+x at time t+dt is found in terms of the value of x at time t:
+x(t + dt) = g( x(t), dt )
+and this equation is returned in the format NEURON expects:
+x = g( x, dt ),
+where the x on the right is the current value of x at time t,
+and the x on the left is the new value of x at time t+dt
+The derivative should be of the form “x’ = f(x)”,
+and vars should contain the set of all the variables
+referenced by f(x), for example:
+-
+integrate2c("x'
+=
+a*x",
+"dt",
+{"a"})
+-
+integrate2c("x'
+=
+a
++
+b*x
+-
+sin(3.2)",
+"dt",
+{"a","b"})
+Optionally, the analytic result can be expanded in powers of dt,
+and the (1,1) Pade approximant to the solution returned.
+This approximate solution is correct to second order in dt.
+Args:
+diff_string: Derivative to be integrated e.g. “x’ = a*x + b”
+t_var: name of time variable t in NEURON
+dt_var: name of timestep variable dt in NEURON
+vars: set of variables used in expression, e.g. {“a”, “b”}
+use_pade_approx: if False, return exact solution
+if True, return (1,1) Pade approx to solution
+correct to second order in dt_var
+Returns:
+string containing analytic integral of derivative as C code
+Raises:
+NotImplementedError: if the ODE is too hard, or if it fails to solve it.
+neuron.nmodl.ode.
+make_symbol
+(
+var
+,
+/
+)
+
+Create SymPy symbol from a variable.
+neuron.nmodl.ode.
+needs_finite_differences
+(
+mat
+)
+
+neuron.nmodl.ode.
+search_and_replace_protected_identifiers_from_sympy
+(
+eqs
+,
+function_calls
+)
+
+neuron.nmodl.ode.
+search_and_replace_protected_identifiers_to_sympy
+(
+eqs
+,
+vars
+,
+function_calls
+)
+
+neuron.nmodl.ode.
+solve_lin_system
+(
+eq_strings
+,
+vars
+,
+constants
+,
+function_calls
+,
+tmp_unique_prefix
+,
+small_system
+=
+False
+,
+do_cse
+=
+False
+)
+
+Solve linear system of equations, return solution as C code.
+If system is small (small_system=True, typically N<=3):
+solve analytically by gaussian elimination
+optionally do Common Subexpression Elimination if do_cse is true
+If system is large (default):
+gaussian elimination may not be numerically stable at runtime
+instead return a matrix J and vector F, where J X = F
+this linear system can then be solved for X by e.g. LU factorization
+Args:
+eqs: list of equations e.g. [“x + y = a”, “y = 3 + b”]
+vars: list of variables to solve for, e.g. [“x”, “y”]
+constants: set of any other symbolic expressions used, e.g. {“a”, “b”}
+function_calls: set of function calls used in the ODE
+tmp_unique_prefix: is a unique prefix on which new variables can be easily created
+by appending strings. It is usually of the form “tmp”
+small_system: if True, solve analytically by gaussian elimination
+otherwise return matrix system to be solved
+do_cse: if True, do Common Subexpression Elimination
+Returns:
+code: list of strings containing assignment statements
+vars: list of strings containing new local variables
+neuron.nmodl.ode.
+solve_non_lin_system
+(
+eq_strings
+,
+vars
+,
+constants
+,
+function_calls
+)
+
+Solve non-linear system of equations, return solution as C code.
+returns a vector F, and its Jacobian J, both in terms of X
+where F(X) = 0 is the implicit equation to solve for X
+this non-linear system can then be solved with the newton solver
+Args:
+eqs: list of equations e.g. [“x + y = a”, “y = 3 + b”]
+vars: list of variables to solve for, e.g. [“x”, “y”]
+constants: set of any other symbolic expressions used, e.g. {“a”, “b”}
+function_calls: set of function calls used in the ODE
+Returns:
+List of strings containing assignment statements
+neuron.nmodl.ode.
+transform_expression
+(
+expr
+,
+transform
+)
+
+neuron.nmodl.ode.
+transform_matrix_elements
+(
+mat
+,
+transform
+)
+
+neuron.nmodl.symtab module
+
+neuron.nmodl.visitor module
+

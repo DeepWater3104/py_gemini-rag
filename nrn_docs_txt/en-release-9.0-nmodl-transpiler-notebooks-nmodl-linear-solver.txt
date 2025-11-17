@@ -1,0 +1,19 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/transpiler/notebooks/nmodl-linear-solver.html
+
+NMODL LINEAR solver
+
+LINEAR
+blocks contain a set of simultaneous equations.
+These are solved by
+solve_lin_system
+from
+nmodl/ode.py
+.
+If the system is sufficiently small (by default
+\(N\leq3\)
+), then Gaussian elimination is used to directly construct the solution at compile time using SymPy to do the symbolic Gaussian elimination. Optionally Common Subexpression Elimination (CSE) can also be performed.
+For larger matrices it may not be numerically safe to solve them at compile time by Gaussian elimination, so instead the matrix equation is constructed and then solved at run time by LU factorization with partial pivoting (for more, see Crout solver in
+src/solver/crout
+and
+test/unit/crout
+).

@@ -1,0 +1,163 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/modelspec/programmatic.html
+
+Programmatic Model Specification
+
+Topology
+Conceptual Overview of Sections
+Geometry
+Defining the 3D Shape
+pt3dclear()
+pt3dadd()
+pt3dconst()
+pt3dconst()
+pt3dstyle()
+pt3dinsert()
+pt3dremove()
+pt3dchange()
+Reading 3D Data from NEURON
+n3d()
+x3d()
+y3d()
+z3d()
+diam3d()
+spine3d()
+setSpineArea()
+getSpineArea()
+define_shape()
+area()
+ri()
+distance()
+diam_changed
+L
+diam
+Ra
+Section and Segment Selection
+Dot notation for properties
+Looping over sections (HOC only)
+SectionList
+SectionList
+SectionRef
+SectionRef
+Creating and connecting sections
+Section
+delete_section()
+topology()
+delete_section()
+section_exists()
+section_owner()
+disconnect()
+issection()
+ismembrane()
+sectionname()
+secname()
+psection()
+parent_section()
+parent_connection()
+section_orientation()
+Ions
+ion_style()
+ion_register()
+ion_charge()
+Dynamics (Channels, etc…)
+HOC-based Mechanisms
+make_pointprocess()
+make_mechanism()
+KSChan
+KSChan
+KSState
+KSGate
+KSTrans
+LinearMechanism
+LinearMechanism
+Point Processes and Artificial Cells
+General
+Mechanisms
+Basic Reaction-Diffusion
+Overview
+Related resources
+Specifying the domain
+Intracellular regions and regions in Frankenhauser-Hodgkin space
+Extracellular regions
+rxd.Extracellular
+Defining proteins, ions, etc
+rxd.Species
+rxd.State
+rxd.Parameter
+Defining reactions
+rxd.Reaction
+rxd.Rate
+rxd.MultiCompartmentReaction
+Mathematical functions for rate expressions
+Manipulating nodes
+rxd.nodelist.NodeList
+rxd.node.Node
+rxd.node.Node1D
+rxd.node.Node3D
+rxd.node.NodeExtracellular
+Membrane potential
+rxd.v
+Synchronization with segments
+rxd.re_init()
+Numerical options
+rxd.nthread()
+rxd.set_solve_type()
+SBML Export
+rxd.export.sbml()
+Saving and restoring state
+Error handling
+rxd.RxDException
+Networks
+ParallelContext
+ParallelContext
+Implementation Notes
+MPI
+SubWorld
+Parallel Network
+Parallel Transfer
+ParallelNetManager
+ParallelNetManager
+NetCon
+NetCon
+Electrode
+Electrode
+Electrode.IClamp()
+Electrode.del()
+Electrode.dur()
+Electrode.amp()
+Electrode.VClamp()
+Electrode.dur0()
+Electrode.amp0()
+Electrode.VClampigraph()
+Electrode.VClampFamily()
+Electrode.Testlevel()
+Electrode.Holding()
+Electrode.Returnlevel()
+Electrode.Location()
+MechanismType
+MechanismType
+MechanismType.select()
+MechanismType.selected()
+MechanismType.remove()
+MechanismType.make()
+MechanismType.count()
+MechanismType.menu()
+MechanismType.action()
+MechanismType.is_netcon_target()
+MechanismType.has_net_event()
+MechanismType.is_artificial()
+MechanismType.pp_begin()
+MechanismType.pp_next()
+MechanismType.internal_type()
+MechanismType.file()
+MechanismType.code()
+StateTransitionEvent
+StateTransitionEvent
+StateTransitionEvent.state()
+StateTransitionEvent.transition()
+Obsolete Stimuli
+fstim()
+fstimi()
+fclamp()
+fclampi()
+fclampv()
+prstim()

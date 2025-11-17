@@ -1,0 +1,152 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/index.html
+
+NEURON Programmer’s Reference
+
+For a basic introduction on how to run Python scripts with NEURON, see
+running Python scripts with NEURON
+,
+and you may also like to refer to the
+NEURON Python tutorial
+.
+NEURON allows you to build models using multiple programming languages.
+See, for example,
+Accessing HOC from Python
+and
+HOC accessing Python
+.
+Quick Links
+
+Index
+Commonly used:
+Deck
+,
+File
+,
+Glyph
+,
+Graph
+,
+GUIMath
+,
+List
+,
+Matrix
+,
+Pointer
+,
+PtrVector
+,
+PWManager
+,
+Random
+,
+StringFunctions
+,
+SymChooser
+,
+TextEditor
+,
+Timer
+,
+ValueFieldEditor
+,
+VBox
+,
+Vector
+BBSaveState
+,
+CVode
+,
+FInitializeHandler
+,
+Impedance
+,
+KSChan
+,
+LinearMechanism
+,
+MechanismStandard
+,
+MechanismType
+,
+NetCon
+,
+ParallelContext
+,
+ParallelNetManager
+,
+PlotShape
+,
+RangeVarPlot
+,
+SaveState
+,
+SectionBrowser
+,
+SectionList
+,
+SectionRef
+,
+Shape
+,
+StateTransitionEvent
+Panel
+,
+FunctionFitter
+,
+Geometry
+,
+Printf (Formatted Output)
+,
+Math
+,
+nmodl2
+,
+NMODL
+,
+Point Processes and Artificial Cells
+,
+Standard Run Tools
+,
+Topology
+Basic Reaction-Diffusion
+Basic Programming
+
+Mathematics
+Strings
+GUI Design
+Pointers
+System Calls
+Error Handling
+Dynamic Code Loading and Execution
+Project Management
+Debugging and Internals Access
+Accessing HOC from Python
+Model Specification
+
+Model Specification GUI Tools
+Programmatic Model Specification
+Simulation Control
+
+Programmatic Simulation Control
+Standard Run Tools
+Rarely Used Compilation Options
+Environment Variables
+Interpreter Management
+Visualization
+
+Glyph
+Graph
+Grapher
+PlotShape
+PlotShape Window
+RangeVarPlot
+Shape
+Notification
+GUI Look And Feel
+MenuExplore
+Obsolete Plotting
+Analysis
+
+Programmatic Analysis Tools
+GUI Analysis Tools

@@ -1,0 +1,1546 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/transpiler/notebooks/nmodl-python-tutorial.html
+
+NMODL Python Interface Tutorial
+
+Introduction
+
+The NMODL transpiler is a code generation framework for the NEURON Modeling Language (NMODL). It is primarily designed to support optimised code generation backends for modern architectures including CPUs and GPUs. It provides high level Python interface that can be used for model introspection as well as performing various analysis on underlying model.
+This tutorial provides introduction to Python API with examples.
+To get started, let’s install nmodl via Python wheel as:
+[1]:
+%%capture
+!
+pip
+install
+neuron
+Note : Python wheel is only available for Linux and Mac OS. Windows version will be available in the future. Today you can use Windows Subsystem for Linux.
+Parsing Model And Constructing AST
+
+Once the NMODL is setup properly we should be able to import
+nmodl
+module :
+[2]:
+import
+neuron.nmodl.dsl
+as
+nmodl
+If you see any issues, check the installation section. Lets take an example of a channel
+CaDynamics
+:
+[3]:
+channel
+=
+"""
+NEURON  {
+SUFFIX CaDynamics
+USEION ca READ ica WRITE cai
+RANGE decay, gamma, minCai, depth
+}
+UNITS   {
+(mV) = (millivolt)
+(mA) = (milliamp)
+FARADAY = (faraday) (coulombs)
+(molar) = (1/liter)
+(mM) = (millimolar)
+(um)    = (micron)
+}
+PARAMETER   {
+gamma = 0.05 : percent of free calcium (not buffered)
+decay = 80 (ms) : rate of removal of calcium
+depth = 0.1 (um) : depth of shell
+minCai = 1e-4 (mM)
+}
+ASSIGNED    {ica (mA/cm2)}
+INITIAL {
+cai = minCai
+}
+STATE   {
+cai (mM)
+}
+BREAKPOINT  { SOLVE states METHOD cnexp }
+DERIVATIVE states   {
+cai' = -(10000)*(ica*gamma/(2*FARADAY*depth)) - (cai - minCai)/decay
+}
+FUNCTION foo() {
+LOCAL temp
+foo = 1.0 + gamma
+}
+"""
+Now we can parse any valid NMODL constructs using NMODL’s parsing interface. First, we have to create nmodl parser object using
+nmodl::NmodlDriver
+and then we can use
+parse_string
+method :
+[4]:
+driver
+=
+nmodl
+.
+NmodlDriver
+()
+modast
+=
+driver
+.
+parse_string
+(
+channel
+)
+The
+parse_string
+method will throw an exception if input is invalid. Otherwise it returns
+AST
+object.
+If we simply print AST object, we can see JSON representation :
+[5]:
+print
+(
+"
+%.200s
+"
+%
+modast
+)
+# only first 200 characters
+{"Program":[{"NeuronBlock":[{"StatementBlock":[{"Suffix":[{"Name":[{"String":[{"name":"SUFFIX"}]}]},{"Name":[{"String":[{"name":"CaDynamics"}]}]}]},{"Useion":[{"Name":[{"String":[{"name":"ca"}]}]},{"R
+Querying AST object with Visitors
+
+One of the strength of NMODL python interface is access to inbuilt
+Visitors
+. One can perform different queries and analysis on AST using different visitors. Lets start with the examples of inbuilt visitors.
+Lookup visitor
+
+As name suggest, lookup visitor allows to search different NMODL constructs in the AST. The
+visitor
+module provides access to inbuilt visitors. In order to use this visitor, we create an object of AstLookupVisitor :
+[6]:
+from
+neuron.nmodl
+import
+ast
+,
+visitor
+lookup_visitor
+=
+visitor
+.
+AstLookupVisitor
+()
+Assuming we have created AST object (as shown here), we can search for any NMODL construct in the AST using AstLookupVisitor. For example, to find out
+STATE
+block in the mod file, we can simply do:
+[7]:
+states
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+STATE_BLOCK
+)
+for
+state
+in
+states
+:
+print
+(
+nmodl
+.
+to_nmodl
+(
+state
+))
+STATE {
+    cai (mM)
+}
+We have used
+to_nmodl
+helper function to convert AST object back to NMODL language. Note that the output of
+to_nmodl
+should be same as input except for comments (?, :, COMMENT). There are very few edge cases where the NMODL output could slightly differ and this is considered as bug. This is being addressed by testing entire
+ModelDB
+database.
+Using AstLookupVisitor we can introspect NMODL constructs at any level of details. Below are some examples to find out different constructs in the example mod file. All different kind of NMODL constructs are
+listeed here
+.
+[8]:
+odes
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+DIFF_EQ_EXPRESSION
+)
+primes
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+PRIME_NAME
+)
+range_vars
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+RANGE_VAR
+)
+parameters
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+PARAM_ASSIGN
+)
+units
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+UNIT
+)
+if
+odes
+:
+print
+(
+"
+%d
+differential equation(s) exist : "
+%
+len
+(
+odes
+))
+for
+ode
+in
+odes
+:
+print
+(
+"
+\t
+%s
+"
+%
+nmodl
+.
+to_nmodl
+(
+ode
+))
+if
+primes
+:
+print
+(
+"
+%d
+prime variables exist :"
+%
+len
+(
+primes
+),
+end
+=
+""
+)
+for
+prime
+in
+primes
+:
+print
+(
+"
+%s
+"
+%
+nmodl
+.
+to_nmodl
+(
+prime
+),
+end
+=
+""
+)
+print
+()
+if
+range_vars
+:
+print
+(
+"
+%d
+range variables exist :"
+%
+len
+(
+range_vars
+),
+end
+=
+""
+)
+for
+range_var
+in
+range_vars
+:
+print
+(
+"
+%s
+"
+%
+nmodl
+.
+to_nmodl
+(
+range_var
+),
+end
+=
+""
+)
+print
+()
+if
+parameters
+:
+print
+(
+"
+%d
+parameter variables exist :"
+%
+len
+(
+parameters
+),
+end
+=
+""
+)
+for
+range_var
+in
+range_vars
+:
+print
+(
+"
+%s
+"
+%
+nmodl
+.
+to_nmodl
+(
+range_var
+),
+end
+=
+""
+)
+print
+()
+if
+units
+:
+print
+(
+"
+%d
+units uses :"
+%
+len
+(
+units
+),
+end
+=
+""
+)
+for
+unit
+in
+units
+:
+print
+(
+"
+%s
+"
+%
+nmodl
+.
+to_nmodl
+(
+unit
+),
+end
+=
+""
+)
+1 differential equation(s) exist :
+         cai' = -(10000)*(ica*gamma/(2*FARADAY*depth))-(cai-minCai)/decay
+1 prime variables exist : cai'
+4 range variables exist : decay gamma minCai depth
+4 parameter variables exist : decay gamma minCai depth
+17 units uses : (mV) (millivolt) (mA) (milliamp) (faraday) (coulombs) (molar) (1/liter) (mM) (millimolar) (um) (micron) (ms) (um) (mM) (mA/cm2) (mM)
+Apart from performing lookup on whole AST object (i.e. entire NMODL file), we can perform analysis on the specific construct. Lets take a synthetic example : say we want to find out all assignment statements in function
+foo
+. If we use lookup visitor on AST, it will returnn all statements in the mod file (e.g. including DERIVATIVE block). To avoid this, we can first find FUNCTION blocks and then search for statements within that block :
+[9]:
+functions
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+FUNCTION_BLOCK
+)
+function
+=
+functions
+[
+0
+]
+# first function
+# expression statements include assignments
+new_lookup_visitor
+=
+visitor
+.
+AstLookupVisitor
+(
+ast
+.
+AstNodeType
+.
+EXPRESSION_STATEMENT
+)
+# using accept method of node we can visit it
+function
+.
+accept
+(
+new_lookup_visitor
+)
+statements
+=
+new_lookup_visitor
+.
+get_nodes
+()
+for
+statement
+in
+statements
+:
+print
+(
+nmodl
+.
+to_nmodl
+(
+statement
+))
+foo = 1+gamma
+Every AST node provides
+accept
+method that takes visitor object as parameter. In above example, we used
+accept
+method of
+FunctionBock
+node. This allows to run a given visitor on a specific node.
+AstLookupVisitor
+provides
+get_nodes()
+method that can be used to retrive the result of visitor. List of all
+AstNodeType
+can be found here (todo).
+Symbol Table Visitor
+
+Symbol table visitor is used to find out all variables and their usage in mod file. To use this, first create a visitor object as:
+[10]:
+from
+neuron.nmodl
+import
+symtab
+symv
+=
+symtab
+.
+SymtabVisitor
+()
+Once the visitor object is created, we can run visitor on AST object to populate symbol table. Symbol table provides print method that can be used to print whole symbol table :
+[11]:
+symv
+.
+visit_program
+(
+modast
+)
+table
+=
+modast
+.
+get_symbol_table
+()
+table_s
+=
+str
+(
+table
+)
+print
+(
+table_s
+)
+------------------------------------------------------------------------------------------------------------------------------------
+|                                 NMODL_GLOBAL [Program IN None] POSITION : UNKNOWN SCOPE : GLOBAL                                 |
+------------------------------------------------------------------------------------------------------------------------------------
+|   NAME   |                     PROPERTIES                      |  STATUS   |  LOCATION   |   VALUE    |  # READS   |  # WRITES   |
+------------------------------------------------------------------------------------------------------------------------------------
+| ca       | ion                                                 |           |     UNKNOWN |            |     0      |      0      |
+| ica      | assigned_definition read_ion                        |           |     UNKNOWN |            |     0      |      0      |
+| cai      | prime_name assigned_definition write_ion state_var  |           |     UNKNOWN |            |     0      |      0      |
+| decay    | range parameter                                     |           |     UNKNOWN |  80.000000 |     0      |      0      |
+| gamma    | range parameter                                     |           |     UNKNOWN |   0.050000 |     0      |      0      |
+| minCai   | range parameter                                     |           |     UNKNOWN |   0.000100 |     0      |      0      |
+| depth    | range parameter                                     |           |     UNKNOWN |   0.100000 |     0      |      0      |
+| mV       | unit_def                                            |           |     UNKNOWN |            |     0      |      0      |
+| mA       | unit_def                                            |           |     UNKNOWN |            |     0      |      0      |
+| FARADAY  | factor_def                                          |           |     11.5-11 |            |     0      |      0      |
+| molar    | unit_def                                            |           |     UNKNOWN |            |     0      |      0      |
+| mM       | unit_def                                            |           |     UNKNOWN |            |     0      |      0      |
+| um       | unit_def                                            |           |     UNKNOWN |            |     0      |      0      |
+| states   | derivative_block to_solve                           |           |     36.1-10 |            |     0      |      0      |
+| foo      | function_block                                      |           |      40.1-8 |            |     0      |      0      |
+------------------------------------------------------------------------------------------------------------------------------------
+
+    --------------------------------------------------------------------------------------------------
+    |             StatementBlock4 [StatementBlock IN foo] POSITION : 40.16 SCOPE : LOCAL             |
+    --------------------------------------------------------------------------------------------------
+    |   NAME   |   PROPERTIES   |   STATUS   |   LOCATION   |   VALUE   |   # READS   |   # WRITES   |
+    --------------------------------------------------------------------------------------------------
+    | temp     | local          |            |      UNKNOWN |           |      0      |      0       |
+    --------------------------------------------------------------------------------------------------
+Now we can query for variables in the symbol table based on name of variable:
+[12]:
+cai
+=
+table
+.
+lookup
+(
+"cai"
+)
+print
+(
+cai
+)
+cai [Properties : prime_name assigned_definition write_ion state_var]
+When we print the symbol, all it’s properties get printed. For example, in above case the
+cai
+variable is used in :
+differential equation (prime)
+state block
+assigned block
+use ion statement
+We can also query based on the kind of variables. For example, to find out all range variables we can use
+get_variables_with_properties
+method with symbol property as an argument:
+[13]:
+range_vars
+=
+table
+.
+get_variables_with_properties
+(
+symtab
+.
+NmodlType
+.
+range_var
+)
+for
+var
+in
+range_vars
+:
+print
+(
+var
+)
+decay [Properties : range parameter]
+gamma [Properties : range parameter]
+minCai [Properties : range parameter]
+depth [Properties : range parameter]
+We can also query with multiple properties. For example, to find out read or write ion variables we can use (second argument
+False
+indicates any one property):
+[14]:
+ions_var
+=
+table
+.
+get_variables_with_properties
+(
+symtab
+.
+NmodlType
+.
+read_ion_var
+|
+symtab
+.
+NmodlType
+.
+write_ion_var
+,
+False
+)
+for
+var
+in
+ions_var
+:
+print
+(
+var
+)
+ica [Properties : assigned_definition read_ion]
+cai [Properties : prime_name assigned_definition write_ion state_var]
+Custom AST visitor
+
+If predefined visitors are limited, we can implement new visitor using AstVisitor interface. Lets say we want to implement a visitor that will print every floating point number in MOD file. Here is how we can do this:
+[15]:
+from
+neuron.nmodl
+import
+ast
+,
+visitor
+class
+DoubleVisitor
+(
+visitor
+.
+AstVisitor
+):
+def
+visit_double
+(
+self
+,
+node
+):
+print
+(
+node
+.
+eval
+())
+# or, can use neuron.nmodl.to_nmodl(node)
+d_visitor
+=
+DoubleVisitor
+()
+modast
+.
+accept
+(
+d_visitor
+)
+0.05
+0.1
+0.0001
+10000.0
+2.0
+1.0
+The
+AstVisitor
+base class provides all necessary methods to traverse different ast nodes. New visitors will inherit from
+AstVisitor
+and implement only those method where we want different behaviour. For example, in the above case we want to visit ast nodes of type
+Double
+and print their value. To achieve this we implemented associated method of
+Double
+node i.e.
+visit_double
+. When we call
+accept
+method on the ast object, the entire AST tree will be visited (by
+AstVisitor
+). But whenever double node type will encounter in AST, the control will be handed back to
+DoubleVisitor.visit_double
+method.
+Lets implement the example of lookup visitor to print parameters with values :
+[16]:
+class
+ParameterVisitor
+(
+visitor
+.
+AstVisitor
+):
+def
+__init__
+(
+self
+):
+visitor
+.
+AstVisitor
+.
+__init__
+(
+self
+)
+self
+.
+in_parameter
+=
+False
+def
+visit_param_block
+(
+self
+,
+node
+):
+self
+.
+in_parameter
+=
+True
+node
+.
+visit_children
+(
+self
+)
+self
+.
+in_parameter
+=
+False
+def
+visit_name
+(
+self
+,
+node
+):
+if
+self
+.
+in_parameter
+:
+print
+(
+nmodl
+.
+to_nmodl
+(
+node
+))
+def
+visit_double
+(
+self
+,
+node
+):
+if
+self
+.
+in_parameter
+:
+print
+(
+node
+.
+eval
+())
+def
+visit_integer
+(
+self
+,
+node
+):
+if
+self
+.
+in_parameter
+:
+print
+(
+node
+.
+eval
+())
+param_visitor
+=
+ParameterVisitor
+()
+modast
+.
+accept
+(
+param_visitor
+)
+gamma
+0.05
+decay
+80
+depth
+0.1
+minCai
+0.0001
+Easy code generation using AST visitors
+
+With a little more code we can even create a code generator for python using a the visitor pattern.
+[17]:
+mfunc_src
+=
+"""FUNCTION myfunc(x, y) {
+if (x < y) {
+myfunc = x + y
+} else {
+myfunc = y
+}
+}
+"""
+import
+neuron.nmodl.dsl
+as
+nmodl
+from
+neuron.nmodl.dsl
+import
+ast
+driver
+=
+nmodl
+.
+NmodlDriver
+()
+mfunc_ast
+=
+driver
+.
+parse_string
+(
+mfunc_src
+)
+[18]:
+from
+neuron.nmodl.dsl
+import
+ast
+,
+visitor
+class
+PyGenerator
+(
+visitor
+.
+AstVisitor
+):
+def
+__init__
+(
+self
+):
+visitor
+.
+AstVisitor
+.
+__init__
+(
+self
+)
+self
+.
+pycode
+=
+""
+self
+.
+indent
+=
+0
+self
+.
+func_name
+=
+""
+def
+visit_function_block
+(
+self
+,
+node
+):
+params
+=
+[]
+self
+.
+func_name
+=
+node
+.
+get_node_name
+()
+for
+p
+in
+node
+.
+parameters
+:
+params
+.
+append
+(
+p
+.
+get_node_name
+())
+params_str
+=
+", "
+.
+join
+(
+params
+)
+self
+.
+pycode
++=
+f
+"def
+{
+node
+.
+get_node_name
+()
+}
+(
+{
+params_str
+}
+):
+\n
+"
+node
+.
+visit_children
+(
+self
+)
+def
+visit_statement_block
+(
+self
+,
+node
+):
+self
+.
+indent
++=
+1
+node
+.
+visit_children
+(
+self
+)
+self
+.
+indent
+-=
+1
+def
+visit_expression_statement
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+" "
+*
+4
+*
+self
+.
+indent
+expr
+=
+node
+.
+expression
+if
+type
+(
+expr
+)
+is
+ast
+.
+BinaryExpression
+and
+expr
+.
+op
+.
+eval
+()
+==
+"="
+:
+rhs
+=
+expr
+.
+rhs
+lhsn
+=
+expr
+.
+lhs
+.
+name
+.
+get_node_name
+()
+if
+lhsn
+==
+self
+.
+func_name
+:
+self
+.
+pycode
++=
+"return "
+rhs
+.
+accept
+(
+self
+)
+else
+:
+node
+.
+visit_children
+(
+self
+)
+else
+:
+node
+.
+visit_children
+(
+self
+)
+self
+.
+pycode
++=
+"
+\n
+"
+def
+visit_if_statement
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+" "
+*
+4
+*
+self
+.
+indent
++
+"if "
+node
+.
+condition
+.
+accept
+(
+self
+)
+self
+.
+pycode
++=
+":
+\n
+"
+node
+.
+get_statement_block
+()
+.
+accept
+(
+self
+)
+for
+n
+in
+node
+.
+elseifs
+:
+n
+.
+accept
+(
+self
+)
+if
+node
+.
+elses
+:
+node
+.
+elses
+.
+accept
+(
+self
+)
+def
+visit_else_statement
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+" "
+*
+4
+*
+self
+.
+indent
++
+"else:
+\n
+"
+node
+.
+get_statement_block
+()
+.
+accept
+(
+self
+)
+def
+visit_wrapped_expression
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+"("
+node
+.
+visit_children
+(
+self
+)
+self
+.
+pycode
++=
+")"
+def
+visit_binary_expression
+(
+self
+,
+node
+):
+lhs
+=
+node
+.
+lhs
+rhs
+=
+node
+.
+rhs
+op
+=
+node
+.
+op
+.
+eval
+()
+if
+op
+==
+"^"
+:
+self
+.
+pycode
++=
+"pow("
+lhs
+.
+accept
+(
+self
+)
+self
+.
+pycode
++=
+", "
+rhs
+.
+accept
+(
+self
+)
+self
+.
+pycode
++=
+")"
+else
+:
+lhs
+.
+accept
+(
+self
+)
+self
+.
+pycode
++=
+f
+"
+{
+op
+}
+"
+rhs
+.
+accept
+(
+self
+)
+def
+visit_var_name
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+node
+.
+name
+.
+get_node_name
+()
+def
+visit_integer
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+nmodl
+.
+to_nmodl
+(
+node
+)
+def
+visit_double
+(
+self
+,
+node
+):
+self
+.
+pycode
++=
+nmodl
+.
+to_nmodl
+(
+node
+)
+[19]:
+pygen
+=
+PyGenerator
+()
+pygen
+.
+visit_program
+(
+mfunc_ast
+)
+print
+(
+pygen
+.
+pycode
+)
+def myfunc(x, y):
+    if x < y:
+        return x + y
+    else:
+        return y
+Example of CURIE information parsing
+
+In this example we show how ontology information from NEURON block can be parsed.
+[20]:
+import
+neuron.nmodl.dsl
+as
+nmodl
+from
+neuron.nmodl.dsl
+import
+ast
+,
+visitor
+driver
+=
+nmodl
+.
+NmodlDriver
+()
+mod_string
+=
+"""
+NEURON {
+SUFFIX hx
+REPRESENTS NCIT:C17145   : sodium channel
+REPRESENTS NCIT:C17008   : potassium channel
+USEION na READ ena WRITE ina REPRESENTS CHEBI:29101
+USEION ca READ eca WRITE ina
+RANGE gnabar, gkbar, gl, el, gna, gk
+}
+"""
+modast
+=
+driver
+.
+parse_string
+(
+mod_string
+)
+lookup_visitor
+=
+visitor
+.
+AstLookupVisitor
+()
+ont_statements
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+ONTOLOGY_STATEMENT
+)
+ions
+=
+lookup_visitor
+.
+lookup
+(
+modast
+,
+ast
+.
+AstNodeType
+.
+USEION
+)
+for
+statement
+in
+ont_statements
+:
+print
+(
+"
+%s
+(
+%s
+)"
+%
+(
+nmodl
+.
+to_nmodl
+(
+statement
+),
+nmodl
+.
+to_nmodl
+(
+statement
+.
+ontology_id
+))
+)
+for
+ion
+in
+ions
+:
+o_id
+=
+nmodl
+.
+to_nmodl
+(
+ion
+.
+ontology_id
+)
+if
+ion
+.
+ontology_id
+else
+""
+print
+(
+"
+%s
+(
+%s
+)"
+%
+(
+nmodl
+.
+to_nmodl
+(
+ion
+),
+o_id
+))
+REPRESENTS NCIT:C17145 (NCIT:C17145)
+ REPRESENTS NCIT:C17008 (NCIT:C17008)
+ USEION na READ ena WRITE ina REPRESENTS CHEBI:29101 (CHEBI:29101)
+ USEION ca READ eca WRITE ina ()
+[ ]:

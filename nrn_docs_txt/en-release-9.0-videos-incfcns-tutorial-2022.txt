@@ -1,0 +1,30 @@
+Source Path: nrn_docs_html/en/release-9.0/videos/incfcns-tutorial-2022.html
+
+INCF/CNS 2022 Online Tutorial
+
+A free online webinar series was offered on June 28, 2022.
+For those who prefer, this video series may also be accessed as a
+YouTube playlist
+.
+Course Welcome
+
+NEURON concepts
+
+Using NEURON’s GUI to build and simulate cells
+
+Using NMODL to add new biophysical mechanisms
+
+Using resources from ModelDB and NeuroMorpho.Org
+
+Networks: spike-triggered synaptic transmission, events, and artificial cells
+
+Numerical Methods: accuracy, stability, speed
+
+Scripting NEURON
+
+Numerical methods: adaptive integration
+
+Reaction-diffusion simulations
+
+Other resources and wrap-up
+

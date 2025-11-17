@@ -1,0 +1,17 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/modelspec/guitools.html
+
+Model Specification GUI Tools
+
+Inserter
+ShowMechanism
+MechType
+CellBuilder
+KineticBuild
+Managers
+PointManager
+PointGroup
+Electrode
+Viewers
+PointProcesses
+PointProcessManager
+PointProcessGroupManager

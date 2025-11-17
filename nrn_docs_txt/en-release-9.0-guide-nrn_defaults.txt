@@ -1,0 +1,203 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/nrn_defaults.html
+
+The appearance of NEURON’s graphical windows is controlled by definitions in the file
+$(NEURONHOME)/lib/nrn.defaults
+(under MSWindows it’s
+c:\nrnxx\lib\nrn.def
+where
+xx
+is the version number). This is a plain ASCII file that you can edit with a text editor.
+What’s $(NEURONHOME)?
+Start NEURON, and at the oc> prompt type
+neuronhome
+()
+On my Linux box, this tells me that $(NEURONHOME) is
+/usr/local/nrn/share/nrn
+and sure enough,
+nrn.defaults
+is in
+/
+usr
+/
+local
+/
+nrn
+/
+share
+/
+nrn
+/
+lib
+How to change the background color used in shape plots and other graphs
+
+Change the lines
+*
+Scene_background
+:
+#ffffff
+*
+Scene_foreground
+:
+#000000
+to whatever you like. For example,
+*
+Scene_background
+:
+#000000
+*
+Scene_foreground
+:
+#ffffff
+makes the background black and the axes and black traces white.
+How create a custom colormap
+
+The lines
+//
+the
+color
+map
+for
+pseudocolor
+plotting
+for
+3
+-
+D
+cells
+*
+shape_scale_file
+:
+$
+(
+NEURONHOME
+)
+/
+lib
+/
+shape
+.
+cm2
+tell you which file contains the colormap that will be used (under MSWin it’s
+c:\nrnxx\lib\shape.cm2
+). The colormap file is read when NEURON is initially launched. If the file doesn’t exist, NEURON uses a default scale.
+The colormap file is plain ASCII, with one set of RGB values per line. NEURON comes with a couple of different scales in files shape.cm1 and shape.cm2.
+Here’s another one you might try:
+95
+0
+95
+111
+0
+111
+127
+0
+143
+143
+0
+127
+159
+0
+111
+175
+0
+95
+191
+0
+79
+207
+0
+63
+207
+31
+47
+223
+47
+47
+239
+63
+31
+255
+79
+15
+255
+95
+7
+255
+111
+0
+255
+127
+0
+255
+143
+0
+255
+159
+0
+255
+175
+0
+255
+191
+0
+255
+207
+0
+255
+223
+0
+255
+239
+0
+255
+247
+0
+255
+255
+0
+255
+255
+255
+and yet another:
+111
+0
+111
+143
+0
+127
+175
+0
+95
+207
+0
+63
+223
+47
+47
+255
+79
+15
+255
+111
+0
+255
+143
+0
+255
+175
+0
+255
+207
+0
+255
+239
+0
+255
+255
+0
+255
+255
+200
+but you can make up anything you like.
+Before you start cooking up your own schemes, you might want to look at the following:
+“How NOT to Lie with Visualization” by Rogowitz & Treinish
+“A Rule-based Tool for Assisting Colormap Selection” by Bergman et al.

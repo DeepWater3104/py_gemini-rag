@@ -1,0 +1,18 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/language.html
+
+Language Overview
+
+This section describes the Neuron Model Description Language and how to use it to specify membrane mechanisms in Neuron.
+Language
+NMODL
+Model Description Language
+Basic NMODL Statements
+NEURON Extension to NMODL
+NEURON
+BEFORE / AFTER
+FOR_NETCONS
+PROTECT
+MUTEXLOCK / MUTEXUNLOCK
+VERBATIM
+Connecting Mechanisms Together
+Pointer Communication

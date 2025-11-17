@@ -1,0 +1,20 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/tutorial_2_hybrid_nets.html
+
+Tutorial 2 : Making Hybrid Nets
+
+Outline
+
+Example of a hybrid network
+Step 1. Define the types of cells
+We need a class of cells that can supply afferent spikes.
+We need a “motoneuron” or “M cell” class.
+Specifying the anatomical and biophysical properties of the M cell class
+Specifying what kinds of synapses can be attached to an M cell
+Placing synapses on the M cell
+Step 2. Create each cell in the network
+We need a Network Builder
+We need an instance of each of our three cell types.
+Step 3. Connect the cells.
+Network architecture
+Parameters
+Run a simulation and plot the input and output spike trains

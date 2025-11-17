@@ -1,0 +1,56 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/programming/math/eqnsolve.html
+
+eqinit
+·
+prmat
+·
+solve
+Solving Nonlinear Systems
+
+For linear systems, see
+Matrix.solv()
+.
+prmat
+(
+)
+
+Python
+Prints the form of the matrix defined by
+eqn
+statements. Each nonzero
+element is printed as an “*”.
+HOC
+Prints the form of the matrix defined by
+eqn
+statements. Each nonzero
+element is printed as an “*”.
+solve
+(
+)
+
+Python
+Does one iteration of the non-linear system defined by
+eqn
+statements.
+Returns the linear norm of the difference between left and right hand sides
+plus the change in the dependent variables.
+HOC
+Does one iteration of the non-linear system defined by
+eqn
+statements.
+Returns the linear norm of the difference between left and right hand sides
+plus the change in the dependent variables.
+eqinit
+(
+)
+
+Python
+Throws away previous dependent variable and equation specifications
+from
+eqn
+statements.
+HOC
+Throws away previous dependent variable and equation specifications
+from
+eqn
+statements.

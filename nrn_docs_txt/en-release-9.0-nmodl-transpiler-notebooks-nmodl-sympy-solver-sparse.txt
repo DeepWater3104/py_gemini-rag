@@ -1,0 +1,292 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/transpiler/notebooks/nmodl-sympy-solver-sparse.html
+
+NMODL SympySolver - sparse
+
+This notebook describes the implementation of the
+sparse
+part of the
+SympySolverVisitor
+, which solves the systems of ODEs defined in
+DERIVATIVE
+blocks when these ODEs are
+linear
+and
+coupled
+.
+For a higher level overview of the approach to solving ODEs in NMODL, please see the
+nmodl-odes-overview
+notebook.
+For a more general tutorial on using the NMODL python interface, please see the
+tutorial notebook
+.
+Implementation
+
+The
+SympySolverVisitor
+for solver method
+sparse
+does the following:
+Construct the implicit Euler equations to convert the sysytem of ODEs to a
+LINEAR
+block
+This
+LINEAR
+block is then solved as described in
+nmodl-linear-solver
+Implementation Tests
+
+The unit tests may be helpful to understand what these functions are doing
+SympySolverVisitor
+tests are located in
+test/nmodl/transpiler/unit/visitor/sympy_solver.cpp
+, and tests using the
+sparse
+solver method have the tag “
+[sparse]
+”
+Examples
+
+[1]:
+%%capture
+!
+pip
+install
+neuron
+[2]:
+import
+neuron.nmodl.dsl
+as
+nmodl
+def
+run_sympy_solver
+(
+mod_string
+,
+cse
+=
+False
+):
+# parse NMDOL file (supplied as a string) into AST
+driver
+=
+nmodl
+.
+NmodlDriver
+()
+AST
+=
+driver
+.
+parse_string
+(
+mod_string
+)
+# run SymtabVisitor to generate Symbol Table
+nmodl
+.
+symtab
+.
+SymtabVisitor
+()
+.
+visit_program
+(
+AST
+)
+# constant folding, inlining & local variable renaming passes
+nmodl
+.
+visitor
+.
+ConstantFolderVisitor
+()
+.
+visit_program
+(
+AST
+)
+nmodl
+.
+visitor
+.
+InlineVisitor
+()
+.
+visit_program
+(
+AST
+)
+nmodl
+.
+visitor
+.
+LocalVarRenameVisitor
+()
+.
+visit_program
+(
+AST
+)
+# run SympySolver visitor
+nmodl
+.
+visitor
+.
+SympySolverVisitor
+()
+.
+visit_program
+(
+AST
+)
+# return contents of new DERIVATIVE block as list of strings
+return
+nmodl
+.
+to_nmodl
+(
+nmodl
+.
+visitor
+.
+AstLookupVisitor
+()
+.
+lookup
+(
+AST
+,
+nmodl
+.
+ast
+.
+AstNodeType
+.
+DERIVATIVE_BLOCK
+)[
+0
+]
+)
+Ex. 1
+
+2 coupled linear ODEs
+[3]:
+ex1
+=
+"""
+BREAKPOINT {
+SOLVE states METHOD sparse
+}
+STATE {
+mc m
+}
+DERIVATIVE states {
+mc' = -a*mc + b*m
+m' = a*mc - b*m
+}
+"""
+print
+(
+run_sympy_solver
+(
+ex1
+,
+cse
+=
+True
+))
+DERIVATIVE states {
+    LOCAL old_mc, old_m, tmp0, tmp1, tmp2
+    old_mc = mc
+    old_m = m
+    tmp0 = a*dt
+    tmp1 = b*dt
+    tmp2 = 1/(tmp0+tmp1+1)
+    mc = tmp2*(old_m*tmp1+old_mc*tmp1+old_mc)
+    m = tmp2*(old_m*tmp0+old_m+old_mc*tmp0)
+}
+Ex. 2
+
+5 coupled linear ODEs
+[4]:
+ex2
+=
+"""
+STATE {
+c1 o1 o2 p0 p1
+}
+BREAKPOINT  {
+SOLVE ihkin METHOD sparse
+}
+DERIVATIVE ihkin {
+LOCAL alpha, beta, k3p, k4, k1ca, k2
+evaluate_fct(v, cai)
+c1' = (-1*(alpha*c1-beta*o1))
+o1' = (1*(alpha*c1-beta*o1))+(-1*(k3p*o1-k4*o2))
+o2' = (1*(k3p*o1-k4*o2))
+p0' = (-1*(k1ca*p0-k2*p1))
+p1' = (1*(k1ca*p0-k2*p1))
+}
+"""
+print
+(
+run_sympy_solver
+(
+ex2
+))
+DERIVATIVE ihkin {
+    EIGEN_LINEAR_SOLVE[5]{
+        LOCAL alpha, beta, k3p, k4, k1ca, k2, old_c1, old_o1, old_o2, old_p0, old_p1
+    }{
+        evaluate_fct(v, cai)
+        old_c1 = c1
+        old_o1 = o1
+        old_o2 = o2
+        old_p0 = p0
+        old_p1 = p1
+    }{
+        X[0] = c1
+        X[1] = o1
+        X[2] = o2
+        X[3] = p0
+        X[4] = p1
+        F[0] = -old_c1
+        F[1] = -old_o1
+        F[2] = -old_o2
+        F[3] = -old_p0
+        F[4] = -old_p1
+        J[0] = -alpha*dt-1
+        J[5] = beta*dt
+        J[10] = 0
+        J[15] = 0
+        J[20] = 0
+        J[1] = alpha*dt
+        J[6] = -beta*dt-dt*k3p-1
+        J[11] = dt*k4
+        J[16] = 0
+        J[21] = 0
+        J[2] = 0
+        J[7] = dt*k3p
+        J[12] = -dt*k4-1
+        J[17] = 0
+        J[22] = 0
+        J[3] = 0
+        J[8] = 0
+        J[13] = 0
+        J[18] = -dt*k1ca-1
+        J[23] = dt*k2
+        J[4] = 0
+        J[9] = 0
+        J[14] = 0
+        J[19] = dt*k1ca
+        J[24] = -dt*k2-1
+    }{
+        c1 = X[0]
+        o1 = X[1]
+        o2 = X[2]
+        p0 = X[3]
+        p1 = X[4]
+    }{
+    }
+}
+[ ]:

@@ -1,0 +1,168 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/modelspec/programmatic/obsoletestimuli.html
+
+fclamp
+·
+fclampi
+·
+fclampv
+·
+fstim
+·
+fstimi
+·
+prstim
+Obsolete Stimuli
+
+Warning
+None of these functions are recommended for use in new code.
+They are provided for backward compatibility with old code.
+fstim
+(
+)
+
+Python
+Consider this obsolete.  Nevertheless, it does work.
+n.fstim(maxnum)
+allocates space for maxnum synapses. Space for
+previously existing synapses is released. All synapses initialized to
+0 maximum conductance.
+n.fstim(i,
+loc,
+delay,
+duration,
+stim)
+The ith current stimulus is injected at parameter
+`
+loc’
+different current stimuli do not concatenate but can ride on top of
+each other. delay refers to onset of stimulus relative to t=0
+delay and duration are in msec.
+stim in namps.
+n.fstimi(i)
+returns stimulus current for ith stimulus at the value of the
+global time t.
+HOC
+Consider this obsolete.  Nevertheless, it does work.
+fstim(maxnum)
+allocates space for maxnum synapses. Space for
+previously existing synapses is released. All synapses initialized to
+0 maximum conductance.
+fstim(i,
+loc,
+delay,
+duration,
+stim)
+The ith current stimulus is injected at parameter
+`
+loc’
+different current stimuli do not concatenate but can ride on top of
+each other. delay refers to onset of stimulus relative to t=0
+delay and duration are in msec.
+stim in namps.
+fstimi(i)
+returns stimulus current for ith stimulus at the value of the
+global time t.
+fstimi
+(
+)
+
+Python
+Syntax:
+n.fstimi()
+Description:
+Obsolete
+HOC
+Syntax:
+fstimi()
+Description:
+Obsolete
+fclamp
+(
+)
+
+Python
+Syntax:
+n.fclamp()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+HOC
+Syntax:
+fclamp()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+fclampi
+(
+)
+
+Python
+Syntax:
+n.fclampi()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+HOC
+Syntax:
+fclampi()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+fclampv
+(
+)
+
+Python
+Syntax:
+n.fclampv()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+HOC
+Syntax:
+fclampv()
+Description:
+obsolete. Use the
+VClamp
+or
+SEClamp
+point process.
+prstim
+(
+)
+
+Python
+Syntax:
+n.prstim()
+Description:
+obsolete. Print the info about
+fstim
+,
+fclamp
+, and
+fsyn
+HOC
+Syntax:
+prstim()
+Description:
+obsolete. Print the info about
+fstim
+,
+fclamp
+, and
+fsyn

@@ -1,0 +1,126 @@
+Source Path: nrn_docs_html/en/release-9.0/nmodl/transpiler/index.html
+
+About the NMODL transpiler
+
+Introduction:
+The NMODL Transpiler
+About NMODL
+Installation
+Try NMODL
+Using the Python API
+High Level Analysis and Code Generation
+Documentation
+Citation
+Support / Contribuition
+Examples / Benchmarks
+Funding & Acknowledgment
+The NEURON MODeling language
+Contents:
+Visitors
+Parsing Model and constructing AST
+Querying AST objects with Visitors
+Currents
+NMODL Keywords
+Ions
+NDMOL Keywords
+Storage
+Concentrations
+Special Case: zero-area nodes
+NMODL “pointers”
+Integer Variables
+Cable Equation
+Global Variables
+GLOBAL variables
+Top-LOCAL variables
+Thread Variables
+PARAMETER variables
+CONSTANT variables
+What Does CoreNEURON support?
+Longitudinal Diffusion
+Implementation in NMODL
+Variable timestep integration (CVODE)
+Implementation in NMODL
+Jupyter Notebooks:
+The NMODL Jupyter notebooks
+About the notebooks
+NMODL Python Interface Tutorial
+Introduction
+Parsing Model And Constructing AST
+Querying AST object with Visitors
+Lookup visitor
+Symbol Table Visitor
+Custom AST visitor
+Easy code generation using AST visitors
+Example of CURIE information parsing
+NMODL integration of ODEs
+KINETIC
+block
+DERIVATIVE
+block
+LINEAR
+block
+NONLINEAR
+block
+NMODL Kinetic Scheme
+Reaction Kinetics
+Law of Mass Action
+KINETIC block format
+Other types of reaction statement
+f_flux / b_flux variables
+[TODO] CONSERVE
+Examples
+Ex. 1
+Ex. 2
+Ex. 3
+Ex. 4
+Ex. 5
+NMODL SympySolver - cnexp
+Implementation
+Pade approximant
+Implementation Tests
+Examples
+Ex. 1
+Ex. 2
+Ex. 3
+Ex. 4
+Ex. 5
+Ex. 6
+NMODL SympySolver - sparse
+Implementation
+Implementation Tests
+Examples
+Ex. 1
+Ex. 2
+NMODL SympySolver - derivimplicit
+Implementation
+Implementation Tests
+Examples
+Ex. 1
+Ex. 2
+NMODL LINEAR solver
+NMODL NONLINEAR solver
+Newton solver
+Fall-back solver
+NMODL CONDUCTANCE
+Introduction
+Implementation
+Implementation Tests
+Examples
+Ex. 1
+Ex. 2
+Ex. 3
+Ex. 4
+Ex. 5
+Ex. 6
+Ex. 7
+Contributing:
+Contributing to the NMODL transpiler
+Got a Question?
+Found a Bug?
+Missing a Feature?
+Submission Guidelines
+Development Conventions
+Reference:
+Python package
+Module contents
+Submodules

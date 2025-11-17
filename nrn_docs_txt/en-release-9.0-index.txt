@@ -1,0 +1,85 @@
+Source Path: nrn_docs_html/en/release-9.0/index.html
+
+The NEURON Simulator
+
+NEURON is a simulator for neurons and networks of neurons that runs efficiently on your local machine, in the cloud, or on an HPC.
+Build and simulate models using Python, HOC, and/or NEURON’s graphical interface. From this page you can watch
+recorded NEURON classes
+,
+read the
+Programmer’s reference
+,
+browse the NEURON forum
+,
+explore the
+source code for over 850 NEURON models on ModelDB
+,
+and more (use the links on the side or search).
+Installation
+
+macOS
+The recommended installation is to open a Terminal (Press
+⌘
++
+Space
+and type “terminal”)
+and type:
+pip3
+install
+neuron
+Alternatively, you can use the
+PKG installer
+.
+For troubleshooting, see the
+detailed installation instructions
+.
+Linux
+The recommended installation is to open a terminal and type:
+pip3
+install
+neuron
+For troubleshooting, see the
+detailed installation instructions
+.
+Windows
+Download the Windows Installer
+.
+You can also install the Linux wheel via the Windows Subsystem for Linux (WSL). See
+instructions
+.
+For troubleshooting, see the
+detailed installation instructions
+.
+Cloud
+On
+Google Colab
+and many other cloud Jupyter providers, you can install
+NEURON via
+!pip install neuron
+NEURON is already installed on
+The Neuroscience Gateway
+and on
+EBRAINS
+.
+Source code
+View and suggest changes to the source code at:
+github.com/neuronsimulator/nrn
+For instructions on how to build from source,
+go here
+.
+About NEURON >= 9.0
+If you are experiencing compilation errors while using
+nrnivmodl
+with NEURON >=9.0,
+but not with previous 8.x releases, please see
+Adapting MOD files for C++ with NEURON >= 9.0
+.
+We have provide comprehensive instructions for adapting legacy MOD files that include
+VERBATIM
+blocks,
+or you might find already updated MOD files in the ModelDB GitHub repositories.
+See also the NEURON documentation
+index
+and the
+NEURON forum
+.

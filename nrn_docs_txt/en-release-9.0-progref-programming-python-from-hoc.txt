@@ -1,0 +1,48 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/programming/python-from-hoc.html
+
+HOC accessing Python
+
+This section describes how one can interact with Python from HOC code.
+nrnpython
+(
+)
+
+Syntax:
+nrnpython("any
+python
+statement")
+Description:
+Executes any python statement. Returns 1 on success; 0 if an exception
+was raised or if python support is not available.
+In particular,
+python_available
+=
+nrnpython("")
+is 1 (true) if
+python support is available and 0 (false) if python support is not
+available.
+Example:
+nrnpython
+(
+"import sys"
+)
+nrnpython
+(
+"print(sys.path)"
+)
+nrnpython
+(
+"a = [1,2,3]"
+)
+nrnpython
+(
+"print(a)"
+)
+nrnpython
+(
+"import hoc"
+)
+nrnpython
+(
+"hoc.execute('print PI')"
+)

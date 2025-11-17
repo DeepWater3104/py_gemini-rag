@@ -1,0 +1,49 @@
+Source Path: nrn_docs_html/en/release-9.0/install/developer.html
+
+Developer Builds
+
+Developer builds for creating Binary and Python wheel distributions, tests, documentation, code coverage.
+Each aspect generally has extra dependencies and special instructions.
+Mac Binary Package (Apple M1 and Mac x86_64)
+Dependencies
+Signing and Notarization
+Building Python Wheels
+Linux wheels
+macOS wheels
+Launch the wheel building
+Testing the wheels
+Publishing the wheels on Pypi via Azure
+Publishing the wheels on Pypi via CircleCI
+Nightly wheels
+How to test Azure wheels locally
+Windows build
+Pre-requisites
+Build Environment installation
+Setting up Visual Studio Code
+How to build NEURON
+Troubleshooting
+Code Formatting
+Dependencies
+Instructions
+Behind the scenes
+Code Coverage
+Dependencies (Linux)
+Instructions
+Simplified Workflow
+Diagnosis and Debugging
+Segfault and crash.
+NaN or Inf values
+Different results with different nhost or nthread.
+GDB
+GDB and MPI
+The rr debugger
+Valgrind
+Valgrind + gdb
+Sanitizers
+Profiling and performance benchmarking
+Instrumentation
+Running benchmarks
+Running GPU benchmarks
+Profiling With Intel Vtune
+Using LIKWID With NEURON
+Comparing LIKWID Profiles

@@ -1,0 +1,8 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/use_the_model_specification.html
+
+Step 4. Use the model specification
+
+Here is the response of the fuly configured model to a brief depolarizing current.
+The CellBuilder was hidden for this illustration, in order to save screen space.
+parameterizedcode.zip
+contains the files (init.hoc, tapercell.ses and iclamprig.ses) that were used to generate this figure.

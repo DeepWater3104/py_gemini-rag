@@ -1,0 +1,95 @@
+Source Path: nrn_docs_html/en/release-9.0/videos/netpyne-course-2021.html
+
+NetPyNE 2021 Online Course
+
+This courses introduces using NEURON via
+NetPyNE
+,
+a tool designed to simplify the construction, simulation, and analysis of
+network models.
+The first half of the course is mostly about NEURON, neuron theory, and relevant tools. NetPyNE-specific content begins in the second half of the course.
+For those who prefer, this video series may also be accessed as a
+YouTube playlist
+. The playlist also includes guest speakers describing their research projects using NetPyNE and student project presentations.
+Course introduction
+
+Single neuron theory I
+
+Bill Lytton, presenting.
+General tech basics
+
+Topics:
+introduction to the terminal
+use of Google Colab and Jupyter notebooks
+NEURON basics
+
+Lecture
+
+Exercises
+
+To facilitate interaction for the exercises, we split the class into two groups, taught by different people. The exercises are the same, however the discussions and details of the approaches vary.
+Group 1
+
+Group 2
+
+Single neuron theory II
+
+NEURON RxD
+
+Lecture
+
+Exercises
+
+To facilitate interaction for the exercises, we split the class into two groups, taught by different people. The exercises are the same, however the discussions and details of the approaches vary.
+The three exercises:
+pure diffusion
+regenerative signaling
+Hodgkin-Huxley, concentrations, and homeostasis
+Group 1
+
+Group 2
+
+Network and synapse theory
+
+Lecture
+
+Networks in NEURON exercises
+
+NetPyNE GUI
+
+Introduction
+
+Tutorials 1 and 2: Spinal cord
+
+Tutorial 3
+
+Tutorial 2: spinal cord
+
+Exercises
+
+Tutorials 3-5
+
+Tutorials 6 and 9
+
+NetPyNE analysis and plotting
+
+NetPyNE cell imports
+
+Lecture
+
+Hands-on
+
+Building data driven multiscale models
+
+Parameter exploration and optimization
+
+Part 1
+
+Part 2
+
+NetPyNE and RxD
+
+NetPyNE hands on batches
+
+NetPyNE virtual environments on mac and linux
+

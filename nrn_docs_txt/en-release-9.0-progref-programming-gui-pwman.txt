@@ -1,0 +1,838 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/programming/gui/pwman.html
+
+PWManager
+close
+·
+count
+·
+deco
+·
+deiconify
+·
+group
+·
+hide
+·
+iconify
+·
+is_mapped
+·
+landscape
+·
+leader
+·
+manager
+·
+map
+·
+name
+·
+paper_place
+·
+printfile
+·
+save
+·
+scale
+·
+snap
+·
+window_place
+PWManager
+
+class
+PWManager
+
+Python
+Syntax:
+p
+=
+n.PWManager()
+Description:
+A variety of hooks into the
+Print & File Window Manager
+to allow program control
+of that tool. The implementation of the
+Window item of the NeuronMainMenu makes
+heavy use of this class. Note that the first window created is called
+the leader. It cannot be closed.
+HOC
+Syntax:
+p
+=
+new
+PWManager()
+Description:
+A variety of hooks into the
+Print & File Window Manager
+to allow program control
+of that tool. The implementation of the
+Window item of the NeuronMainMenu makes
+heavy use of this class. Note that the first window created is called
+the leader. It cannot be closed.
+PWManager.
+count
+(
+)
+
+Python
+Syntax:
+cnt
+=
+p.count()
+Description:
+Returns number of “Printable” windows on the screen.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+print
+(
+p
+.
+count
+())
+HOC
+Syntax:
+cnt
+=
+p.count()
+Description:
+Returns number of “Printable” windows on the screen.
+PWManager.
+is_mapped
+(
+)
+
+Python
+Syntax:
+boolean
+=
+p.is_mapped(index)
+Description:
+Return 1 if the index’th window is visible.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+# not mapped
+print
+(
+p
+.
+is_mapped
+(
+1
+))
+p
+.
+map
+(
+1
+)
+# mapped
+print
+(
+p
+.
+is_mapped
+(
+1
+))
+HOC
+Syntax:
+boolean
+=
+p.is_mapped(index)
+Description:
+Return 1 if the index’th window is visible.
+PWManager.
+map
+(
+)
+
+Python
+Syntax:
+p.map(index)
+Description:
+Makes the index’th window visible.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+# mapped
+p
+.
+map
+(
+1
+)
+HOC
+Syntax:
+p.map(index)
+Description:
+Makes the index’th window visible.
+PWManager.
+hide
+(
+)
+
+Python
+Syntax:
+p.hide(index)
+Description:
+Unmaps the index’th window. The window is NOT closed.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+# mapped
+p
+.
+map
+(
+1
+)
+print
+(
+p
+.
+is_mapped
+(
+1
+))
+# not mapped
+p
+.
+hide
+(
+1
+)
+print
+(
+p
+.
+is_mapped
+(
+1
+))
+HOC
+Syntax:
+p.hide(index)
+Description:
+Unmaps the index’th window. The window is NOT closed.
+PWManager.
+close
+(
+)
+
+Python
+Syntax:
+p.close(index)
+Description:
+Closes the index’th window. This will destroy the window and decrement the
+reference count of the associated hoc object (if any).
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+map
+(
+1
+)
+p
+.
+close
+(
+1
+)
+HOC
+Syntax:
+p.close(index)
+Description:
+Closes the index’th window. This will destroy the window and decrement the
+reference count of the associated hoc object (if any).
+PWManager.
+iconify
+(
+)
+
+Python
+Syntax:
+p.iconify()
+Description:
+Hides all windows and iconifies the leader.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+map
+(
+1
+)
+p
+.
+iconify
+()
+HOC
+Syntax:
+p.iconify()
+Description:
+Hides all windows and iconifies the leader.
+PWManager.
+deiconify
+(
+)
+
+Python
+Syntax:
+p.deiconify()
+Description:
+Un-iconifies the leader window and maps any windows not hidden before it was
+iconified.
+HOC
+Syntax:
+p.deiconify()
+Description:
+Un-iconifies the leader window and maps any windows not hidden before it was
+iconified.
+PWManager.
+leader
+(
+)
+
+Python
+Syntax:
+index
+=
+p.leader()
+Description:
+Window index of the leader window.
+HOC
+Syntax:
+index
+=
+p.leader()
+Description:
+Window index of the leader window.
+PWManager.
+manager
+(
+)
+
+Python
+Syntax:
+index
+=
+p.manager()
+Description:
+Window index of the
+Print & File Window Manager
+window.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+print
+(
+p
+.
+manager
+())
+HOC
+Syntax:
+index
+=
+p.manager()
+Description:
+Window index of the
+Print & File Window Manager
+window.
+PWManager.
+save
+(
+)
+
+Python
+Syntax:
+m
+=
+p.save("filename",
+group_object,
+["header"])
+m
+=
+p.save("filename",
+selected,
+["header"])
+Description:
+Create a session file with the given filename
+consisting oo all windows associated with a
+particular group_object in a session file
+If selected == 0 then all windows are saved. If selected==1 then only
+the windows on the paper icon are saved in the session file.
+If the header argument exists, it is copied to the beginning of the file.
+See also
+save_session()
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+map
+(
+1
+)
+selected
+=
+1
+m
+=
+p
+.
+save
+(
+"file"
+,
+selected
+,
+"Header"
+)
+HOC
+Syntax:
+n
+=
+p.save("filename",
+group_object,
+["header"])
+n
+=
+p.save("filename",
+selected,
+["header"])
+Description:
+Create a session file with the given filename
+consisting oo all windows associated with a
+particular group_object in a session file
+If selected == 0 then all windows are saved. If selected==1 then only
+the windows on the paper icon are saved in the session file.
+If the header argument exists, it is copied to the beginning of the file.
+See also
+save_session()
+PWManager.
+group
+(
+)
+
+Python
+Syntax:
+group_obj
+=
+p.group(index,
+group_obj)
+group_obj
+=
+p.group(index)
+Description:
+Associate the index’th window with the group object and returns the
+group object associated with that window.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+g1
+=
+p
+.
+group
+(
+0
+)
+g2
+=
+p
+.
+group
+(
+1
+,
+g1
+)
+HOC
+Syntax:
+group_obj
+=
+p.group(index,
+group_obj)
+group_obj
+=
+p.group(index)
+Description:
+Associate the index’th window with the group object and returns the
+group object associated with that window.
+PWManager.
+snap
+(
+)
+
+Python
+Syntax:
+p.snap()
+p.snap("filename")
+Description:
+Only works on the unix version.
+Puts the GUI in snapshot mode until the ‘p’ keyboard character is pressed.
+During this time the mouse can be used normally to pop up menus or drag
+rubberbands on graphs. When the p character is pressed all windows including
+drawings of the window decorations, menus, rubberband, and mouse arrow cursor is
+printed to a postscript file with the “filename” or filebrowser selection.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+snape
+(
+"filename"
+)
+HOC
+Syntax:
+p.snap()
+p.snap("filename")
+Description:
+Only works on the unix version.
+Puts the GUI in snapshot mode until the ‘p’ keyboard character is pressed.
+During this time the mouse can be used normally to pop up menus or drag
+rubberbands on graphs. When the p character is pressed all windows including
+drawings of the window decorations, menus, rubberband, and mouse arrow cursor is
+printed to a postscript file with the “filename” or filebrowser selection.
+PWManager.
+scale
+(
+)
+
+Python
+Syntax:
+p.scale(x)
+Description:
+Works only under mswin.
+Immediately rescales all the windows (including font size) and their position
+relative to the top, left corner of the screen according to the absolute
+scale factor x.
+i.e, a scale value of 1 gives normal size windows.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+scale
+(
+2
+)
+HOC
+Syntax:
+p.scale(x)
+Description:
+Works only under mswin.
+Immediately rescales all the windows (including font size) and their position
+relative to the top, left corner of the screen according to the absolute
+scale factor x.
+i.e, a scale value of 1 gives normal size windows.
+PWManager.
+name
+(
+)
+
+Python
+Syntax:
+strdef
+=
+p.name(index)
+Description:
+Returns the window title bar string of the index’th window.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+print
+(
+p
+.
+name
+(
+0
+))
+HOC
+Syntax:
+strdef
+=
+p.name(index)
+Description:
+Returns the window title bar string of the index’th window.
+PWManager.
+window_place
+(
+)
+
+Python
+Syntax:
+p.window_place(index,
+left,
+top)
+Description:
+moves the index window to the left,top pixel
+coordinates of the screen.
+Example:
+from
+neuron
+import
+n
+,
+gui
+p
+=
+n
+.
+PWManager
+()
+p
+.
+window_place
+(
+0
+,
+1000
+,
+1000
+)
+HOC
+Syntax:
+p.window_place(index,
+left,
+top)
+Description:
+moves the index window to the left,top pixel
+coordinates of the screen.
+PWManager.
+paper_place
+(
+)
+
+Python
+Syntax:
+p.paper_place(index,
+show)
+p.paper_place(index,
+left,
+bottom,
+scale)
+Description:
+Shows or hides the ith window on the
+paper icon. If showing, this constitutes adding this window to the list of
+selected windows.
+The 4 arg form shows, places, and scales
+the index window on the paper icon. The scale and location only has an effect when
+the paper is printed in postscript mode.
+HOC
+Syntax:
+p.paper_place(index,
+show)
+p.paper_place(index,
+left,
+bottom,
+scale)
+Description:
+Shows or hides the ith window on the
+paper icon. If showing, this constitutes adding this window to the list of
+selected windows.
+The 4 arg form shows, places, and scales
+the index window on the paper icon. The scale and location only has an effect when
+the paper is printed in postscript mode.
+PWManager.
+landscape
+(
+)
+
+Python
+Syntax:
+p.landscape(boolean)
+Description:
+Determines if postscript printing is in landscape
+or portrait mode.
+HOC
+Syntax:
+p.landscape(boolean)
+Description:
+Determines if postscript printing is in landscape
+or portrait mode.
+PWManager.
+deco
+(
+)
+
+Python
+Syntax:
+p.deco(mode)
+Description:
+When printing in postscript mode,
+Mode values for postscript printing
+
+Mode
+Description
+0
+Print only the interior of the window.
+1
+Print the interior and the title above each window.
+2
+Print the interior and all window decorations including the window title.
+HOC
+Syntax:
+p.deco(mode)
+Description:
+When printing in postscript mode,
+Mode values for postscript printing
+
+Mode
+Description
+0
+Print only the interior of the window.
+1
+Print the interior and the title above each window.
+2
+Print the interior and all window decorations including the window title.
+PWManager.
+printfile
+(
+)
+
+Python
+Syntax:
+p.printfile("filename",
+mode,
+selected)
+Description:
+Print to a file in postcript, idraw, or ascii mode (mode=0,1,2) the selected windows
+or all the windows( selected=0,1)
+HOC
+Syntax:
+p.printfile("filename",
+mode,
+selected)
+Description:
+Print to a file in postcript, idraw, or ascii mode (mode=0,1,2) the selected windows
+or all the windows( selected=0,1)

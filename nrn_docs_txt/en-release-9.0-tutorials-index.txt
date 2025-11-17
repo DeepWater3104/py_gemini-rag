@@ -1,0 +1,40 @@
+Source Path: nrn_docs_html/en/release-9.0/tutorials/index.html
+
+Python tutorials
+
+In this series we have some basic tutorials: an introduction to Python and how to work with NEURON through Python.
+Through the
+Ball and Stick
+tutorial, we learn how to develop a model starting from a single cell through a network.
+Basic tutorials
+Introduction to Python
+Scripting NEURON basics
+Ball and Stick tutorial
+Ball and stick 1: Basic cell
+Load NEURON
+Defining the cell morphology
+Instrumentation
+Run the simulation
+Plot the results
+Simulation studies
+Exercise
+Advanced exercise
+Ball and stick 2: Build a ring network of ball-and-stick cells
+Generic cell class
+Adjusting position and orientation
+Construct and position our cells
+A first synapse, and input via a NetStim
+Running and plotting a simulation
+Connecting the cells
+Ball and stick 3: Extensible network of cells
+Loading libraries
+Generic Cell class
+Make a Ring class
+Test the network
+Explore effects of parameters
+Ball and stick 4: Parallel vs serial mode
+Parallel communication in NEURON
+Test MPI and Parallel NEURON
+Back to the example
+Test the model
+Gathering spikes

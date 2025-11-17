@@ -1,0 +1,13 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/tutorial_artificial_neurons.html
+
+Tutorial 1: Making Networks of Artificial Neurons
+
+Outline
+
+Example of a simple network
+Step 1. Define the types of cells
+Step 2. Create each cell in the network
+Step 3. Connect the cells.
+Network architecture
+Parameters
+Run a simulation and plot the input and output spike trains

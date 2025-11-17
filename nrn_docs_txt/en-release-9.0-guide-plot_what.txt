@@ -1,0 +1,3 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/plot_what.html
+
+How about ENa-Vm, i.e. the driving force for INa? Maybe normalize this with respect to the driving force at t = 0?

@@ -1,0 +1,58 @@
+Source Path: nrn_docs_html/en/release-9.0/scm/index.html
+
+NEURON SCM and Release
+
+NEURON Versioning and Release Guidelines
+Release Versioning
+Versioning Scheme
+NEURON Release Management Guidelines
+Contributing
+Managing Releases
+From Alpha to Final Release
+Patch Releases
+Release Deprecation
+Reference
+NEURON release workflow
+NEURON Source and Release Management Guide
+INTRODUCTION
+Definitions
+GIT and GITHUB
+Git Branches and Tags
+GitHub
+GIT OPERATIONS
+Checkout, Stage, Commit
+Checkout & Reset
+Merging Branches
+Merge –squash
+Fast-Forward merge
+Merge and Rebase
+BEST PRACTICES
+Creating Changes/Pull Requests
+Bring up to date: Merge vs Rebase
+Reviewing
+CREATING RELEASES
+NEURON’s Release Requirements
+VERSIONING SCHEMES
+Existing Conventions
+Semantic Versioning
+PEP 440
+Release Life Cycle: Alpha, Beta, Release Candidate
+A Versioning Scheme for NEURON
+RELEASE MANAGEMENT WITH GIT
+Git Branching Models
+GitHub Flow
+Git Flow
+GitLab Flow
+Other Alternatives
+NEURON Release Management Guidelines
+Contributing
+Managing Releases
+REFERENCES
+DOCUMENT HISTORY
+Footnotes
+NEURON Software Policies
+Python Support Policy
+EOL (end of life)
+Note on Existing releases
+Deprecation
+New Python versions

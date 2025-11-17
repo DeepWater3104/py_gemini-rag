@@ -1,0 +1,745 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/programming/math/functions.html
+
+abs
+·
+atan
+·
+atan2
+·
+cos
+·
+erf
+·
+erfc
+·
+exp
+·
+int
+·
+log
+·
+log10
+·
+sin
+·
+sqrt
+·
+tanh
+Common Math Functions (HOC)
+
+These math functions return a double precision value and take a double
+precision argument. The exception is
+atan2()
+which has two double precision arguments.
+Diagnostics:
+Arguments that are out of range give an argument domain diagnostic.
+These functions call the library routines supplied by the compiler.
+Note
+Every function on this page has a pure-Python alternative.
+When working with
+Vector
+objects, to create a new Vector with the
+function applied to each element of the original, use either list
+comprehensions or
+numpy
+. When working with
+rxd
+objects (e.g.,
+a
+rxd.Rate
+), use the
+rxd.rxdmath
+module.
+abs
+(
+)
+
+Python
+Absolute value
+>>> n.abs(-42.2)
+42.2
+See
+Vector.abs()
+for the
+Vector
+class.
+Note
+In Python code, use Python’s
+abs
+function, which works on both numbers and numpy arrays, as well as Vectors (Vectors do not print their contents) :
+>>>
+abs
+(
+-
+42.2
+)
+42.2
+>>>
+abs
+(
+-
+3
++
+4
+j
+)
+5.0
+>>>
+v
+=
+n
+.
+Vector
+([
+1
+,
+6
+,
+-
+2
+,
+-
+65
+])
+>>>
+abs
+(
+v
+)
+.
+printf
+()
+1       6       2       65
+4
+HOC
+absolute value
+see
+Vector.abs()
+for the
+Vector
+class.
+int
+(
+)
+
+Python
+Returns the integer part of its argument (truncates toward 0).
+>>>
+n
+.
+int
+(
+3.14
+)
+3.0
+>>>
+n
+.
+int
+(
+-
+3.14
+)
+-3.0
+Note
+In Python code, use Python’s
+int
+function instead. The behavior is slightly different in that the Python function returns an int type instead of a double:
+>>>
+int
+(
+-
+3.14
+)
+-3
+>>>
+int
+(
+3.14
+)
+3
+HOC
+returns the integer part of its argument (truncates toward 0).
+sqrt
+(
+)
+
+Python
+Square root
+see
+Vector.sqrt()
+for the
+Vector
+class.
+Note
+Consider using Python’s built in
+math.sqrt
+instead.
+HOC
+square root
+see
+Vector.sqrt()
+for the
+Vector
+class.
+exp
+(
+)
+
+Python
+Returns the exponential function to the base e
+When exp is used in model descriptions, it is often the
+case that the CVode variable step integrator extrapolates
+voltages to values which return out of range values for the exp (often used
+in rate functions). There were so many of these false warnings that it was
+deemed better to turn off the warning message when CVode is active.
+In any case the return value is exp(700). This message is not turned off
+at the interpreter level or when CVode is not active.
+from
+neuron
+import
+n
+for
+i
+in
+range
+(
+6
+,
+12
+):
+print
+(
+i
+,
+n
+.
+exp
+(
+i
+))
+Note
+Consider using Python’s built in
+math.exp
+instead.
+HOC
+Description:
+returns the exponential function to the base e
+When exp is used in model descriptions, it is often the
+case that the cvode variable step integrator extrapolates
+voltages to values which return out of range values for the exp (often used
+in rate functions). There were so many of these false warnings that it was
+deemed better to turn off the warning message when Cvode is active.
+In any case the return value is exp(700). This message is not turned off
+at the interpreter level or when cvode is not active.
+for i=690, 710 print i, exp(i)
+log
+(
+)
+
+Python
+Logarithm to the base e
+see
+Vector.log()
+for the
+Vector
+class.
+Note
+Consider using Python’s built in
+math.log
+instead.
+HOC
+logarithm to the base e
+see
+Vector.log()
+for the
+Vector
+class.
+log10
+(
+)
+
+Python
+Logarithm to the base 10
+see
+Vector.log10()
+for the
+Vector
+class.
+Note
+Consider using Python’s built in
+math.log10
+instead.
+HOC
+logarithm to the base 10
+see
+Vector.log10()
+for the
+Vector
+class.
+cos
+(
+)
+
+Python
+Returns the trigonometric function of radian argument (a number).
+If you need to take the cosine of a Vector, use
+numpy
+; e.g.,
+import
+numpy
+as
+np
+from
+neuron
+import
+n
+v
+=
+n
+.
+Vector
+([
+0
+,
+n
+.
+PI
+/
+6
+,
+n
+.
+PI
+/
+4
+,
+n
+.
+PI
+/
+2
+])
+v2
+=
+n
+.
+Vector
+(
+np
+.
+cos
+(
+v
+))
+print
+(
+list
+(
+v2
+))
+# [1.0, 0.8660254037844387, 0.7071067811865476, 6.123233995736766e-17]
+To create a vector filled with a cosine/sine wave, see
+Vector.sin()
+or
+use
+numpy
+.
+Note
+Consider using Python’s built in
+math.cos
+instead.
+HOC
+trigonometric function of radian argument.
+see
+Vector.sin()
+sin
+(
+)
+
+Python
+Returns the trigonometric function of radian argument (a number).
+If you need to take the sine of a Vector, use
+numpy
+; e.g.,
+import
+numpy
+as
+np
+from
+neuron
+import
+n
+v
+=
+n
+.
+Vector
+([
+0
+,
+n
+.
+PI
+/
+6
+,
+n
+.
+PI
+/
+4
+,
+n
+.
+PI
+/
+2
+])
+v2
+=
+n
+.
+Vector
+(
+np
+.
+sin
+(
+v
+))
+print
+(
+list
+(
+v2
+))
+# [0.0, 0.49999999999999994, 0.7071067811865475, 1.0]
+To create a vector filled with a sine wave, see
+Vector.sin()
+or
+use
+numpy
+.
+Note
+Consider using Python’s built in
+math.sin
+instead.
+HOC
+trigonometric function of radian argument.
+see
+Vector.sin()
+for the
+Vector
+class.
+tanh
+(
+)
+
+Python
+Hyperbolic tangent.
+For
+Vector
+objects, use
+Vector.tanh()
+to store the
+values in-place, or use numpy to create a new Vector; e.g.,
+import
+numpy
+as
+np
+from
+neuron
+import
+n
+v
+=
+n
+.
+Vector
+([
+0
+,
+1
+,
+2
+,
+3
+])
+v2
+=
+n
+.
+Vector
+(
+np
+.
+tanh
+(
+v
+))
+print
+(
+list
+(
+v2
+))
+# [0.0, 0.7615941559557649, 0.9640275800758169, 0.9950547536867305]
+Note
+Consider using Python’s built in
+math.tanh
+instead.
+HOC
+hyperbolic tangent.
+see
+Vector.tanh()
+for the
+Vector
+class.
+atan
+(
+)
+
+Python
+Returns the arc-tangent of y/x in the range
+\(-\pi/2\)
+to
+\(\pi/2\)
+. (x > 0)
+Note
+Consider using Python’s built in
+math.atan
+instead.
+HOC
+returns the arc-tangent of y/x in the range -PI/2 to PI/2. (x > 0)
+atan2
+(
+)
+
+Python
+Syntax:
+radians
+=
+atan2(y,
+x)
+Description:
+returns the arc-tangent of y/x in the range
+\(-\pi\)
+< radians <=
+\(\pi\)
+. y and x
+can be any double precision value, including 0. If both are 0 the value
+returned is 0.
+Imagine a right triangle with base x and height y. The result
+is the angle in radians between the base and hypotenuse.
+Example:
+from
+neuron
+import
+n
+print
+(
+n
+.
+atan2
+(
+0
+,
+0
+))
+for
+i
+in
+range
+(
+-
+1
+,
+2
+):
+print
+(
+n
+.
+atan2
+(
+i
+*
+1e-6
+,
+10
+))
+for
+i
+in
+range
+(
+-
+1
+,
+2
+):
+print
+(
+n
+.
+atan2
+(
+i
+*
+1e-6
+,
+-
+10
+))
+for
+i
+in
+range
+(
+-
+1
+,
+2
+):
+print
+(
+n
+.
+atan2
+(
+10
+,
+i
+*
+1e-6
+))
+for
+i
+in
+range
+(
+-
+1
+,
+2
+):
+print
+(
+n
+.
+atan2
+(
+-
+10
+,
+i
+*
+1e-6
+))
+print
+(
+n
+.
+atan2
+(
+10
+,
+10
+))
+print
+(
+n
+.
+atan2
+(
+10
+,
+-
+10
+))
+print
+(
+n
+.
+atan2
+(
+-
+10
+,
+10
+))
+print
+(
+n
+.
+atan2
+(
+-
+10
+,
+-
+10
+))
+Note
+Consider using Python’s built in
+math.atan2
+instead.
+HOC
+Syntax:
+radians
+=
+atan2(y,
+x)
+Description:
+returns the arc-tangent of y/x in the range -PI < radians <= PI. y and x
+can be any double precision value, including 0. If both are 0 the value
+returned is 0.
+Imagine a right triangle with base x and height y. The result
+is the angle in radians between the base and hypotenuse
+Example:
+atan2(0,0)
+for i=-1,1 { print atan2(i*1e-6, 10) }
+for i=-1,1 { print atan2(i*1e-6, -10) }
+for i=-1,1 { print atan2(10, i*1e-6) }
+for i=-1,1 { print atan2(-10, i*1e-6) }
+atan2(10,10)
+atan2(10,-10)
+atan2(-10,10)
+atan2(-10,-10)
+erf
+(
+)
+
+Python
+Normalized error function
+\[{\rm erf}(z) = \frac{2}{\sqrt{\pi}} \int_{0}^{z} e^{-t^2} dt\]
+Note
+In Python 3.2+, use
+math.erf
+instead.
+HOC
+normalized error function
+\[{\rm erf}(z) = \frac{2}{\sqrt{\pi}} \int_{0}^{z} e^{-t^2} dt\]
+erfc
+(
+)
+
+Python
+Returns
+1.0
+-
+erf(z)
+but on sun machines computed by other methods
+that avoid cancellation for large z.
+Note
+In Python 3.2+, use
+math.erfc
+instead.
+HOC
+returns
+1.0
+-
+erf(z)
+but on sun machines computed by other methods
+that avoid cancellation for large z.

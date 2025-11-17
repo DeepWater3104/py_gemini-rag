@@ -1,0 +1,1638 @@
+Source Path: nrn_docs_html/en/release-9.0/tutorials/pythontutorial.html
+
+Introduction to Python
+
+This page demonstrates some basic Python concepts and essentials. See the Python Tutorial and Reference for more exhaustive resources.
+This page provides a brief introduction to:
+Python syntax
+Variables
+Lists and Dicts
+For loops and iterators
+Functions
+Classes
+Importing modules
+Writing and reading files with Pickling.
+Displaying results
+
+The following command simply prints “Hello world!”. Run it, and then re-evaluate with a different string.
+[1]:
+print
+(
+"Hello world!"
+)
+Hello world!
+Here print is a function that displays its input on the screen.
+We can use a string’s format method with {} placeholders to substitute calculated values into the output in specific locations; for example:
+[2]:
+print
+(
+"3 + 4 =
+{}
+. Amazing!"
+.
+format
+(
+3
++
+4
+))
+3 + 4 = 7. Amazing!
+Multiple values can be substituted:
+[3]:
+print
+(
+"The length of the
+{}
+is
+{}
+microns."
+.
+format
+(
+"apical dendrite"
+,
+100
+))
+The length of the apical dendrite is 100 microns.
+There are more sophisticated ways of using format (see examples on the Python website).
+Variables: Strings, numbers, and dynamic type casting
+
+Variables are easily assigned:
+[4]:
+my_name
+=
+"Tom"
+my_age
+=
+45
+Let’s work with these variables.
+[5]:
+print
+(
+my_name
+)
+Tom
+[6]:
+print
+(
+my_age
+)
+45
+Strings can be combined with the + operator.
+[7]:
+greeting
+=
+"Hello, "
++
+my_name
+print
+(
+greeting
+)
+Hello, Tom
+Let’s move on to numbers.
+[8]:
+print
+(
+my_age
+)
+45
+If you try using the + operator on my_name and my_age:
+print
+(
+my_name
++
+my_age
+)
+You will get a TypeError. What is wrong?
+my_name is a string and my_age is a number. Adding in this context does not make any sense.
+We can determine an object’s type with the type() function.
+[9]:
+type
+(
+my_name
+)
+[9]:
+str
+[10]:
+type
+(
+my_age
+)
+[10]:
+int
+The function isinstance() is typically more useful than comparing variable types as it allows handling subclasses:
+[11]:
+isinstance
+(
+my_name
+,
+str
+)
+[11]:
+True
+[12]:
+my_valid_var
+=
+None
+if
+my_valid_var
+is
+not
+None
+:
+print
+(
+my_valid_var
+)
+else
+:
+print
+(
+"The variable is None!"
+)
+The variable is None!
+Arithmetic: +, -, *, /, **, % and comparisons
+
+[13]:
+2
+*
+6
+[13]:
+12
+Check for equality using two equal signs:
+[14]:
+2
+*
+6
+==
+4
+*
+3
+[14]:
+True
+[15]:
+5
+<
+2
+[15]:
+False
+[16]:
+5
+<
+2
+or
+3
+<
+5
+[16]:
+True
+[17]:
+5
+<
+2
+and
+3
+<
+5
+[17]:
+False
+[18]:
+2
+*
+3
+!=
+5
+[18]:
+True
+% is the modulus operator. It returns the remainder from doing a division.
+[19]:
+5
+%
+3
+[19]:
+2
+The above is because 5 / 3 is 1 with a remainder of 2.
+In decimal, that is:
+[20]:
+5
+/
+3
+[20]:
+1.6666666666666667
+Warning
+In older versions of Python (prior to 3.0), the / operator when used on integers performed integer division; i.e. 3/2 returned 1, but 3/2.0 returned 1.5. Beginning with Python 3.0, the / operator returns a float if integers do not divide evenly; i.e. 3/2 returns 1.5. Integer division is still available using the // operator, i.e. 3 // 2 evaluates to 1.
+Making choices: if, else
+
+[21]:
+section
+=
+"soma"
+if
+section
+==
+"soma"
+:
+print
+(
+"working on the soma"
+)
+else
+:
+print
+(
+"not working on the soma"
+)
+working on the soma
+[22]:
+p
+=
+0.06
+if
+p
+<
+0.05
+:
+print
+(
+"statistically significant"
+)
+else
+:
+print
+(
+"not statistically significant"
+)
+not statistically significant
+Note that here we used a single quote instead of a double quote to indicate the beginning and end of a string. Either way is fine, as long as the beginning and end of a string match.
+Python also has a special object called None. This is one way you can specify whether or not an object is valid. When doing comparisons with None, it is generally recommended to use is and is not:
+[23]:
+postsynaptic_cell
+=
+None
+if
+postsynaptic_cell
+is
+not
+None
+:
+print
+(
+"Connecting to postsynaptic cell"
+)
+else
+:
+print
+(
+"No postsynaptic cell to connect to"
+)
+No postsynaptic cell to connect to
+Lists
+
+Lists are comma-separated values surrounded by square brackets:
+[24]:
+my_list
+=
+[
+1
+,
+3
+,
+5
+,
+8
+,
+13
+]
+print
+(
+my_list
+)
+[1, 3, 5, 8, 13]
+Lists are zero-indexed. That is, the first element is 0.
+[25]:
+my_list
+[
+0
+]
+[25]:
+1
+You may often find yourself wanting to know how many items are in a list.
+[26]:
+len
+(
+my_list
+)
+[26]:
+5
+Python interprets negative indices as counting backwards from the end of the list. That is, the -1 index refers to the last item, the -2 index refers to the second-to-last item, etc.
+[27]:
+print
+(
+my_list
+)
+print
+(
+my_list
+[
+-
+1
+])
+[1, 3, 5, 8, 13]
+13
+“Slicing” is extracting particular sub-elements from the list in a particular range. However, notice that the right-side is excluded, and the left is included.
+[28]:
+print
+(
+my_list
+)
+print
+(
+my_list
+[
+2
+:
+4
+])
+# Includes the range from index 2 to 3
+print
+(
+my_list
+[
+2
+:
+-
+1
+])
+# Includes the range from index 2 to the element before -1
+print
+(
+my_list
+[:
+2
+])
+# Includes everything before index 2
+print
+(
+my_list
+[
+2
+:])
+# Includes everything from index 2
+[1, 3, 5, 8, 13]
+[5, 8]
+[5, 8]
+[1, 3]
+[5, 8, 13]
+We can check if our list contains a given value using the in operator:
+[29]:
+42
+in
+my_list
+[29]:
+False
+[30]:
+5
+in
+my_list
+[30]:
+True
+We can append an element to a list using the append method:
+[31]:
+my_list
+.
+append
+(
+42
+)
+print
+(
+my_list
+)
+[1, 3, 5, 8, 13, 42]
+To make a variable equal to a copy of a list, set it equal to list(the_old_list). For example:
+[32]:
+list_a
+=
+[
+1
+,
+3
+,
+5
+,
+8
+,
+13
+]
+list_b
+=
+list
+(
+list_a
+)
+list_b
+.
+reverse
+()
+print
+(
+"list_a = "
++
+str
+(
+list_a
+))
+print
+(
+"list_b = "
++
+str
+(
+list_b
+))
+list_a = [1, 3, 5, 8, 13]
+list_b = [13, 8, 5, 3, 1]
+In particular, note that assigning one list to another variable does not make a copy. Instead, it just gives another way of accessing the same list.
+[33]:
+print
+(
+"initial: list_a[0] =
+%g
+"
+%
+list_a
+[
+0
+])
+foo
+=
+list_a
+foo
+[
+0
+]
+=
+42
+print
+(
+"final:   list_a[0] =
+%g
+"
+%
+list_a
+[
+0
+])
+initial: list_a[0] = 1
+final:   list_a[0] = 42
+If the second line in the previous example was replaced with list_b = list_a, then what would happen?
+In that case, list_b is the same list as list_a (as opposed to a copy), so when list_b was reversed so is list_a (since list_b is list_a).
+We can sort a list and get a new list using the sorted function. e.g.
+[34]:
+sorted
+([
+"soma"
+,
+"basal"
+,
+"apical"
+,
+"axon"
+,
+"obliques"
+])
+[34]:
+['apical', 'axon', 'basal', 'obliques', 'soma']
+Here we have sorted by alphabetical order. If our list had only numbers, it would by default sort by numerical order:
+[35]:
+sorted
+([
+6
+,
+1
+,
+165
+,
+1.51
+,
+4
+])
+[35]:
+[1, 1.51, 4, 6, 165]
+If we wanted to sort by another attribute, we can specify a function that returns that attribute value as the optional key keyword argument. For example, to sort our list of neuron parts by the length of the name (returned by the function len):
+[36]:
+sorted
+([
+"soma"
+,
+"basal"
+,
+"apical"
+,
+"axon"
+,
+"obliques"
+],
+key
+=
+len
+)
+[36]:
+['soma', 'axon', 'basal', 'apical', 'obliques']
+Lists can contain arbitrary data types, but if you find yourself doing this, you should probably consider making classes or dictionaries (described below).
+[37]:
+confusing_list
+=
+[
+"abc"
+,
+1.0
+,
+2
+,
+"another string"
+]
+print
+(
+confusing_list
+)
+print
+(
+confusing_list
+[
+3
+])
+['abc', 1.0, 2, 'another string']
+another string
+It is sometimes convenient to assign the elements of a list with a known length to an equivalent number of variables:
+[38]:
+first
+,
+second
+,
+third
+=
+[
+42
+,
+35
+,
+25
+]
+print
+(
+second
+)
+35
+The range function can be used to create a list-like object (prior to Python 3.0, it generated lists; beginning with 3.0, it generates a more memory efficient structure) of evenly spaced integers; a list can be produced from this using the list function. With one argument, range produces integers from 0 to the argument, with two integer arguments, it produces integers between the two values, and with three arguments, the third specifies the interval between the first two. The ending value is not
+included.
+[39]:
+print
+(
+list
+(
+range
+(
+10
+)))
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[40]:
+print
+(
+list
+(
+range
+(
+0
+,
+10
+)))
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[41]:
+print
+(
+list
+(
+range
+(
+3
+,
+10
+)))
+# [3, 4, 5, 6, 7, 8, 9]
+[3, 4, 5, 6, 7, 8, 9]
+[42]:
+print
+(
+list
+(
+range
+(
+0
+,
+10
+,
+2
+)))
+# [0, 2, 4, 6, 8]
+[0, 2, 4, 6, 8]
+[43]:
+print
+(
+list
+(
+range
+(
+0
+,
+-
+10
+)))
+# []
+[]
+[44]:
+print
+(
+list
+(
+range
+(
+0
+,
+-
+10
+,
+-
+1
+)))
+# [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+[0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+[45]:
+print
+(
+list
+(
+range
+(
+0
+,
+-
+10
+,
+-
+2
+)))
+# [0, -2, -4, -6, -8]
+[0, -2, -4, -6, -8]
+For non-integer ranges, use numpy.arange from the numpy module.
+List comprehensions (set theory)
+
+List comprehensions provide a rule for building a list from another list (or any other Python iterable).
+For example, the list of all integers from 0 to 9 inclusive is range(10) as shown above. We can get a list of the squares of all those integers via:
+[46]:
+[
+x
+**
+2
+for
+x
+in
+range
+(
+10
+)]
+[46]:
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+Including an if condition allows us to filter the list:
+What are all the integers x between 0 and 29 inclusive that satisfy (x - 3) * (x - 10) == 0?
+[47]:
+[
+x
+for
+x
+in
+range
+(
+30
+)
+if
+(
+x
+-
+3
+)
+*
+(
+x
+-
+10
+)
+==
+0
+]
+[47]:
+[3, 10]
+For loops and iterators
+
+We can iterate over elements in a list by following the format: for element in list: Notice that indentation is important in Python! After a colon, the block needs to be indented. (Any consistent indentation will work, but the Python standard is 4 spaces).
+[48]:
+cell_parts
+=
+[
+"soma"
+,
+"axon"
+,
+"dendrites"
+]
+for
+part
+in
+cell_parts
+:
+print
+(
+part
+)
+soma
+axon
+dendrites
+Note that we are iterating over the elements of a list; much of the time, the index of the items is irrelevant. If, on the other hand, we need to know the index as well, we can use enumerate:
+[49]:
+cell_parts
+=
+[
+"soma"
+,
+"axon"
+,
+"dendrites"
+]
+for
+part_num
+,
+part
+in
+enumerate
+(
+cell_parts
+):
+print
+(
+"
+%d
+%s
+"
+%
+(
+part_num
+,
+part
+))
+0 soma
+1 axon
+2 dendrites
+Multiple aligned lists (such as occurs with time series data) can be looped over simultaneously using zip:
+[50]:
+cell_parts
+=
+[
+"soma"
+,
+"axon"
+,
+"dendrites"
+]
+diams
+=
+[
+20
+,
+2
+,
+3
+]
+for
+diam
+,
+part
+in
+zip
+(
+diams
+,
+cell_parts
+):
+print
+(
+"
+%10s
+%g
+"
+%
+(
+part
+,
+diam
+))
+soma 20
+      axon 2
+ dendrites 3
+Another example:
+[51]:
+y
+=
+[
+"a"
+,
+"b"
+,
+"c"
+,
+"d"
+,
+"e"
+]
+x
+=
+list
+(
+range
+(
+len
+(
+y
+)))
+print
+(
+"x =
+{}
+"
+.
+format
+(
+x
+))
+print
+(
+"y =
+{}
+"
+.
+format
+(
+y
+))
+print
+(
+list
+(
+zip
+(
+x
+,
+y
+)))
+x = [0, 1, 2, 3, 4]
+y = ['a', 'b', 'c', 'd', 'e']
+[(0, 'a'), (1, 'b'), (2, 'c'), (3, 'd'), (4, 'e')]
+This is a list of tuples. Given a list of tuples, then we iterate with each tuple.
+[52]:
+for
+x_val
+,
+y_val
+in
+zip
+(
+x
+,
+y
+):
+print
+(
+"index
+{}
+:
+{}
+"
+.
+format
+(
+x_val
+,
+y_val
+))
+index 0: a
+index 1: b
+index 2: c
+index 3: d
+index 4: e
+Tuples are similar to lists, except they are immutable (cannot be changed). You can retrieve individual elements of a tuple, but once they are set upon creation, you cannot change them. Also, you cannot add or remove elements of a tuple.
+[53]:
+my_tuple
+=
+(
+1
+,
+"two"
+,
+3
+)
+print
+(
+my_tuple
+)
+print
+(
+my_tuple
+[
+1
+])
+(1, 'two', 3)
+two
+Attempting to modify a tuple, e.g.
+my_tuple
+[
+1
+]
+=
+2
+will cause a TypeError.
+Because you cannot modify an element in a tuple, or add or remove individual elements of it, it can operate in Python more efficiently than a list. A tuple can even serve as a key to a dictionary.
+Dictionaries
+
+A dictionary (also called a dict or hash table) is a set of (key, value) pairs, denoted by curly brackets:
+[54]:
+about_me
+=
+{
+"name"
+:
+my_name
+,
+"age"
+:
+my_age
+,
+"height"
+:
+"5'8"
+}
+print
+(
+about_me
+)
+{'name': 'Tom', 'age': 45, 'height': "5'8"}
+You can obtain values by referencing the key:
+[55]:
+print
+(
+about_me
+[
+"height"
+])
+5'8
+Similarly, we can modify existing values by referencing the key.
+[56]:
+about_me
+[
+"name"
+]
+=
+"Thomas"
+print
+(
+about_me
+)
+{'name': 'Thomas', 'age': 45, 'height': "5'8"}
+We can even add new values.
+[57]:
+about_me
+[
+"eye_color"
+]
+=
+"brown"
+print
+(
+about_me
+)
+{'name': 'Thomas', 'age': 45, 'height': "5'8", 'eye_color': 'brown'}
+We can use curly braces with keys to indicate dictionary fields when using format. e.g.
+[58]:
+print
+(
+"I am a
+{age}
+year old person named
+{name}
+. Again, my name is
+{name}
+."
+.
+format
+(
+**
+about_me
+)
+)
+I am a 45 year old person named Thomas. Again, my name is Thomas.
+Important: note the use of the ** inside the format call.
+We can iterate keys (.keys()), values (.values()) or key-value value pairs (.items())in the dict. Here is an example of key-value pairs.
+[59]:
+for
+k
+,
+v
+in
+about_me
+.
+items
+():
+print
+(
+"key =
+{:10s}
+val =
+{}
+"
+.
+format
+(
+k
+,
+v
+))
+key = name          val = Thomas
+key = age           val = 45
+key = height        val = 5'8
+key = eye_color     val = brown
+To test for the presence of a key in a dict, we just ask:
+[60]:
+if
+"hair_color"
+in
+about_me
+:
+print
+(
+"Yes. 'hair_color' is a key in the dict"
+)
+else
+:
+print
+(
+"No. 'hair_color' is NOT a key in the dict"
+)
+No. 'hair_color' is NOT a key in the dict
+Dictionaries can be nested, e.g.
+[61]:
+neurons
+=
+{
+"purkinje cells"
+:
+{
+"location"
+:
+"cerebellum"
+,
+"role"
+:
+"motor movement"
+},
+"ca1 pyramidal cells"
+:
+{
+"location"
+:
+"hippocampus"
+,
+"role"
+:
+"learning and memory"
+},
+}
+print
+(
+neurons
+[
+"purkinje cells"
+][
+"location"
+])
+cerebellum
+Functions
+
+Functions are defined with a “def” keyword in front of them, end with a colon, and the next line is indented. Indentation of 4-spaces (again, any non-zero consistent amount will do) demarcates functional blocks.
+[62]:
+def
+print_hello
+():
+print
+(
+"Hello"
+)
+Now let’s call our function.
+[63]:
+print_hello
+()
+Hello
+We can also pass in an argument.
+[64]:
+def
+my_print
+(
+the_arg
+):
+print
+(
+the_arg
+)
+Now try passing various things to the my_print() function.
+[65]:
+my_print
+(
+"Hello"
+)
+Hello
+We can even make default arguments.
+[66]:
+def
+my_print
+(
+message
+=
+"Hello"
+):
+print
+(
+message
+)
+my_print
+()
+my_print
+(
+list
+(
+range
+(
+4
+)))
+Hello
+[0, 1, 2, 3]
+And we can also return values.
+[67]:
+def
+fib
+(
+n
+=
+5
+):
+"""Get a Fibonacci series up to n."""
+a
+,
+b
+=
+0
+,
+1
+series
+=
+[
+a
+]
+while
+b
+<
+n
+:
+a
+,
+b
+=
+b
+,
+a
++
+b
+series
+.
+append
+(
+a
+)
+return
+series
+print
+(
+fib
+())
+[0, 1, 1, 2, 3]
+Note the assignment line for a and b inside the while loop. That line says that a becomes the old value of b and that b becomes the old value of a plus the old value of b. The ability to calculate multiple values before assigning them allows Python to do things like swapping the values of two variables in one line while many other programming languages would require the introduction of a temporary variable.
+When a function begins with a string as in the above, that string is known as a doc string, and is shown whenever help is invoked on the function (this, by the way, is a way to learn more about Python’s many functions):
+[68]:
+help
+(
+fib
+)
+Help on function fib in module __main__:
+
+fib(n=5)
+    Get a Fibonacci series up to n.
+You may have noticed the string beginning the fib function was triple-quoted. This enables a string to span multiple lines.
+[69]:
+multi_line_str
+=
+"""This is the first line
+This is the second,
+and a third."""
+print
+(
+multi_line_str
+)
+This is the first line
+This is the second,
+and a third.
+Classes
+
+Objects are instances of a class. They are useful for encapsulating ideas, and mostly for having multiple instances of a structure. (In NEURON, for example, one might use a class to represent a neuron type and create many instances.) Usually you will have an
+init
+() method. Also note that every method of the class will have self as the first argument. While self has to be listed in the argument list of a class’s method, you do not pass a self argument when calling any of the class’s
+methods; instead, you refer to those methods as self.method_name.
+[70]:
+class
+Contact
+(
+object
+):
+"""A given person for my database of friends."""
+def
+__init__
+(
+self
+,
+first_name
+=
+None
+,
+last_name
+=
+None
+,
+email
+=
+None
+,
+phone
+=
+None
+):
+self
+.
+first_name
+=
+first_name
+self
+.
+last_name
+=
+last_name
+self
+.
+email
+=
+email
+self
+.
+phone
+=
+phone
+def
+print_info
+(
+self
+):
+"""Print all of the information of this contact."""
+my_str
+=
+"Contact info:"
+if
+self
+.
+first_name
+:
+my_str
++=
+" "
++
+self
+.
+first_name
+if
+self
+.
+last_name
+:
+my_str
++=
+" "
++
+self
+.
+last_name
+if
+self
+.
+email
+:
+my_str
++=
+" "
++
+self
+.
+email
+if
+self
+.
+phone
+:
+my_str
++=
+" "
++
+self
+.
+phone
+print
+(
+my_str
+)
+By convention, the first letter of a class name is capitalized. Notice in the class definition above that the object can contain fields, which are used within the class as self.field. This field can be another method in the class, or another object of another class.
+Let’s make a couple instances of Contact.
+[71]:
+bob
+=
+Contact
+(
+"Bob"
+,
+"Smith"
+)
+joe
+=
+Contact
+(
+email
+=
+"someone@somewhere.com"
+)
+Notice that in the first case, if we are filling each argument, we do not need to explicitly denote “first_name” and “last_name”. However, in the second case, since “first” and “last” are omitted, the first parameter passed in would be assigned to the first_name field so we have to explicitly set it to “email”.
+Let’s set a field.
+[72]:
+joe
+.
+first_name
+=
+"Joe"
+Similarly, we can retrieve fields from the object.
+[73]:
+the_name
+=
+joe
+.
+first_name
+print
+(
+the_name
+)
+Joe
+And we call methods of the object using the format instance.method().
+[74]:
+joe
+.
+print_info
+()
+Contact info: Joe someone@somewhere.com
+Remember the importance of docstrings!
+[75]:
+help
+(
+Contact
+)
+Help on class Contact in module __main__:
+
+class Contact(builtins.object)
+ |  Contact(first_name=None, last_name=None, email=None, phone=None)
+ |
+ |  A given person for my database of friends.
+ |
+ |  Methods defined here:
+ |
+ |  __init__(self, first_name=None, last_name=None, email=None, phone=None)
+ |      Initialize self.  See help(type(self)) for accurate signature.
+ |
+ |  print_info(self)
+ |      Print all of the information of this contact.
+ |
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |
+ |  __dict__
+ |      dictionary for instance variables
+ |
+ |  __weakref__
+ |      list of weak references to the object
+Importing modules
+
+Extensions to core Python are made by importing modules, which may contain more variables, objects, methods, and functions. Many modules come with Python, but are not part of its core. Other packages and modules have to be installed.
+The numpy module contains a function called arange() that is similar to Python’s range() function, but permits non-integer steps.
+[76]:
+import
+numpy
+my_vec
+=
+numpy
+.
+arange
+(
+0
+,
+1
+,
+0.1
+)
+print
+(
+my_vec
+)
+[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9]
+Note: numpy is available in many distributions of Python, but it is not part of Python itself. If the import numpy line gave an error message, you either do not have numpy installed or Python cannot find it for some reason. You should resolve this issue before proceeding because we will use numpy in some of the examples in other parts of the tutorial. The standard tool for installing Python modules is called pip; other options may be available depending on your platform.
+We can get 20 evenly spaced values between 0 and
+\(\pi\)
+using numpy.linspace:
+[77]:
+x
+=
+numpy
+.
+linspace
+(
+0
+,
+numpy
+.
+pi
+,
+20
+)
+[78]:
+print
+(
+x
+)
+[0.         0.16534698 0.33069396 0.49604095 0.66138793 0.82673491
+ 0.99208189 1.15742887 1.32277585 1.48812284 1.65346982 1.8188168
+ 1.98416378 2.14951076 2.31485774 2.48020473 2.64555171 2.81089869
+ 2.97624567 3.14159265]
+NumPy provides vectorized trig (and other) functions. For example, we can get another array with the sines of all those x values via:
+[79]:
+y
+=
+numpy
+.
+sin
+(
+x
+)
+[80]:
+print
+(
+y
+)
+[0.00000000e+00 1.64594590e-01 3.24699469e-01 4.75947393e-01
+ 6.14212713e-01 7.35723911e-01 8.37166478e-01 9.15773327e-01
+ 9.69400266e-01 9.96584493e-01 9.96584493e-01 9.69400266e-01
+ 9.15773327e-01 8.37166478e-01 7.35723911e-01 6.14212713e-01
+ 4.75947393e-01 3.24699469e-01 1.64594590e-01 1.22464680e-16]
+The bokeh module is one way to plot graphics that works especially well in a Jupyter notebook environment. To use this library in a Jupyter notebook, we first load it and tell it to display in the notebook:
+[81]:
+from
+bokeh.io
+import
+output_notebook
+import
+bokeh.plotting
+as
+plt
+output_notebook
+()
+# skip this line if not working in Jupyter
+Loading BokehJS ...
+Here we plot y = sin(x) vs x:
+[82]:
+f
+=
+plt
+.
+figure
+(
+x_axis_label
+=
+"x"
+,
+y_axis_label
+=
+"sin(x)"
+)
+f
+.
+line
+(
+x
+,
+y
+,
+line_width
+=
+2
+)
+plt
+.
+show
+(
+f
+)
+Pickling objects
+
+There are various file io operations in Python, but one of the easiest is “Pickling”, which attempts to save a Python object to a file for later restoration with the load command.
+[83]:
+import
+pickle
+contacts
+=
+[
+joe
+,
+bob
+]
+# Make a list of contacts
+with
+open
+(
+"contacts.p"
+,
+"wb"
+)
+as
+pickle_file
+:
+# Make a new file
+pickle
+.
+dump
+(
+contacts
+,
+pickle_file
+)
+# Write contact list
+with
+open
+(
+"contacts.p"
+,
+"rb"
+)
+as
+pickle_file
+:
+# Open the file for reading
+contacts2
+=
+pickle
+.
+load
+(
+pickle_file
+)
+# Load the pickled contents
+for
+elem
+in
+contacts2
+:
+elem
+.
+print_info
+()
+Contact info: Joe someone@somewhere.com
+Contact info: Bob Smith
+The next part of this tutorial introduces basic NEURON commands.
+[ ]:

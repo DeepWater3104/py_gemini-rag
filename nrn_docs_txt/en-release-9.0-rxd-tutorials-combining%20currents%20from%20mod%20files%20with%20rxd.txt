@@ -1,0 +1,624 @@
+Source Path: nrn_docs_html/en/release-9.0/rxd-tutorials/combining%20currents%20from%20mod%20files%20with%20rxd.html
+
+Example: combining MOD file ion channels with rxd
+
+A version of this notebook may be run online via Google Colab at
+https://tinyurl.com/neuron-rxd-and-mod
+(make a copy or open in playground mode).
+Overview
+
+NEURON’s reaction-diffusion infrastructure can be used to readily allow intracellular concentrations to respond to currents generated in MOD files, as long as:
+nrn_region='i'
+is specified for the
+rxd.Region
+(so that it knows it corresponds to the electrophysiology region of the inside of the cell), AND the name and charge of the ion/etc are given in the
+rxd.Species
+declaration. Satisfying the above two rules also allows MOD files to see intracellular concentrations.
+3D extracellular concentrations also interoperate with electrophysiology automatically as long as name and charge are specified.
+As a simple example, we consider a model with just a single point soma, of length and diameter 10 microns, with Hodgkin-Huxley kinetics (which uses the built in mod file
+hh.mod
+), and dynamic sodium (declared using rxd but without any additional kinetics).
+Setup NEURON library and imports
+
+Let’s import our usual NEURON libraries and definitions. Remember you can use either
+um
+or
+µm
+for micron.
+[1]:
+from
+neuron
+import
+n
+,
+rxd
+from
+neuron.units
+import
+mV
+,
+ms
+,
+um
+,
+mM
+## needed for standard run system
+n
+.
+load_file
+(
+"stdrun.hoc"
+)
+[1]:
+1.0
+Now import
+plotly
+, a graphics library. (You could easily modify this code to use other graphics libraries like
+matplotlib
+,
+plotnine
+, or
+bokeh
+.)
+[2]:
+import
+plotly.graph_objects
+as
+go
+from
+plotly.subplots
+import
+make_subplots
+Setup the model
+
+[3]:
+## define morphology
+soma
+=
+n
+.
+Section
+(
+name
+=
+"soma"
+)
+soma
+.
+L
+=
+soma
+.
+diam
+=
+10
+*
+um
+## add ion channels (n.hh is built in, so always available)
+n
+.
+hh
+.
+insert
+(
+soma
+)
+## define cytosol. MUST specify nrn_region for concentrations to update
+cyt
+=
+rxd
+.
+Region
+([
+soma
+],
+name
+=
+"cyt"
+,
+nrn_region
+=
+"i"
+)
+## define sodium. MUST specify name and charge for concentrations to update
+na
+=
+rxd
+.
+Species
+(
+cyt
+,
+name
+=
+"na"
+,
+charge
+=
+1
+)
+Alternatively, we could have written
+n.hh.insert(soma.wholetree())
+to put Hodgkin-Huxley channels everywhere in the cell that the soma is part of, but since there is only one section, this is not required.
+Let’s also add an excitatory synapse to receive events (these will trigger the cell to spike).
+[4]:
+syn
+=
+n
+.
+ExpSyn
+(
+soma
+(
+0.5
+))
+syn
+.
+tau
+=
+1
+*
+ms
+syn
+.
+e
+=
+0
+*
+mV
+Add a stimulus
+
+The spike events themselves (two events, 15 ms apart starting at n.t=10*ms):
+[5]:
+stim
+=
+n
+.
+NetStim
+()
+stim
+.
+interval
+=
+15
+*
+ms
+stim
+.
+number
+=
+2
+stim
+.
+start
+=
+10
+*
+ms
+Send those events to our synapse:
+[6]:
+nc
+=
+n
+.
+NetCon
+(
+stim
+,
+syn
+)
+nc
+.
+weight
+[
+0
+]
+=
+0.001
+Setup recording variables
+
+[7]:
+t
+=
+n
+.
+Vector
+()
+.
+record
+(
+n
+.
+_ref_t
+)
+v
+=
+n
+.
+Vector
+()
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_v
+)
+na_vec
+=
+n
+.
+Vector
+()
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_nai
+)
+ina
+=
+n
+.
+Vector
+()
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_ina
+)
+Initialize and run the simulation
+
+[8]:
+n
+.
+finitialize
+(
+-
+65
+*
+mV
+)
+n
+.
+continuerun
+(
+50
+*
+ms
+)
+[8]:
+0.0
+Plot it
+
+[9]:
+fig
+=
+make_subplots
+(
+rows
+=
+3
+,
+cols
+=
+1
+)
+fig
+.
+add_trace
+(
+go
+.
+Scatter
+(
+x
+=
+t
+,
+y
+=
+v
+,
+name
+=
+"v"
+),
+row
+=
+1
+,
+col
+=
+1
+)
+fig
+.
+update_yaxes
+(
+title_text
+=
+"v (mV)"
+,
+row
+=
+1
+,
+col
+=
+1
+)
+fig
+.
+add_trace
+(
+go
+.
+Scatter
+(
+x
+=
+t
+,
+y
+=
+ina
+,
+name
+=
+"ina"
+),
+row
+=
+2
+,
+col
+=
+1
+)
+fig
+.
+update_yaxes
+(
+title_text
+=
+"ina (mA/cm^2)"
+,
+row
+=
+2
+,
+col
+=
+1
+)
+fig
+.
+add_trace
+(
+go
+.
+Scatter
+(
+x
+=
+t
+,
+y
+=
+na_vec
+,
+name
+=
+"[Na+]"
+),
+row
+=
+3
+,
+col
+=
+1
+)
+fig
+.
+update_xaxes
+(
+title_text
+=
+"t (ms)"
+,
+row
+=
+3
+,
+col
+=
+1
+)
+fig
+.
+update_yaxes
+(
+title_text
+=
+"[Na+] (mM)"
+,
+row
+=
+3
+,
+col
+=
+1
+)
+fig
+.
+show
+(
+renderer
+=
+"notebook_connected"
+)
+Note: On homeostatic mechanisms or the lack thereof
+
+Without any additional homeostatic mechanisms (Hodgkin and Huxley did not model sodium concentration so they did not need to include homeostatic mechanisms for it), intracellular sodium concentration will not return to baseline, and each spike will move intracellular sodium concentration closer to the extracellular concentration. Potassium concentration in this model is constant as we did not declare a potassium rxd.Species, but if we did it would also approach its extracellular concentration
+with each spike, until eventually the cell is not able to fire action potentials anymore.
+Finally: The mod file
+
+For any distributed mechanism, including the built-in
+n.hh
+, one can always get the source code for the corresponding mod file using the
+.code
+property; e.g.
+[10]:
+print
+(
+n
+.
+hh
+.
+code
+)
+TITLE hh.mod   squid sodium, potassium, and leak channels
+
+COMMENT
+ This is the original Hodgkin-Huxley treatment for the set of sodium,
+  potassium, and leakage channels found in the squid giant axon membrane.
+  ("A quantitative description of membrane current and its application
+  conduction and excitation in nerve" J.Physiol. (Lond.) 117:500-544 (1952).)
+ Membrane voltage is in absolute mV and has been reversed in polarity
+  from the original HH convention and shifted to reflect a resting potential
+  of -65 mV.
+ Remember to set a squid-appropriate temperature
+ (e.g. in HOC: "celsius=6.3" or in Python: "h.celsius=6.3").
+ See squid.hoc for an example of a simulation using this model.
+ SW Jaslove  6 March, 1992
+ENDCOMMENT
+
+UNITS {
+        (mA) = (milliamp)
+        (mV) = (millivolt)
+        (S) = (siemens)
+}
+
+? interface
+NEURON {
+        SUFFIX hh
+        REPRESENTS NCIT:C17145   : sodium channel
+        REPRESENTS NCIT:C17008   : potassium channel
+        USEION na READ ena WRITE ina REPRESENTS CHEBI:29101
+        USEION k READ ek WRITE ik REPRESENTS CHEBI:29103
+        NONSPECIFIC_CURRENT il
+        RANGE gnabar, gkbar, gl, el, gna, gk
+        : `GLOBAL minf` will be replaced with `RANGE minf` if CoreNEURON enabled
+        GLOBAL minf, hinf, ninf, mtau, htau, ntau
+        THREADSAFE : assigned GLOBALs will be per thread
+}
+
+PARAMETER {
+        gnabar = .12 (S/cm2)    <0,1e9>
+        gkbar = .036 (S/cm2)    <0,1e9>
+        gl = .0003 (S/cm2)      <0,1e9>
+        el = -54.3 (mV)
+}
+
+STATE {
+        m h n
+}
+
+ASSIGNED {
+        v (mV)
+        celsius (degC)
+        ena (mV)
+        ek (mV)
+
+        gna (S/cm2)
+        gk (S/cm2)
+        ina (mA/cm2)
+        ik (mA/cm2)
+        il (mA/cm2)
+        minf hinf ninf
+        mtau (ms) htau (ms) ntau (ms)
+}
+
+? currents
+BREAKPOINT {
+        SOLVE states METHOD cnexp
+        gna = gnabar*m*m*m*h
+        ina = gna*(v - ena)
+        gk = gkbar*n*n*n*n
+        ik = gk*(v - ek)
+        il = gl*(v - el)
+}
+
+
+INITIAL {
+        rates(v)
+        m = minf
+        h = hinf
+        n = ninf
+}
+
+? states
+DERIVATIVE states {
+        rates(v)
+        m' =  (minf-m)/mtau
+        h' = (hinf-h)/htau
+        n' = (ninf-n)/ntau
+}
+
+:LOCAL q10
+
+
+? rates
+PROCEDURE rates(v(mV)) {  :Computes rate and other constants at current v.
+                      :Call once from HOC to initialize inf at resting v.
+        LOCAL  alpha, beta, sum, q10
+        : `TABLE minf` will be replaced with `:TABLE minf` if CoreNEURON enabled)
+        TABLE minf, mtau, hinf, htau, ninf, ntau DEPEND celsius FROM -100 TO 100 WITH 200
+
+UNITSOFF
+        q10 = 3^((celsius - 6.3)/10)
+                :"m" sodium activation system
+        alpha = .1 * vtrap(-(v+40),10)
+        beta =  4 * exp(-(v+65)/18)
+        sum = alpha + beta
+        mtau = 1/(q10*sum)
+        minf = alpha/sum
+                :"h" sodium inactivation system
+        alpha = .07 * exp(-(v+65)/20)
+        beta = 1 / (exp(-(v+35)/10) + 1)
+        sum = alpha + beta
+        htau = 1/(q10*sum)
+        hinf = alpha/sum
+                :"n" potassium activation system
+        alpha = .01*vtrap(-(v+55),10)
+        beta = .125*exp(-(v+65)/80)
+        sum = alpha + beta
+        ntau = 1/(q10*sum)
+        ninf = alpha/sum
+}
+
+FUNCTION vtrap(x,y) {  :Traps for 0 in denominator of rate eqns.
+        if (fabs(x/y) < 1e-6) {
+                vtrap = y*(1 - x/y/2)
+        }else{
+                vtrap = x/(exp(x/y) - 1)
+        }
+}
+
+UNITSON
+[ ]:

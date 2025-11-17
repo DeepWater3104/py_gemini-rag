@@ -1,0 +1,40 @@
+Source Path: nrn_docs_html/en/release-9.0/coreneuron/index.html
+
+CoreNEURON
+
+CoreNEURON
+is a compute engine for the NEURON simulator optimised for both memory usage and computational speed on modern CPU/GPU architectures.
+Some of its key goals are to:
+Efficiently simulate large network models
+Reduce memory usage
+Support execution on specialised hardware, GPUs
+Support optimisations such as vectorisation and cache-efficient memory layout (e.g. Structure-Of-Arrays)
+CoreNEURON is tightly integrated with NEURON, and can transparently simulate a large number of NEURON models.
+Certain conditions that must be met are covered in the
+CoreNEURON Compatibility
+section.
+CoreNEURON Compatibility
+Unsupported Features
+MOD File Compatibility
+Thread Safe MOD Files
+TABLE Usage With GPU Execution
+NEURON Only MOD Files
+Explicit ION Variables Update
+Random Number Generators: Random123 vs MCellRan4
+Memory Management for POINTER Variables
+Have a question?
+Getting CoreNEURON
+Installing with
+pip
+Installing from source
+Compiler Selection
+Step-by-step instructions
+Running a simulation
+Building MOD files
+Enabling CoreNEURON
+Examples
+CoreNeuron Inputs
+Premise
+Input Categories
+sim.conf
+report.conf

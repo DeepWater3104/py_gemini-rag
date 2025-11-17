@@ -1,0 +1,12 @@
+Source Path: nrn_docs_html/en/release-9.0/courses/managing_models_on_the_fly.html
+
+Managing Models on the Fly
+
+If the CellBuilder’s Continuous Create button is checked, changes are passed from the CellBuilder to the interpreter as they occur. This means that you can immediately explore the effects of anything you do with the CellBuilder.
+To see how this works, try the following.
+Start NEURON with its standard GUI in the exercises/cellbuilder directory (
+remember how?
+).
+Bring up the CellBuilder and construct a cell that looks like this:
+Use any anatomical and biophysical properties you like; these might be interesting to start with:
+UNFINISHED

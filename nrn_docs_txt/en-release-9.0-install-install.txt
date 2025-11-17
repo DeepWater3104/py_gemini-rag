@@ -1,0 +1,13 @@
+Source Path: nrn_docs_html/en/release-9.0/install/install.html
+
+Installation
+
+Installing Binary Distribution
+Mac OS
+Linux
+Windows
+Windows Subsystem for Linux (WSL) Python Wheel
+Installing Source Distributions
+Install Build Dependencies
+Install NEURON using CMake
+FAQs

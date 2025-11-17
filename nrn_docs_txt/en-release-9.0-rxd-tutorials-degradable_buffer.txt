@@ -1,0 +1,186 @@
+Source Path: nrn_docs_html/en/release-9.0/rxd-tutorials/degradable_buffer.html
+
+Example: Degradable buffer
+
+Calcium is heavily buffered in cells, as it is a major second messenger molecule.
+Calbindin D28K dynamics
+
+The calcium buffering protein Calbindin D28K has 6 EF-hands, four of which are active calcium ion binding sites. These sites are not equally active. A calcium ion is not free to bind to any of the sites equally. Instead, calcium ions are bound in sequence: 1, 4, 5, 3 with the last binding having the lowest affinity. (Venters et al., 2003.)
+(To be clear, these dynamics are not representative of all calcium buffers; Parvalbumin and Calbindin D9K show little conformational change when carrying calcium.)
+\[\mathrm{Ca} + \mathrm{Calbindin_0} \rightleftharpoons \mathrm{Calbindin_1}\]
+\[\mathrm{Ca} + \mathrm{Calbindin_1} \rightleftharpoons \mathrm{Calbindin_{14}}\]
+\[\mathrm{Ca} + \mathrm{Calbindin_{14}} \rightleftharpoons \mathrm{Calbindin_{145}}\]
+\[\mathrm{Ca} + \mathrm{Calbindin_{145}} \rightleftharpoons \mathrm{Calbindin_{1453}}\]
+A model
+
+For our model, let us suppose that instead of calbindin D28K specifically, which has its own very specific binding affinities, we have some arbitrary buffer buf that also has 4 binding sites that load sequentially.
+[1]:
+from
+neuron
+import
+n
+,
+rxd
+[2]:
+# where
+soma
+=
+n
+.
+Section
+(
+name
+=
+"soma"
+)
+cyt
+=
+rxd
+.
+Region
+([
+soma
+],
+nrn_region
+=
+"i"
+)
+# who
+ca
+=
+rxd
+.
+Species
+(
+cyt
+,
+name
+=
+"ca"
+,
+charge
+=
+2
+,
+initial
+=
+1e-4
+)
+buf
+=
+rxd
+.
+Species
+(
+cyt
+,
+name
+=
+"buf"
+,
+initial
+=
+1e-4
+)
+cabuf
+=
+rxd
+.
+Species
+(
+cyt
+,
+name
+=
+"cab2uf"
+,
+initial
+=
+0
+)
+# what
+buffering
+=
+rxd
+.
+Reaction
+(
+2
+*
+ca
++
+buf
+,
+cabuf
+,
+1e6
+,
+1e-2
+)
+degradation
+=
+rxd
+.
+Rate
+(
+buf
+,
+-
+1e-3
+*
+buf
+)
+For versions of NEURON before 7.7, we need to initialize the simulation here to enable using pointers for
+Let’s set up some recording:
+[3]:
+t
+=
+n
+.
+Vector
+()
+ca_vec
+=
+n
+.
+Vector
+()
+buf_vec
+=
+n
+.
+Vector
+()
+t
+.
+record
+(
+n
+.
+_ref_t
+)
+ca_vec
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_cai
+)
+buf_vec
+.
+record
+(
+soma
+(
+0.5
+)
+.
+_ref_bufi
+)
+[3]:
+Vector[2]
+A more realistic model would include

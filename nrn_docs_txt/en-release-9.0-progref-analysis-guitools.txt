@@ -1,0 +1,52 @@
+Source Path: nrn_docs_html/en/release-9.0/progref/analysis/guitools.html
+
+GUI Analysis Tools
+
+FunctionFitter
+Plot
+Steps
+IndependentVar
+Args
+Yexpr
+PraxisFit
+StopAtNextQuadForm
+Running
+WatchTheFit
+RoughFit
+ArgValues
+CurrentValuesAsDefault
+FittoData
+ReadDataFile
+CommonFunctionalForms
+FitCriterion
+ParameterRangeLimits
+DataWeights
+SaveRestoreFunction
+RunFitter
+ReadData
+CurrentValuesAsDefault
+Variabletofit
+Parameterstovary
+Extras
+DataWeights
+ParameterRanges
+Changeparmfromlist
+Removeparmfromlist
+SaveRestoreFitParams
+NumberOfDataRegions
+AnotherVariableToFit
+Dofit
+SingleRunFit
+StopatnextQuadForm
+Running
+Roughfit
+BeQuiet
+MulRunFitter
+Parameters Menu
+Generators Menu
+Fitness menu of a Generator instance in the generator Panel
+Impedance Tools
+ImpedanceRatio
+Impx
+LogAvsX
+ImpShape

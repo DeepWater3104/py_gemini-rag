@@ -1,0 +1,75 @@
+Source Path: nrn_docs_html/en/release-9.0/coreneuron/examples.html
+
+Examples
+
+Here are some test examples to illustrate the usage of CoreNEURON API with NEURON:
+test_direct.py
+:
+This is a simple, single cell, serial Python example demonstrating the use of CoreNEURON.
+We first run a simulation with NEURON and record the voltage and membrane currents.
+Then, the same model is executed with CoreNEURON, and we make sure the same results are achieved.
+Note that in order to run this example you must build
+these mod files
+with
+nrnivmodl
+-coreneuron
+.
+You can run this example as:
+nrnivmodl
+-coreneuron
+mod
+# first compile mod files
+nrniv
+-python
+test_direct.py
+# run via nrniv
+x86_64/special
+-python
+test_direct.py
+# run via special
+python
+test_direct.py
+# run via python
+test_direct.hoc
+:
+This is the same example as above (
+test_direct.py
+) but written using HOC.
+test_spikes.py
+:
+This is similar to
+test_direct.py
+above, but it can be run with MPI where each MPI process creates a single cell and connects it with a cell on another rank.
+Each rank records spikes and compares them between NEURON execution and CoreNEURON execution.
+It also demonstrates usage of the
+mpi4py
+Python module and NEURON’s native MPI API.
+You can run this MPI example in different ways:
+mpiexec
+-n
+<num_process>
+python
+test_spikes.py
+mpi4py
+# using mpi4py
+mpiexec
+-n
+<num_process>
+x86_64/special
+-mpi
+-python
+test_spikes.py
+# neuron internal MPI
+Ring network test
+:
+This is a ring network model of Ball-and-Stick neurons which can be scaled arbitrarily for testing and benchmarking purpose.
+You can use this as a reference for porting your model, see the
+README
+file for detailed instructions.
+3D Olfactory Bulb Model
+:
+Migliore et al. (2014)
+model of the olfactory bulb ported with CoreNEURON on GPU.
+See the
+README
+file for detailed instructions.

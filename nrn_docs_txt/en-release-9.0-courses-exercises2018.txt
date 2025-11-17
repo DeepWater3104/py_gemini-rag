@@ -1,0 +1,38 @@
+Source Path: nrn_docs_html/en/release-9.0/courses/exercises2018.html
+
+NEURON Course Exercises
+
+These exercises are adapted from the 2018 NEURON summer course given in Atlanta, Georgia.
+Introduction to the GUI
+Lipid bilayer model
+Interactive Modeling
+Squid axon model
+Using the CellBuilder
+Constructing a ball and stick model, saving session files
+Working with Morphometric Data
+The Import3D tool
+NEURON scripting exercises
+Using NMODL files
+Single compartment model with HHk mechanism
+Using ModelDB with NEURON
+Neuroinformatics tools for finding and understanding models
+Reaction-Diffusion Exercises
+Inhomogeneous Channel Distribution
+Custom Initialization
+Introduction to the Linear Circuit Builder
+A two-electrode voltage clamp
+State and parameter discontinuities
+Bulletin board parallelization
+Speed up embarrassingly parallel tasks
+HOC Exercises
+Introduction to the HOC programming language
+Multithreaded parallelization
+Networks: discrete event simulations with artificial cells
+Introduction to the Network Builder
+Networks: continuous simulation of nets with biophysical model cells
+Network ready cells from the CellBuilder
+Hopfield-Brody network in Python
+MPI Parallelization
+Using the Neuroscience Gateway (NSG) portal
+Numerical Methods Exercises
+Electrotonic Analysis with NEURON

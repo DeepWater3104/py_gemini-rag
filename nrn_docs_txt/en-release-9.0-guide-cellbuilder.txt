@@ -1,0 +1,30 @@
+Source Path: nrn_docs_html/en/release-9.0/guide/cellbuilder.html
+
+Using the Cell Builder GUI
+
+These tutorials show how to use the CellBuilder, a powerful and convenient tool for constructing and managing models of individual neurons. The CellBuilder is a “graphical form for specifying the properties of a model cell.” It breaks the job of model specification into a sequence of tasks :
+Setting up model topology (branching pattern).
+Grouping sections with shared properties into subsets.
+Assigning geometric properties (length, diameter) to subsets or individual sections, and specifying a discretization strategy (i.e. how to set nseg).
+Assigning biophysical properties (Ra, cm, ion channels, buffers, pumps, etc.) to subsets or individual sections.
+These are the same things we would have to do, and pretty much the same sequence we’d follow, in order to define a model by writing hoc code. However, the CellBuilder helps us keep it all nice and organized, and eliminates a lot of error-prone typgin  … ptyngi  …
+typing
+.
+The tutorials:
+Creating a stylized (“stick-figure”) model cell
+Step 1. Bring up a CellBuilder
+Step 2. Specify topology
+Step 3. Specify subsets
+Step 4. Specify geometry
+Step 5. Specify biophysics
+Step 6. Use the model specification
+Modular programming and reusable code
+Exporting hoc code vs. saving a cell type
+Always save your configured CellBuilder to a session file
+Managing a model cell with complex anatomy
+Step 1: Get the cell’s anatomy into a CellBuilder
+Step 2. Create subsets
+Step 3. Specify the spatial grid
+Step 4. Specify biophysics
+Step 5. Use the model specification
+Specifying parameterized variation of biophysical properties
