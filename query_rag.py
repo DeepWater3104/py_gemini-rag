@@ -12,7 +12,8 @@ if not api_key:
 client = genai.Client(api_key=api_key) 
 
 # --- ストア名を設定 ---
-FILE_SEARCH_STORE_NAME = "fileSearchStores/neruon-documentation-rag-st-2fcechk5416c"
+#FILE_SEARCH_STORE_NAME = "fileSearchStores/neruon-documentation-rag-st-2fcechk5416c"
+FILE_SEARCH_STORE_NAME = "fileSearchStores/neruon-documentation-rag-st-t7508m67c4cc"
 
 # ▼▼▼【ここからが新しい関数】▼▼▼
 def is_question_about_nrn(question: str) -> bool:
