@@ -4,3 +4,7 @@
 # その他、Pythonのキャッシュファイルなど
 __pycache__/
 *.pyc
+
+
+# virtual environment
+venv/
