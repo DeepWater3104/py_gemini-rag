@@ -12,7 +12,6 @@ if not api_key:
 client = genai.Client(api_key=api_key) 
 
 # --- ストア名を設定 ---
-#FILE_SEARCH_STORE_NAME = "fileSearchStores/gas-documentation-rag-store-eh3fonwv95f9" # あなたのストア名に設定済み
 FILE_SEARCH_STORE_NAME = "fileSearchStores/neruon-documentation-rag-st-2fcechk5416c"
 
 # ▼▼▼【ここからが新しい関数】▼▼▼
@@ -61,7 +60,7 @@ else:
     while question:
         # ▼▼▼【ここからが新しいロジック】▼▼▼
         if is_question_about_nrn(instractions + question):
-            # 質問がGASに関連している場合のみ、RAGを実行
+            # 質問がNEURONに関連している場合のみ、RAGを実行
             print("\n🤖 AIが回答を生成中...")
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
@@ -98,9 +97,9 @@ else:
 
             ###
         else:
-            # 質問がGASに関係ない場合は、定型文を返す
+            # 質問がNEURONに関係ない場合は、定型文を返す
             print("\n--- 回答 ---")
-            print("申し訳ありませんが、私はGoogle Apps Scriptに関する質問にのみお答えできます。")
+            print("申し訳ありませんが、私はNEURONに関する質問にのみお答えできます。")
         # ▲▲▲【ここまでが新しいロジック】▲▲▲
             
         question = input("\n次の質問をどうぞ (終了するには Enter のみ): ")
