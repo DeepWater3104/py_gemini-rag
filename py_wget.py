@@ -92,19 +92,22 @@ if __name__ == "__main__":
     # --- ここでダウンロードしたいサイトの設定を切り替える ---
     # 【設定1】Google Apps Scriptのドキュメントをダウンロードする場合
 
-    print("--- Google Apps Script ドキュメントのダウンロードを開始します ---")
+    #print("--- Google Apps Script ドキュメントのダウンロードを開始します ---")
+    print("--- NRV/NEURON ドキュメント (nrn.readthedocs.io) のダウンロードを開始します ---")
     recursive_download(
-        start_url="https://developers.google.com/apps-script/reference/",
-        output_dir="gas_docs_html",
-        allowed_domain="developers.google.com"
+        start_url="https://nrn.readthedocs.io/en/release-9.0/",
+        #start_url="https://developers.google.com/apps-script/reference/",
+        output_dir="nrn_docs_html",
+        #allowed_domain="developers.google.com"
+        allowed_domain="nrn.readthedocs.io" # <--- ここを修正しました
     )
 
-    print("\n" + "="*50 + "\n")
+    #print("\n" + "="*50 + "\n")
 
     # 【設定2】Gemini APIのドキュメントをダウンロードする場合
-    print("--- Gemini API ドキュメントのダウンロードを開始します ---")
-    recursive_download(
-        start_url="https://ai.google.dev/gemini-api/docs/",
-        output_dir="gemini_api_docs_html",
-        allowed_domain="ai.google.dev"
-    )
+    #print("--- Gemini API ドキュメントのダウンロードを開始します ---")
+    #recursive_download(
+    #    start_url="https://ai.google.dev/gemini-api/docs/",
+    #    output_dir="gemini_api_docs_html",
+    #    allowed_domain="ai.google.dev"
+    #)

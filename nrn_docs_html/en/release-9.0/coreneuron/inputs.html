@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="readthedocs-addons-api-version" content="1"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoreNeuron Inputs &mdash; NEURON  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=6933245a" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3ee01567"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <script src="../_static/js/versions.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Language Overview" href="../nmodl/language.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+<script async type="text/javascript" src="/_/static/javascript/readthedocs-addons.js"></script><meta name="readthedocs-project-slug" content="nrn" /><meta name="readthedocs-version-slug" content="release-9.0" /><meta name="readthedocs-resolver-filename" content="/coreneuron/inputs.html" /><meta name="readthedocs-http-status" content="200" /></head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            NEURON
+          </a>
+              <div class="switch-menus">
+                <div class="version-switch"></div>
+                <div class="language-switch"></div>
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Building:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cmake_doc/options.html">CMake Build Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/developer.html">Developer Builds</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../videos/index.html">Training videos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/index.html">Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../courses/exercises2018.html">NEURON Course Exercises</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://neuron.yale.edu/phpBB">The NEURON forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">Publications about NEURON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications-using-neuron.html">Publications using NEURON</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">NEURON scripting:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../scripting.html">Running Python and HOC scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../progref/index.html">NEURON Programmer’s Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../otherscripting.html">Other scripting languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Python tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rxd-tutorials/index.html">Python RXD tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">CoreNEURON</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html">CoreNEURON Compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Getting CoreNEURON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-a-simulation.html">Running a simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CoreNeuron Inputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#premise">Premise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-categories">Input Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sim-conf">sim.conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#report-conf">report.conf</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">NMOD Language:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../nmodl/language.html">Language Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nmodl/transpiler/index.html">About the NMODL transpiler</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scm/index.html">NEURON SCM and Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/index.html">NEURON Development topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../capi.html">C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doxygen.html">Internal C/C++ documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Removed Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../removed_features.html">Removed Features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Changelog</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">NEURON 9.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html#neuron-8-2">NEURON 8.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html#neuron-8-1">NEURON 8.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html#neuron-8-0">NEURON 8.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html#contributors">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html#feedback-help">Feedback / Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">NEURON</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">CoreNEURON</a></li>
+      <li class="breadcrumb-item active">CoreNeuron Inputs</li>
+<li class="wy-breadcrumbs-aside">
+    
+    
+</li>
+
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/coreneuron/inputs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="coreneuron-inputs">
+<h1>CoreNeuron Inputs<a class="headerlink" href="#coreneuron-inputs" title="Link to this heading"></a></h1>
+<section id="premise">
+<h2>Premise<a class="headerlink" href="#premise" title="Link to this heading"></a></h2>
+<p>This document provides a best-effort overview of the inputs used by CoreNeuron.
+I do not claim complete knowledge of all internal workings; sections marked
+with <code class="docutils literal notranslate"><span class="pre">TODO</span></code> indicate areas where further clarification is needed.</p>
+</section>
+<section id="input-categories">
+<h2>Input Categories<a class="headerlink" href="#input-categories" title="Link to this heading"></a></h2>
+<p>CoreNeuron inputs can be divided into two main categories:</p>
+<ol class="arabic">
+<li><p><strong>Additional configuration values/files</strong>:</p>
+<ul class="simple">
+<li><p><strong>sim.conf</strong>: A general configuration file. All values defined here
+can also be passed as command-line parameters.</p></li>
+<li><p><strong>report.conf</strong>: A configuration file specifying the reports that
+CoreNeuron needs to emit. This file is used only if Direct Mode is
+not enabled. The output routines rely on <code class="docutils literal notranslate"><span class="pre">libsonatareport</span></code> and
+comply with the Sonata standard:
+<a class="reference external" href="https://sonata-extension.readthedocs.io/en/latest/">Sonata Documentation</a>.</p></li>
+</ul>
+</li>
+<li><p><strong>Data passed from NEURON to CoreNeuron</strong>:</p>
+<p>NEURON passes input data to CoreNeuron via files located in the
+<code class="docutils literal notranslate"><span class="pre">datpath</span></code> specified in <code class="docutils literal notranslate"><span class="pre">sim.conf</span></code> (or passed as a CLI argument).
+These files include:</p>
+<ul class="simple">
+<li><p><strong>gid_1.dat, gid_2.dat, gid_3.dat</strong>: Data for each GID passed in three
+phases.</p></li>
+<li><p><strong>bbcore_mech.dat</strong>: Information about mechanisms.</p></li>
+<li><p><strong>files.dat</strong>: TODO — description needed.</p></li>
+<li><p><strong>globals.dat</strong>: TODO — description needed.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="sim-conf">
+<h2>sim.conf<a class="headerlink" href="#sim-conf" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">sim.conf</span></code> file is a general configuration file used by CoreNeuron.
+It can be provided either via the CLI option <code class="docutils literal notranslate"><span class="pre">--read-config</span></code> or by setting
+the <code class="docutils literal notranslate"><span class="pre">sim_config</span></code> attribute in Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">neuron</span><span class="w"> </span><span class="kn">import</span> <span class="n">coreneuron</span>
+<span class="n">coreneuron</span><span class="o">.</span><span class="n">sim_config</span> <span class="o">=</span> <span class="s2">&quot;&lt;path to sim.conf&gt;&quot;</span>
+</pre></div>
+</div>
+<p>Example <code class="docutils literal notranslate"><span class="pre">sim.conf</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">outpath</span><span class="o">=</span><span class="s">&#39;&lt;path where simulation outputs (i.e., reports) are written&gt;&#39;</span>
+<span class="na">datpath</span><span class="o">=</span><span class="s">&#39;&lt;path where NEURON writes input data files for CoreNeuron (usually build/coreneuron_input)&gt;&#39;</span>
+<span class="na">tstop</span><span class="o">=</span><span class="s">100.0</span>
+<span class="na">dt</span><span class="o">=</span><span class="s">0.025</span>
+<span class="na">prcellgid</span><span class="o">=</span><span class="s">-1</span>
+<span class="na">celsius</span><span class="o">=</span><span class="s">34.0</span>
+<span class="na">voltage</span><span class="o">=</span><span class="s">-65.0</span>
+<span class="na">cell-permute</span><span class="o">=</span><span class="s">0</span>
+<span class="na">mpi</span><span class="o">=</span><span class="s">1</span>
+<span class="na">seed</span><span class="o">=</span><span class="s">767740</span>
+<span class="na">report-conf</span><span class="o">=</span><span class="s">&#39;&lt;path to report.conf file&gt;&#39;</span>
+</pre></div>
+</div>
+<p><strong>Parameters explained</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">outpath</span></code>: Path where simulation outputs (i.e., reports) are written.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datpath</span></code>: Path where NEURON writes input data files for CoreNeuron.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tstop</span></code>: Total simulation time in milliseconds.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dt</span></code>: Integration time step in milliseconds.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prcellgid</span></code>: If &gt;=0, print state of this GID during simulation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">celsius</span></code>: Temperature of the simulation in °C.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">voltage</span></code>: Initial membrane voltage in mV.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell-permute</span></code>: Index controlling the permutation of cells:</p>
+<ul>
+<li><p>0 — No permutation</p></li>
+<li><p>1 — Optimize node adjacency (CPU, GPU)</p></li>
+<li><p>2 — Optimize parent adjacency (GPU)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mpi</span></code>: Number of MPI ranks (if using parallel execution).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: Random seed for reproducibility.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report-conf</span></code>: Path to <code class="docutils literal notranslate"><span class="pre">report.conf</span></code> file for simulation reports.</p></li>
+</ul>
+</section>
+<section id="report-conf">
+<h2>report.conf<a class="headerlink" href="#report-conf" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">report.conf</span></code> file specifies the reports that CoreNeuron will emit.
+It is partially binary and typically generated by <a class="reference external" href="https://github.com/openbraininstitute/neurodamus">Neurodamus</a>.</p>
+<p><strong>Format overview</strong>:</p>
+<ol class="arabic">
+<li><p>The file starts with a single number indicating the <strong>total number of reports</strong>.</p></li>
+<li><p>Each report has a <strong>metadata line</strong> with a few key values (see below).</p></li>
+<li><p>Following the metadata line, there is a <strong>binary line</strong> with a list of gids.</p></li>
+<li><p>(Optional) If the report is of type <code class="docutils literal notranslate"><span class="pre">compartment_set</span></code>, there are 2 <strong>additional binary lines</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Section IDs (integers)</p></li>
+<li><p>Compartment IDs (integers)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>All these binary lines (list of integers) have the same length. It is specified by <code class="docutils literal notranslate"><span class="pre">num_gids</span></code> in the metadata line (see below).</p>
+<p><strong>Example entries (simplified)</strong>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>2
+compartment_set_pas.h5 Mini5 compartment_set pas mV SONATA invalid invalid 1.0 0.0 40.0 8 8 none
+&lt;binary data for GIDs&gt;
+&lt;binary data for section IDs&gt;
+&lt;binary data for compartment IDs&gt;
+
+summation_v.h5 Mosaic summation v mV SONATA soma center 1.0 0.0 40.0 5 8 none
+&lt;binary data for GIDs&gt;
+</pre></div>
+</div>
+<p><strong>Metadata line fields</strong></p>
+<p>Each report in <code class="docutils literal notranslate"><span class="pre">report.conf</span></code> starts with a metadata line describing its properties.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>report_name target_name report_type report_variable unit report_format sections compartments dt start_time end_time buffer_size scaling num_gids
+</pre></div>
+</div>
+<p>The various variables are described in detail in the <a class="reference external" href="https://sonata-extension.readthedocs.io/en/latest/sonata_report.html">SONATA report documentation</a>.</p>
+<p>Field descriptions:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">report_name</span></code> — Name of the output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_name</span></code> — Name of node set (group of gids)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report_type</span></code> — Type of report</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compartment</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compartment_set</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">summation</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">synapse</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lfp</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report_variable</span></code> — The variable to be reported (e.g., <code class="docutils literal notranslate"><span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">i_membrane</span></code>, <code class="docutils literal notranslate"><span class="pre">pas.i</span></code>, <code class="docutils literal notranslate"><span class="pre">pas</span></code>). Any point-process or mechanism variable is allowed. The variable should be specified as <code class="docutils literal notranslate"><span class="pre">&lt;mechanism&gt;.&lt;variable&gt;</span></code>. If the variable is <code class="docutils literal notranslate"><span class="pre">i</span></code>, it can be omitted; in that case, the code assumes <code class="docutils literal notranslate"><span class="pre">i</span></code> by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code> — Physical unit of the reported variable (e.g., <code class="docutils literal notranslate"><span class="pre">mV</span></code>, <code class="docutils literal notranslate"><span class="pre">nS</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report_format</span></code> — Format of the report (currently only <code class="docutils literal notranslate"><span class="pre">SONATA</span></code> remains)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sections</span></code> — Target sections of the cells:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Cell</span></code>, <code class="docutils literal notranslate"><span class="pre">Soma</span></code>, <code class="docutils literal notranslate"><span class="pre">Axon</span></code>, <code class="docutils literal notranslate"><span class="pre">Dend</span></code> (Dendrite), <code class="docutils literal notranslate"><span class="pre">Apic</span></code> (Apical),
+<code class="docutils literal notranslate"><span class="pre">Ais</span></code>, <code class="docutils literal notranslate"><span class="pre">Node</span></code>, <code class="docutils literal notranslate"><span class="pre">Myelin</span></code>, <code class="docutils literal notranslate"><span class="pre">All</span></code>, <code class="docutils literal notranslate"><span class="pre">Invalid</span></code> (used for <cite>compartment_set</cite> reports)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compartments</span></code> — Specific compartments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">All</span></code>, <code class="docutils literal notranslate"><span class="pre">Center</span></code>, <code class="docutils literal notranslate"><span class="pre">Invalid</span></code> (used for <cite>compartment_set</cite> reports)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dt</span></code> — Sampling interval for the report in milliseconds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code> — Start time of the report in milliseconds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_time</span></code> — End time of the report in milliseconds</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_gids</span></code> — Number of GIDs included in the report (used to read the following binary lines)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buffer_size</span></code> — Size of the buffer used to store report values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling</span></code> — Scaling applied to reported values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">Area</span></code></p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>Following the metadata line, binary lines store the actual data:</p>
+<ul>
+<li><p>GIDs (all reports)</p></li>
+<li><p>Section IDs and compartment IDs (for <code class="docutils literal notranslate"><span class="pre">compartment_set</span></code> reports only)</p></li>
+</ul>
+</li>
+<li><p>All binary lines have length <code class="docutils literal notranslate"><span class="pre">num_gids</span></code>.</p></li>
+<li><p>The order of the fields in the metadata line corresponds exactly to the order above.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../nmodl/language.html" class="btn btn-neutral float-right" title="Language Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Duke, Yale and the Blue Brain Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
