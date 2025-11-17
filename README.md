@@ -1,109 +1,112 @@
-# Gemini RAG AIアシスタント for GAS & Gemini API
+承知いたしました。NEURONシミュレータのRAGアシスタントに関するREADME.mdを英語に翻訳します。
 
-これは、Google Apps Script (GAS) と Gemini API の公式ドキュメントを知識源とする、対話型のAI開発アシスタントです。
-Gemini File Search API を活用したRAG（Retrieval-Augmented Generation）システムを構築し、特定の技術分野に関する正確で信頼性の高いコード生成や質問応答を実現します。
+NEURON Simulator RAG AI Assistant 🧠
+This is an interactive AI development assistant built using the official documentation of the NEURON Simulator as its knowledge source. It leverages Google's Gemini File Search API to construct a Retrieval-Augmented Generation (RAG) system, ensuring accurate and reliable code generation and Q&A capabilities specific to this technical domain.
 
-## ✨ 主な機能
+✨ Key Features
+Domain-Specific Expertise: Generates accurate answers to questions about the NEURON Simulator, based on its official documentation.
 
-- **専門知識に特化:** GASとGemini APIに関する質問に対し、公式ドキュメントに基づいた正確な回答を生成します。
-- **高品質なコード生成:** 具体的な指示を与えることで、すぐに使えるコードスニペットを生成し、開発を加速させます。
-- **ガードレール機能:** GASと関係ない質問には応答しないように設計されており、専門性を維持します。
-- **引用元の表示:** 回答の根拠となったドキュメントの箇所を明示し、情報の信頼性を担保します。
-- **知識の自動更新:** GitHub Actionsを利用して、定期的に公式ドキュメントを再取得し、知識ベースを最新の状態に保ちます。
+High-Quality Code Generation: Accelerates development by generating ready-to-use hoc and Python code snippets for building NEURON models and running simulations, given concrete instructions.
 
-## 🔧 仕組み
+Guardrail Functionality: Designed not to respond to questions unrelated to NEURON, maintaining its specialization.
 
-このアプリケーションは、以下のステップで構築・運用されます。
+Source Citation: Provides clear citation of the document sections that support the generated answer, ensuring information trustworthiness.
 
-1.  **データ収集:** Pythonスクリプト (`py_wget.py`) を使い、指定されたドキュメントサイトから再帰的にHTMLファイルをダウンロードします。
-2.  **データ前処理:** ダウンロードしたHTMLから、RAGに適したプレーンテキスト形式の知識ソースを生成します (`local_html2text.py`)。
-3.  **知識ベースの構築:** Gemini File Search APIを使い、生成されたテキストファイルをアップロードして、ベクトル化された検索可能な「ファイル検索ストア」を構築します (`setup_rag_store.py`)。
-4.  **対話インターフェース:** 構築したストアを知識源として参照し、ユーザーからの質問に答える対話型アプリケーションを実行します (`query_rag.py`)。
+Automatic Knowledge Update: Utilizes GitHub Actions to periodically re-fetch the official documentation and keep the knowledge base up-to-date.
 
-## 🚀 使い方
+🔧 How It Works
+The application is built and operated through the following steps:
 
-### 1. 初期設定
+Data Collection: A Python script (py_wget.py) is used to recursively download HTML files from the specified NEURON documentation site.
 
-#### a. リポジトリのクローン
-```bash
+Data Preprocessing: The downloaded HTML is processed to generate a plain-text knowledge source suitable for RAG (local_html2text.py).
+
+Knowledge Base Construction: The Gemini File Search API is used to upload the generated text files, constructing a vectorized, searchable "File Search Store" (setup_rag_store.py).
+
+Conversational Interface: An interactive application is run (query_rag.py) to answer user queries by referencing the constructed store as the knowledge source.
+
+🚀 Getting Started
+1. Initial Setup
+a. Clone the Repository
+Bash
+
 git clone https://github.com/your-username/your-repository-name.git
-cd your-repository-name```
+cd your-repository-name
+b. Install Required Libraries
+Run the following command in a Python environment (3.9+ recommended):
 
-#### b. 必要なライブラリのインストール
-Python環境（3.9以上を推奨）で、以下のコマンドを実行します。
-```bash
+Bash
+
 pip install -r requirements.txt
-```
+c. Set API Key
+Create a new file named .env in the project's root directory and set your Gemini API key.
 
-#### c. APIキーの設定
-プロジェクトのルートディレクトリに `.env` ファイルを新規作成し、ご自身のGemini APIキーを設定します。
-
-```
 # .env
 GEMINI_API_KEY="YOUR_GEMINI_API_KEY_HERE"
-```
+2. Building the Knowledge Base (RAG Store)
+This step trains the AI with the source documentation. This task is performed only once initially.
 
-### 2. 知識ベース（RAGストア）の構築
+a. Document Download and Text Conversion
+Run the following scripts to download the official NEURON Simulator documentation and convert it into text files. (This process may take several minutes to tens of minutes)
 
-このプロジェクトのAIに、知識源となるドキュメントを学習させます。この作業は**最初に一度だけ**行います。
+Bash
 
-#### a. ドキュメントのダウンロードとテキスト化
-以下のスクリプトを実行し、GASとGemini APIの公式ドキュメントをダウンロードし、テキストファイルに変換します。
-（この処理には数分〜数十分かかる場合があります）
-```bash
 python py_wget.py
 python local_html2text.py
-```
+b. Create the RAG Store
+Next, upload the textual documents to the Gemini File Search API to construct the knowledge base.
 
-#### b. RAGストアの作成
-次に、テキスト化されたドキュメントをGemini File Search APIにアップロードし、知識ベースを構築します。
-```bash
+Bash
+
 python setup_rag_store.py
-```
-実行が完了すると、コンソールに `fileSearchStores/xxxxxxxx` のような**ストア名（ID）**が表示されます。このIDをコピーしておきます。
+Upon completion, a Store Name (ID) like fileSearchStores/xxxxxxxx will be displayed in the console. Copy this ID.
 
-### 3. AIアシスタントの実行
+3. Running the AI Assistant
+Now you can start the conversation with the AI assistant.
 
-いよいよAIアシスタントと対話します。
+a. Configure the Store Name
+Open the query_rag.py file and replace the value of FILE_SEARCH_STORE_NAME with the ID you copied.
 
-#### a. ストア名の設定
-`query_rag.py` ファイルを開き、`FILE_SEARCH_STORE_NAME` の値を、先ほどコピーしたストア名に書き換えます。
+Python
 
-```python
 # query_rag.py
 
 # ...
-FILE_SEARCH_STORE_NAME = "fileSearchStores/xxxxxxxxxxxx" # ← ここを書き換える
+FILE_SEARCH_STORE_NAME = "fileSearchStores/xxxxxxxxxxxx" # ← Replace this
 # ...
-```
+b. Launch the Application
+Execute the following command in your terminal to start the dialogue with the AI.
 
-#### b. アプリケーションの起動
-ターミナルで以下のコマンドを実行すると、AIとの対話が始まります。
-```bash
+Bash
+
 python query_rag.py
-``````
-GASに関する質問を入力してください (終了するには Enter のみ): 
-```
-GASやGemini APIに関する質問を自由に入力してください。
+Enter your question about NEURON (Press Enter only to quit): 
+Feel free to ask any questions about the NEURON Simulator.
 
-## 🤖 GitHub Actionsによる知識の自動更新
+🤖 Automatic Knowledge Update with GitHub Actions
+This repository includes a GitHub Actions workflow (.github/workflows/update-docs.yml) for automatically updating the documentation.
 
-このリポジトリには、ドキュメントを自動で更新するためのGitHub Actionsワークフロー (`.github/workflows/update-docs.yml`) が含まれています。
+Execution Timing:
 
-- **実行タイミング:**
-  - GitHubのActionsタブから手動での実行 (`workflow_dispatch`)
-  - (`update-docs.yml`内の`schedule`のコメントを外せば) 定期実行も可能
-- **動作内容:**
-  1. `py_wget.py` と `local_html2text.py` を実行し、ドキュメントを再取得・再処理します。
-  2. 生成されたファイル群に差分があれば、自動でコミット＆プッシュします。
+Manual execution from the GitHub Actions tab (workflow_dispatch).
 
-これにより、リポジトリ内の知識ソースは常に最新の状態に保たれます。ローカルで`git pull`するだけで、最新の知識を手に入れることができます。
+Periodic execution is also possible (by uncommenting the schedule in update-docs.yml).
 
-## 💡 今後の展望
+Action Details:
 
-- **知識ベースの拡張:** `py_wget.py` に新しいドキュメントサイトのURLを追加するだけで、AIの専門分野をさらに広げることが可能です（例：Google Cloud、Firebaseなど）。
-- **Web UIの実装:** StreamlitやGradio、Flaskなどを使って、より使いやすいWebアプリケーション化する。
-- **ストア管理の高度化:** `add_docs_to_store.py`のようなスクリプトを拡充し、既存ストアへのドキュメントの追加・削除・更新を柔軟に行えるようにする。
+Executes py_wget.py and local_html2text.py to re-fetch and re-process the documentation.
 
----
-このREADMEが、あなたの素晴らしいプロジェクトの一助となれば幸いです。
+If any differences are found in the generated files, it automatically commits and pushes the changes.
+
+This ensures that the knowledge source within your repository is always current. You can get the latest knowledge simply by running git pull locally.
+
+💡 Future Outlook
+Knowledge Base Expansion: The AI's expertise can be further broadened simply by adding new documentation site URLs to py_wget.py (e.g., NEURON tutorials, documentation for related libraries).
+
+Web UI Implementation: Developing a more user-friendly web application using tools like Streamlit, Gradio, or Flask.
+
+Advanced Store Management: Enhancing scripts like add_docs_to_store.py to allow flexible addition, deletion, and update of documents within an existing store.
+
+We hope this README assists you in your fantastic NEURON simulation projects.
+
+Would you like me to elaborate on how you would typically modify py_wget.py to target the NEURON documentation website?
