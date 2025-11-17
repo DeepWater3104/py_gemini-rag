@@ -26,7 +26,9 @@ def convert_html_to_text(html_dir, output_dir):
             with open(html_path, 'r', encoding='utf-8') as f:
                 soup = BeautifulSoup(f.read(), 'lxml')
 
-            content_div = soup.find('div', attrs={'class': 'devsite-article-body'})
+            #content_div = soup.find('div', attrs={'class': 'devsite-article-body'})
+            #content_div = soup.find(id="main-content") 
+            content_div = soup.find(attrs={'role': 'main'})
             
             if content_div:
                 # ▼▼▼【ここからが修正箇所】▼▼▼
