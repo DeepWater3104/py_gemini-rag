@@ -5,7 +5,8 @@ from google import genai
 from dotenv import load_dotenv
 
 # --- .envファイルから環境変数を読み込む ---
-load_dotenv()
+#load_dotenv()
+load_dotenv(dotenv_path="gemini.env")
 
 # --- 環境変数からAPIキーを取得 ---
 api_key = os.getenv("GEMINI_API_KEY")
@@ -14,13 +15,14 @@ if not api_key:
 
 # --- Clientオブジェクトを作成 ---
 client = genai.Client(api_key=api_key) 
-doc_directorys = ["gas_docs_txt","gemini_api_docs_txt"]
+#doc_directorys = ["gas_docs_txt","gemini_api_docs_txt"]
+doc_directorys = ["nrn_docs_txt"]
 #doc_directorys = ["gas","gemini"]
 
 # --- 1. ファイル検索ストアの作成 ---
 print("ファイル検索ストアを作成しています...")
 file_search_store = client.file_search_stores.create(
-    config={'display_name': 'GAS Documentation RAG Store (new SDK)'}
+    config={'display_name': 'NERUON Documentation RAG Store (new SDK)'}
 )
 
 # --- 2. ディレクトリ内の全テキストファイルをアップロード ---

@@ -5,17 +5,18 @@ from google.genai import types
 from dotenv import load_dotenv
 
 # --- .envファイルから環境変数を読み込む ---
-load_dotenv()
+load_dotenv(dotenv_path="gemini.env")
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("APIキーが.envファイルに設定されていません。")
 client = genai.Client(api_key=api_key) 
 
 # --- ストア名を設定 ---
-FILE_SEARCH_STORE_NAME = "fileSearchStores/gas-documentation-rag-store-eh3fonwv95f9" # あなたのストア名に設定済み
+#FILE_SEARCH_STORE_NAME = "fileSearchStores/gas-documentation-rag-store-eh3fonwv95f9" # あなたのストア名に設定済み
+FILE_SEARCH_STORE_NAME = "fileSearchStores/neruon-documentation-rag-st-2fcechk5416c"
 
 # ▼▼▼【ここからが新しい関数】▼▼▼
-def is_question_about_gas(question: str) -> bool:
+def is_question_about_nrn(question: str) -> bool:
     """
     質問がGoogle Apps Scriptに関連しているかどうかを判定する関数
     """
@@ -23,7 +24,7 @@ def is_question_about_gas(question: str) -> bool:
     try:
         # 判定用のシンプルなプロンプト
         prompt = f"""
-        以下のユーザーからの質問は、プログラミング言語の「Google Apps Script (GAS)または、Gemini-api」に関連する内容ですか？
+        以下のユーザーからの質問は、プログラミング言語の「NEURON 」に関連する内容ですか？
         関連している場合は "Yes"、関連していない場合は "No" とだけ答えてください。
 
         質問: "{question}"
@@ -47,7 +48,8 @@ def is_question_about_gas(question: str) -> bool:
 if FILE_SEARCH_STORE_NAME == "ここにストア名を貼り付け":
     print("エラー: `FILE_SEARCH_STORE_NAME`に変数を設定してください。")
 else:
-    question = input("GASまたはgemini-apiに関する質問を入力してください。＝＞ # ")
+    question = input("NEURONに関する質問を入力してください。＝＞ # ")
+
 
     instractions="""
 # 指示
@@ -58,7 +60,7 @@ else:
 
     while question:
         # ▼▼▼【ここからが新しいロジック】▼▼▼
-        if is_question_about_gas(instractions + question):
+        if is_question_about_nrn(instractions + question):
             # 質問がGASに関連している場合のみ、RAGを実行
             print("\n🤖 AIが回答を生成中...")
             response = client.models.generate_content(
