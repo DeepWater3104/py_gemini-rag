@@ -49,7 +49,7 @@ jobs:
       # local_html2text.py を実行して、TXTファイルを生成
       - name: Convert HTML to Text
         run: |
-          # GASドキュメント、gemini APIドキュメントの変換
+          # NEURONドキュメントの変換
           python local_html2text.py
 
       # ステップ6: 変更があった場合にコミット＆プッシュする
@@ -61,7 +61,7 @@ jobs:
           
           # 変更をステージング
           # 生成されたTXTファイルと、ダウンロードしたHTMLファイルの両方を対象にする
-          git add gas_docs_txt/ gemini_api_docs_txt/ gas_docs_html/ gemini_api_docs_html/
+          git add nrn_docs_txt/ nrn_docs_html/
           
           # 変更があるかどうかを確認
           # git diff --staged --quiet は変更がなければ終了コード0、あれば1を返す
