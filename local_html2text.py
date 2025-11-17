@@ -68,14 +68,7 @@ if __name__ == "__main__":
         
         # --- ローカルでテスト実行したい場合の設定 ---
         # 既存のテキストフォルダを一度削除すると確実です
-        if os.path.exists('gas_docs_txt'):
+        if os.path.exists('nrn_docs_txt'):
              import shutil
-             shutil.rmtree('gas_docs_txt')
-        if os.path.exists('gemini_api_docs_txt'):
-             import shutil
-             shutil.rmtree('gemini_api_docs_txt')
-
-        # GAS
-        convert_html_to_text('gas_docs_html', 'gas_docs_txt')
-        # Gemini API
-        convert_html_to_text('gemini_api_docs_html', 'gemini_api_docs_txt')
+             shutil.rmtree('nrn_docs_txt')
+        convert_html_to_text('nrn_docs_html', 'nrn_docs_txt')
